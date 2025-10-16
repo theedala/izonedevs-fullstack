@@ -21,7 +21,7 @@ import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 export function App() {
-  return <BrowserRouter future={{ 
+  return <BrowserRouter basename="/izonedevs-fullstack-frontend" future={{ 
     v7_startTransition: true,
     v7_relativeSplatPath: true 
   }}>
