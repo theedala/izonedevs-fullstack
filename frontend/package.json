@@ -9,12 +9,14 @@
     "dev-alt2": "npx vite --host 127.0.0.1 --port 9500",
     "dev-safe": "npx vite --host 127.0.0.1 --port 8888",
     "build": "npx vite build",
+    "start": "node server.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "preview": "npx vite preview"
   },
   "dependencies": {
     "@tsparticles/engine": "^3.8.1",
     "@tsparticles/slim": "^3.8.1",
+    "express": "^4.18.2",
     "framer-motion": "^11.5.4",
     "lucide-react": "^0.441.0",
     "react": "^18.3.1",
