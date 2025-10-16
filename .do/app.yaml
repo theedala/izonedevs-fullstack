@@ -1,0 +1,51 @@
+name: izonedevs
+region: nyc
+
+services:
+  # Backend API
+  - name: backend
+    source_dir: backend
+    environment_slug: python
+    build_command: pip install -r requirements.txt
+    run_command: uvicorn main:app --host 0.0.0.0 --port 8080
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /api
+    envs:
+      - key: DATABASE_URL
+        value: sqlite:///./izonedevs.db
+      - key: SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: DEBUG
+        value: "false"
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: izonemakers@gmail.com
+      - key: SMTP_PASSWORD
+        scope: RUN_TIME
+        type: SECRET
+        
+  # Frontend Static Site
+  - name: frontend
+    source_dir: frontend
+    environment_slug: node-js
+    build_command: npm install && npm run build
+    output_dir: dist
+    routes:
+      - path: /
+    envs:
+      - key: VITE_API_URL
+        value: ${APP_URL}/api
+
+# Static storage for uploads
+static_sites:
+  - name: uploads
+    source_dir: backend/uploads
+    routes:
+      - path: /uploads
