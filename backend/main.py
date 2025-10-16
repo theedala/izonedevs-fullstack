@@ -26,8 +26,7 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description="API for iZonehub Makerspace - Zimbabwe's innovation hub",
-    lifespan=lifespan,
-    root_path="/api"
+    lifespan=lifespan
 )
 
 # CORS middleware
@@ -42,25 +41,27 @@ app.add_middleware(
 # Mount static files for uploads
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
-# Include routers (no /api prefix needed - root_path handles it)
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(communities.router, prefix="/communities", tags=["Communities"])
-app.include_router(projects.router, prefix="/projects", tags=["Projects"])
-app.include_router(event_registrations.router, prefix="/events", tags=["Event Registrations"])
-app.include_router(events.router, prefix="/events", tags=["Events"])
-app.include_router(blog.router, prefix="/blog", tags=["Blog"])
-app.include_router(store.router, prefix="/store", tags=["Store"])
-app.include_router(gallery.router, prefix="/gallery", tags=["Gallery"])
-app.include_router(upload.router, prefix="/upload", tags=["Upload"])
-app.include_router(contact.router, prefix="/contact", tags=["Contact"])
-app.include_router(partners.router, prefix="/partners", tags=["Partners"])
-app.include_router(team_members.router, prefix="/team-members", tags=["Team Members"])
+# Include routers
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(communities.router, prefix="/api/communities", tags=["Communities"])
+app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
+app.include_router(event_registrations.router, prefix="/api/events", tags=["Event Registrations"])
+app.include_router(events.router, prefix="/api/events", tags=["Events"])
+app.include_router(blog.router, prefix="/api/blog", tags=["Blog"])
+app.include_router(store.router, prefix="/api/store", tags=["Store"])
+app.include_router(gallery.router, prefix="/api/gallery", tags=["Gallery"])
+app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
+app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
+app.include_router(partners.router, prefix="/api/partners", tags=["Partners"])
+app.include_router(team_members.router, prefix="/api/team-members", tags=["Team Members"])
 
 
-@app.get("/")
-async def root():
+# Health check endpoint (no root endpoint to avoid conflicts with frontend)
+@app.get("/api/health")
+async def health_check():
     return {
+        "status": "healthy",
         "message": "Welcome to iZonehub Makerspace API",
         "version": settings.app_version,
         "docs": "/docs"

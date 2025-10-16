@@ -2,7 +2,7 @@ name: izonedevs
 region: nyc
 
 services:
-  # Backend API
+  # Backend API (handles /api/* routes)
   - name: backend
     source_dir: backend
     environment_slug: python
@@ -15,7 +15,6 @@ services:
       - path: /api
       - path: /docs
       - path: /redoc
-      - path: /openapi.json
     envs:
       - key: DATABASE_URL
         value: sqlite:///./izonedevs.db
@@ -34,7 +33,7 @@ services:
         scope: RUN_TIME
         type: SECRET
         
-  # Frontend Web Service (must be last to catch all remaining routes)
+  # Frontend Web Service (catches all remaining routes)
   - name: frontend
     source_dir: frontend
     environment_slug: node-js
