@@ -8,15 +8,15 @@ from config import settings
 from database import engine, create_tables
 from routers import auth, users, communities, projects, events, blog, store, gallery, contact, upload, event_registrations, partners, team_members
 
+# Create upload directory if it doesn't exist (must happen before app initialization)
+if not os.path.exists(settings.upload_dir):
+    os.makedirs(settings.upload_dir)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     create_tables()
-    
-    # Create upload directory if it doesn't exist
-    if not os.path.exists(settings.upload_dir):
-        os.makedirs(settings.upload_dir)
     
     yield
     # Shutdown - cleanup if needed
