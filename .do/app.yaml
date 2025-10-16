@@ -2,7 +2,7 @@ name: izonedevs
 region: nyc
 
 services:
-  # Backend API (handles /api/* routes)
+  # Backend API - specific routes listed first
   - name: backend
     source_dir: backend
     environment_slug: python
@@ -15,6 +15,7 @@ services:
       - path: /api
       - path: /docs
       - path: /redoc
+      - path: /openapi.json
     envs:
       - key: DATABASE_URL
         value: sqlite:///./izonedevs.db
@@ -32,25 +33,22 @@ services:
       - key: SMTP_PASSWORD
         scope: RUN_TIME
         type: SECRET
-        
-  # Frontend Web Service (catches all remaining routes)
-  - name: frontend
-    source_dir: frontend
-    environment_slug: node-js
-    build_command: npm install && npm run build
-    run_command: npm start
-    http_port: 8080
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    routes:
-      - path: /
-    envs:
-      - key: VITE_API_URL
-        value: ${APP_URL}/api
 
-# Static storage for uploads
+# Static storage for uploads  
 static_sites:
   - name: uploads
     source_dir: backend/uploads
     routes:
       - path: /uploads
+      
+  # Frontend as static site (not web service)
+  - name: frontend
+    source_dir: frontend
+    output_dir: dist
+    build_command: npm install && npm run build
+    routes:
+      - path: /
+    catchall_document: index.html
+    envs:
+      - key: VITE_API_URL
+        value: ${APP_URL}/api
