@@ -13,6 +13,9 @@ services:
     instance_size_slug: basic-xxs
     routes:
       - path: /api
+      - path: /docs
+      - path: /redoc
+      - path: /openapi.json
     envs:
       - key: DATABASE_URL
         value: sqlite:///./izonedevs.db
@@ -31,7 +34,7 @@ services:
         scope: RUN_TIME
         type: SECRET
         
-  # Frontend Web Service
+  # Frontend Web Service (must be last to catch all remaining routes)
   - name: frontend
     source_dir: frontend
     environment_slug: node-js
