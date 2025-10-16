@@ -158,3 +158,31 @@ async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
         refresh_token=new_refresh_token,
         token_type="bearer"
     )
+
+
+@router.post("/bootstrap-admin", response_model=APIResponse)
+async def bootstrap_admin(db: Session = Depends(get_db)):
+    """One-time endpoint to upgrade first user to admin. Remove after use."""
+    # Check if any admin exists
+    admin_exists = db.query(User).filter(User.role == "admin").first()
+    if admin_exists:
+        raise HTTPException(
+            status_code=400,
+            detail="Admin user already exists. This endpoint is disabled."
+        )
+    
+    # Get first user (ID 1)
+    first_user = db.query(User).filter(User.id == 1).first()
+    if not first_user:
+        raise HTTPException(status_code=404, detail="No users found")
+    
+    # Upgrade to admin
+    first_user.role = "admin"
+    db.commit()
+    db.refresh(first_user)
+    
+    return APIResponse(
+        success=True,
+        message=f"User '{first_user.username}' upgraded to admin successfully",
+        data={"user_id": first_user.id, "role": first_user.role}
+    )
