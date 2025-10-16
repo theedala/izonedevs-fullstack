@@ -51,4 +51,4 @@ static_sites:
     catchall_document: index.html
     envs:
       - key: VITE_API_URL
-        value: ${APP_URL}/api
+        value: https://coral-app-ycosl.ondigitalocean.app/api
