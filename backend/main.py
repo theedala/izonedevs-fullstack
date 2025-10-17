@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 import os
 
@@ -67,44 +66,6 @@ async def health_check():
         "version": settings.app_version,
         "docs": "/docs"
     }
-
-# Serve frontend static files (must be last to not override API routes)
-# Check if frontend dist directory exists
-frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
-print(f"Looking for frontend at: {frontend_dist}")
-print(f"Frontend exists: {os.path.exists(frontend_dist)}")
-
-if os.path.exists(frontend_dist):
-    print(f"Serving frontend from: {frontend_dist}")
-    # Mount static assets
-    assets_dir = os.path.join(frontend_dist, "assets")
-    if os.path.exists(assets_dir):
-        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
-        print(f"Mounted assets from: {assets_dir}")
-    
-    # Serve index.html for all non-API routes (SPA catchall)
-    @app.get("/{full_path:path}")
-    async def serve_frontend(full_path: str):
-        # If requesting a file that exists, serve it
-        file_path = os.path.join(frontend_dist, full_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-        # Otherwise serve index.html (SPA routing)
-        index_path = os.path.join(frontend_dist, "index.html")
-        if os.path.exists(index_path):
-            return FileResponse(index_path)
-        return {"error": "Frontend not found", "path": frontend_dist}
-else:
-    print(f"WARNING: Frontend dist not found at {frontend_dist}")
-    # Return info page at root if frontend not found
-    @app.get("/")
-    async def root_fallback():
-        return {
-            "message": "iZonehub Makerspace API",
-            "status": "Frontend not deployed",
-            "frontend_path_checked": frontend_dist,
-            "api_docs": "/docs"
-        }
 
 
 if __name__ == "__main__":

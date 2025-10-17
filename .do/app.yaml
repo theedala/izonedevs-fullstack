@@ -2,15 +2,21 @@ name: izonedevs
 region: nyc
 
 services:
-  # Combined service - backend serves both API and frontend
-  - name: app
-    source_dir: .
+  # Backend API
+  - name: backend
+    source_dir: backend
     environment_slug: python
-    build_command: cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt
-    run_command: cd backend && uvicorn main:app --host 0.0.0.0 --port 8080
+    build_command: pip install -r requirements.txt
+    run_command: uvicorn main:app --host 0.0.0.0 --port 8080
     http_port: 8080
     instance_count: 1
     instance_size_slug: basic-xxs
+    routes:
+      - path: /api
+      - path: /docs
+      - path: /redoc
+      - path: /openapi.json
+      - path: /uploads
     envs:
       - key: DATABASE_URL
         value: sqlite:///./izonedevs.db
@@ -28,5 +34,16 @@ services:
       - key: SMTP_PASSWORD
         scope: RUN_TIME
         type: SECRET
+
+static_sites:
+  # Frontend static site with proper catchall
+  - name: frontend
+    source_dir: frontend
+    output_dir: dist
+    build_command: npm install && npm run build
+    routes:
+      - path: /
+    catchall_document: index.html
+    envs:
       - key: VITE_API_URL
         value: https://coral-app-ycosl.ondigitalocean.app/api
