@@ -9,7 +9,7 @@ backend/static/qr_codes/*
 
 # Frontend
 frontend/node_modules/
-frontend/dist/
+# frontend/dist/  # Commented out - need dist in git for deployment
 frontend/.env
 frontend/.env.local
 
