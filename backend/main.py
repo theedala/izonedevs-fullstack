@@ -73,7 +73,7 @@ async def health_check():
 # Determine the correct path to frontend dist
 backend_dir = os.path.dirname(__file__)
 project_root = os.path.abspath(os.path.join(backend_dir, ".."))
-frontend_dist = os.path.join(project_root, "frontend", "dist")
+frontend_dist = os.path.join(backend_dir, "dist")
 
 print(f"[STARTUP] Backend directory: {backend_dir}")
 print(f"[STARTUP] Project root: {project_root}")
