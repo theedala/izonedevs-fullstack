@@ -34,19 +34,23 @@ services:
         scope: RUN_TIME
         type: SECRET
 
-# Static storage for uploads  
+# Static sites
 static_sites:
+  # Uploads storage
   - name: uploads
     source_dir: backend/uploads
     routes:
       - path: /uploads
       
-  # Frontend as static site (not web service)
+  # Frontend - catches all non-API routes
   - name: frontend
     source_dir: frontend
     output_dir: dist
     build_command: npm install && npm run build
-    catchall_document: index.html
+    error_document: index.html
+    index_document: index.html
+    routes:
+      - path: /
     envs:
       - key: VITE_API_URL
         value: https://coral-app-ycosl.ondigitalocean.app/api
