@@ -3,7 +3,7 @@ region: nyc
 
 # Static sites (defined first)
 static_sites:
-  # Frontend - must be first to be default, catches all non-API routes
+  # Frontend - catches all non-API routes
   - name: frontend
     source_dir: frontend
     output_dir: dist
@@ -16,14 +16,8 @@ static_sites:
       - key: VITE_API_URL
         value: https://coral-app-ycosl.ondigitalocean.app/api
 
-  # Uploads storage
-  - name: uploads
-    source_dir: backend/uploads
-    routes:
-      - path: /uploads
-
 services:
-  # Backend API - specific routes only
+  # Backend API - handles /api routes and serves uploads
   - name: backend
     source_dir: backend
     environment_slug: python
@@ -37,6 +31,7 @@ services:
       - path: /docs
       - path: /redoc
       - path: /openapi.json
+      - path: /uploads
     envs:
       - key: DATABASE_URL
         value: sqlite:///./izonedevs.db
