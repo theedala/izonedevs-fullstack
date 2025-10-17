@@ -2,12 +2,16 @@ name: izonedevs
 region: nyc
 
 static_sites:
-  # Frontend static site - must be first to catch all non-backend routes
+  # Frontend static site - serves all non-backend routes
   - name: frontend
     source_dir: frontend
     output_dir: dist
     build_command: npm install && npm run build
-    catchall_document: index.html
+    routes:
+      - path: /
+        serve: /index.html
+      - path: /<*>
+        serve: /index.html
     envs:
       - key: VITE_API_URL
         value: https://coral-app-ycosl.ondigitalocean.app/api
