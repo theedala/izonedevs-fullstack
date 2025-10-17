@@ -36,14 +36,15 @@ services:
         type: SECRET
 
 static_sites:
-  # Frontend static site with proper catchall
+  # Frontend static site with proper SPA routing
   - name: frontend
     source_dir: frontend
     output_dir: dist
     build_command: npm install && npm run build
+    catchall_document: index.html
     routes:
       - path: /
-    catchall_document: index.html
+      - path: /*
     envs:
       - key: VITE_API_URL
         value: https://coral-app-ycosl.ondigitalocean.app/api
