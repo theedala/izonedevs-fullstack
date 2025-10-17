@@ -46,8 +46,6 @@ static_sites:
     source_dir: frontend
     output_dir: dist
     build_command: npm install && npm run build
-    routes:
-      - path: /
     catchall_document: index.html
     envs:
       - key: VITE_API_URL
