@@ -69,7 +69,7 @@ async def health_check():
     }
 
 
-# Serve frontend static files
+# Serve frontend application static files
 # Determine the correct path to frontend dist
 backend_dir = os.path.dirname(__file__)
 project_root = os.path.abspath(os.path.join(backend_dir, ".."))
