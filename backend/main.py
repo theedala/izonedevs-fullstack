@@ -99,8 +99,8 @@ else:
 @app.api_route("/{full_path:path}", methods=["GET"], include_in_schema=False)
 async def serve_spa(full_path: str):
     """Catchall route - serves React SPA for all non-API/docs paths"""
-    # Don't handle API routes, docs, or uploads here (they have their own handlers)
-    if full_path.startswith(("api/", "docs", "redoc", "openapi.json", "assets/")):
+    # Don't handle API routes, docs, or uploads here`n    # Assets are served by the file serving logic below (file_path check) (they have their own handlers)
+    if full_path.startswith(("api/", "docs", "redoc", "openapi.json")):
         # Let FastAPI's normal 404 handling work
         raise HTTPException(status_code=404, detail="Not Found")
     
