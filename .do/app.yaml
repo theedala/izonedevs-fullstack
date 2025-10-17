@@ -6,9 +6,7 @@ services:
   - name: app
     source_dir: .
     environment_slug: python
-    build_command: |
-      cd frontend && npm install && npm run build && cd ..
-      cd backend && pip install -r requirements.txt
+    build_command: cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt
     run_command: cd backend && uvicorn main:app --host 0.0.0.0 --port 8080
     http_port: 8080
     instance_count: 1
