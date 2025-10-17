@@ -70,18 +70,29 @@ async def health_check():
 
 
 # Serve frontend static files
-frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+# Determine the correct path to frontend dist
+backend_dir = os.path.dirname(__file__)
+project_root = os.path.abspath(os.path.join(backend_dir, ".."))
+frontend_dist = os.path.join(project_root, "frontend", "dist")
+
+print(f"[STARTUP] Backend directory: {backend_dir}")
+print(f"[STARTUP] Project root: {project_root}")
 print(f"[STARTUP] Looking for frontend at: {frontend_dist}")
 print(f"[STARTUP] Frontend exists: {os.path.exists(frontend_dist)}")
 
 if os.path.exists(frontend_dist):
+    print(f"[STARTUP] Frontend contents: {os.listdir(frontend_dist)}")
     # Mount assets directory
     assets_dir = os.path.join(frontend_dist, "assets")
     if os.path.exists(assets_dir):
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
         print(f"[STARTUP] Mounted /assets from: {assets_dir}")
+        print(f"[STARTUP] Assets contents: {os.listdir(assets_dir)}")
 else:
-    print(f"[WARNING] Frontend dist not found at: {frontend_dist}")
+    print(f"[WARNING] Frontend dist not found")
+    print(f"[WARNING] Parent directory contents: {os.listdir(project_root)}")
+    if os.path.exists(os.path.join(project_root, "frontend")):
+        print(f"[WARNING] Frontend folder contents: {os.listdir(os.path.join(project_root, 'frontend'))}")
 
 
 # SPA catchall - must be LAST, serves index.html for non-API routes
