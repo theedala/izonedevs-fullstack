@@ -69,24 +69,45 @@ async def health_check():
     }
 
 
-# Serve frontend (must be last - after all API routes)
+# Serve frontend static files
 frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+print(f"[STARTUP] Looking for frontend at: {frontend_dist}")
+print(f"[STARTUP] Frontend exists: {os.path.exists(frontend_dist)}")
+
 if os.path.exists(frontend_dist):
     # Mount assets directory
     assets_dir = os.path.join(frontend_dist, "assets")
     if os.path.exists(assets_dir):
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+        print(f"[STARTUP] Mounted /assets from: {assets_dir}")
+else:
+    print(f"[WARNING] Frontend dist not found at: {frontend_dist}")
+
+
+# SPA catchall - must be LAST, serves index.html for non-API routes
+@app.api_route("/{full_path:path}", methods=["GET"], include_in_schema=False)
+async def serve_spa(full_path: str):
+    """Catchall route - serves React SPA for all non-API/docs paths"""
+    # Don't handle API routes, docs, or uploads here (they have their own handlers)
+    if full_path.startswith(("api/", "docs", "redoc", "openapi.json")):
+        # Let FastAPI's normal 404 handling work
+        raise HTTPException(status_code=404, detail="Not Found")
     
-    # Catchall route for SPA - serves index.html for all non-API paths
-    @app.get("/{full_path:path}")
-    async def serve_spa(full_path: str):
-        """Serve the React SPA for all non-API routes"""
-        file_path = os.path.join(frontend_dist, full_path)
-        # If it's a file that exists, serve it
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-        # Otherwise serve index.html (SPA routing)
-        return FileResponse(os.path.join(frontend_dist, "index.html"))
+    # Check if frontend exists
+    if not os.path.exists(frontend_dist):
+        return {"error": "Frontend not deployed", "path": full_path}
+    
+    # Try to serve a specific file if it exists
+    file_path = os.path.join(frontend_dist, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+    
+    # Otherwise serve index.html for SPA routing
+    index_path = os.path.join(frontend_dist, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    
+    return {"error": "Frontend index.html not found", "checked": index_path}
 
 
 if __name__ == "__main__":
