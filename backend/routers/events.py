@@ -103,6 +103,12 @@ async def delete_event(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     
+    from database import EventRegistration
+    
+    # Delete all registrations for this event first
+    db.query(EventRegistration).filter(EventRegistration.event_id == event_id).delete()
+    
+    # Now delete the event
     db.delete(event)
     db.commit()
     
