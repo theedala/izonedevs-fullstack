@@ -1,5 +1,7 @@
-﻿from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
@@ -13,6 +15,20 @@ from routers import auth, users, communities, projects, events, blog, store, gal
 if not os.path.exists(settings.upload_dir):
     os.makedirs(settings.upload_dir)
 
+
+
+class TrailingSlashMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Add trailing slash to requests without one (except those already having query params)
+        if not request.url.path.endswith('/') and not request.url.path.startswith('/api/upload') and request.url.path.startswith('/api/'):
+            # Don't redirect if path contains a file extension or already has trailing slash
+            if '.' not in request.url.path.split('/')[-1]:
+                url = str(request.url).replace(request.url.path, request.url.path + '/')
+                # Preserve the original method instead of redirecting
+                # Just modify the scope
+                request.scope['path'] = request.url.path + '/'
+        response = await call_next(request)
+        return response
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,6 +54,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Add trailing slash middleware
+app.add_middleware(TrailingSlashMiddleware)
 
 # Mount static files for uploads
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
