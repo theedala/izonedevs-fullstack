@@ -17,7 +17,7 @@ from services.email_service import EmailService
 router = APIRouter()
 
 
-@router.post("/", response_model=APIResponse)
+@router.post("", response_model=APIResponse)
 async def create_contact_message(
     message_data: ContactMessageCreate,
     db: Session = Depends(get_db)
@@ -47,7 +47,7 @@ async def create_contact_message(
     )
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_contact_messages(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),

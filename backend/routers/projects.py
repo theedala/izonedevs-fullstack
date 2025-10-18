@@ -17,7 +17,7 @@ from auth import get_current_active_user, require_admin
 router = APIRouter()
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_projects(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -70,7 +70,7 @@ async def get_project(project_id: int, db: Session = Depends(get_db)):
     return project
 
 
-@router.post("/", response_model=ProjectSchema)
+@router.post("", response_model=ProjectSchema)
 async def create_project(
     project_data: ProjectCreate,
     db: Session = Depends(get_db),

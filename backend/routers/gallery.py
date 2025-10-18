@@ -18,7 +18,7 @@ from config import settings
 router = APIRouter()
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_gallery_items(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -56,7 +56,7 @@ async def get_gallery_item(item_id: int, db: Session = Depends(get_db)):
     return item
 
 
-@router.post("/", response_model=GalleryItemSchema)
+@router.post("", response_model=GalleryItemSchema)
 async def create_gallery_item(
     item_data: GalleryItemCreate,
     db: Session = Depends(get_db),

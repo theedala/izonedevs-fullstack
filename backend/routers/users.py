@@ -30,7 +30,7 @@ async def update_current_user_profile(
     return current_user
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_users(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),

@@ -24,7 +24,7 @@ def create_slug(title: str) -> str:
     return slug.strip('-')
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_blog_posts(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -88,7 +88,7 @@ async def get_blog_post_by_slug(slug: str, db: Session = Depends(get_db)):
     return post
 
 
-@router.post("/", response_model=BlogPostSchema)
+@router.post("", response_model=BlogPostSchema)
 async def create_blog_post(
     post_data: BlogPostCreate,
     db: Session = Depends(get_db),

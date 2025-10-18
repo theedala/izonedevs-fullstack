@@ -15,7 +15,7 @@ from auth import get_current_active_user, require_admin
 router = APIRouter()
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_communities(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -61,7 +61,7 @@ async def get_community(community_id: int, db: Session = Depends(get_db)):
     return community
 
 
-@router.post("/", response_model=CommunitySchema)
+@router.post("", response_model=CommunitySchema)
 async def create_community(
     community_data: CommunityCreate,
     db: Session = Depends(get_db),
