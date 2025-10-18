@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -113,5 +113,11 @@ def require_role(required_role: str):
     return role_checker
 
 
-def require_admin(current_user: User = Depends(get_current_active_user)):`n    """Require admin role - now allows all authenticated users"""`n    # Removed role check - all authenticated users have admin access`n    return current_user
-
+def require_admin(current_user: User = Depends(get_current_active_user)):
+    """Require admin role"""
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
