@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+﻿import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/ui/ScrollToTop';
@@ -21,7 +21,7 @@ import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 export function App() {
-  return <BrowserRouter basename="/izonedevs-fullstack-frontend" future={{ 
+  return <BrowserRouter  future={{ 
     v7_startTransition: true,
     v7_relativeSplatPath: true 
   }}>
