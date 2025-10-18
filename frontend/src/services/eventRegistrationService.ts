@@ -1,4 +1,4 @@
-import { apiClient, ApiResponse } from './api';
+﻿import { apiClient, ApiResponse } from './api';
 
 export interface EventRegistrationData {
   name: string;
@@ -95,7 +95,7 @@ export class EventRegistrationService {
     if (filters.status) params.append('status', filters.status);
     
     const query = params.toString();
-    const API_BASE_URL = (import.meta as any)?.env?.VITE_API_URL || 'http://localhost:8000/api';
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
     
     // Use the same auth method as other services
     const token = localStorage.getItem('access_token'); // Fixed: was 'token', should be 'access_token'

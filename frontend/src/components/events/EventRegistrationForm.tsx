@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Calendar, MapPin, Clock, DollarSign, CheckCircle } from 'lucide-react';
 import Button from '../ui/Button';
 
@@ -92,7 +92,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
     setErrors({});
 
     try {
-      const response = await fetch(`http://localhost:8000/api/events/${event.id}/register`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/events/${event.id}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
