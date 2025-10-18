@@ -82,7 +82,8 @@ async def get_event_registrations_compat(
         )
 
     total = query.count()
-    registrations = query.offset((page - 1) * size).limit(size).all()
+    # Sort by creation date, newest first
+    registrations = query.order_by(EventRegistration.created_at.desc()).offset((page - 1) * size).limit(size).all()
 
     return {
         "items": registrations,
