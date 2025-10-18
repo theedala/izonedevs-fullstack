@@ -174,3 +174,46 @@ async def register_for_event_compat(
     db.refresh(new_registration)
     
     return new_registration
+
+# Compatibility route to view registrations via events router
+@router.get("/registrations", response_model=PaginatedResponse)
+async def get_event_registrations_compat(
+    page: int = Query(1, ge=1),
+    size: int = Query(10, ge=1, le=100),
+    event_id: Optional[int] = None,
+    status: Optional[str] = None,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    """Get event registrations (admin only) - compatibility endpoint"""
+    from database import EventRegistration
+    from sqlalchemy import or_
+    
+    query = db.query(EventRegistration)
+    
+    if event_id:
+        query = query.filter(EventRegistration.event_id == event_id)
+    
+    if status:
+        query = query.filter(EventRegistration.registration_status == status)
+    
+    if search:
+        query = query.filter(
+            or_(
+                EventRegistration.name.ilike(f"%{search}%"),
+                EventRegistration.email.ilike(f"%{search}%"),
+                EventRegistration.organization.ilike(f"%{search}%")
+            )
+        )
+    
+    total = query.count()
+    registrations = query.offset((page - 1) * size).limit(size).all()
+    
+    return {
+        "items": registrations,
+        "total": total,
+        "page": page,
+        "size": size,
+        "pages": (total + size - 1) // size
+    }
