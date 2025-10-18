@@ -224,4 +224,19 @@ async def register_for_event_compat(
     db.commit()
     db.refresh(new_registration)
 
+    # Send confirmation email
+    try:
+        from services.email_service import EmailService
+        await EmailService.send_event_registration_confirmation(
+            email=new_registration.email,
+            name=new_registration.name,
+            event_title=event.title,
+            event_date=event.start_date.strftime("%B %d, %Y at %I:%M %p"),
+            event_location=event.location or "To be announced",
+            qr_code_path=None  # QR code generation can be added later if needed
+        )
+    except Exception as e:
+        # Don't fail the registration if email fails
+        print(f"Failed to send confirmation email: {e}")
+
     return new_registration
