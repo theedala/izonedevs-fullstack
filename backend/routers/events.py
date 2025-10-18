@@ -116,3 +116,61 @@ async def delete_event(
         success=True,
         message="Event featured status updated successfully"
     )
+
+# Compatibility route for frontend - redirects to event_registrations
+@router.post("/{event_id}/register")
+async def register_for_event_compat(
+    event_id: int,
+    registration_data: dict,
+    db: Session = Depends(get_db)
+):
+    """Register for an event (compatibility endpoint)"""
+    from schemas import EventRegistrationCreate
+    from database import EventRegistration, Event
+    
+    # Check if event exists
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    if event.status in ["cancelled", "completed"]:
+        raise HTTPException(status_code=400, detail="Event is not available for registration")
+    
+    # Check if user already registered
+    existing_registration = db.query(EventRegistration).filter(
+        EventRegistration.event_id == event_id,
+        EventRegistration.email == registration_data.get("email")
+    ).first()
+    
+    if existing_registration:
+        raise HTTPException(status_code=400, detail="You are already registered for this event")
+    
+    # Check if event is full
+    if event.max_attendees:
+        current_registrations = db.query(EventRegistration).filter(
+            EventRegistration.event_id == event_id,
+            EventRegistration.registration_status == "confirmed"
+        ).count()
+        
+        if current_registrations >= event.max_attendees:
+            raise HTTPException(status_code=400, detail="Event is full")
+    
+    # Create registration
+    new_registration = EventRegistration(
+        event_id=event_id,
+        name=registration_data.get("name"),
+        email=registration_data.get("email"),
+        phone=registration_data.get("phone"),
+        organization=registration_data.get("organization"),
+        experience_level=registration_data.get("experience_level"),
+        interests=registration_data.get("interests"),
+        dietary_restrictions=registration_data.get("dietary_restrictions"),
+        special_requirements=registration_data.get("special_requirements"),
+        registration_status="confirmed"
+    )
+    
+    db.add(new_registration)
+    db.commit()
+    db.refresh(new_registration)
+    
+    return new_registration
