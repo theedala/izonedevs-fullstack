@@ -1,7 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
@@ -41,9 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Add trailing slash middleware
-app.add_middleware(TrailingSlashMiddleware)
-
 # Mount static files for uploads
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
 
