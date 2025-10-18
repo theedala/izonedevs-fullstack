@@ -70,9 +70,9 @@ const ContactPage = () => {
               </div>
               <h3 className="text-xl font-bold mb-2">Email Us</h3>
               <p className="text-white/70">
-                General: izonedevs@izonedevs.co.zw
+                General: info@izonedevs.co.zw
                 <br />
-                Support: izonedevs@izonedevs.co.zw
+                Support: info@izonedevs.co.zw
               </p>
             </div>
           </div>
