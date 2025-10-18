@@ -376,3 +376,4 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 };
 
 export default EventRegistrationForm;
+

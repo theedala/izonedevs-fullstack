@@ -32,7 +32,7 @@ const JoinForm: React.FC<JoinFormProps> = ({
     
     try {
       // Use the dedicated join application endpoint
-      const response = await fetch('${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/contact/join-application', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000/api"}/contact/join-application`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,3 +143,4 @@ const JoinForm: React.FC<JoinFormProps> = ({
     </div>;
 };
 export default JoinForm;
+
