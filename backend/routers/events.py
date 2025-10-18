@@ -16,7 +16,7 @@ from auth import get_current_active_user, require_admin
 router = APIRouter()
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("", response_model=PaginatedResponse)
 async def get_events(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -58,7 +58,7 @@ async def get_event(event_id: int, db: Session = Depends(get_db)):
     return event
 
 
-@router.post("/", response_model=EventSchema)
+@router.post("", response_model=EventSchema)
 async def create_event(
     event_data: EventCreate,
     db: Session = Depends(get_db),

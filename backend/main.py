@@ -17,19 +17,6 @@ if not os.path.exists(settings.upload_dir):
 
 
 
-class TrailingSlashMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        # Add trailing slash to requests without one (except those already having query params)
-        if not request.url.path.endswith('/') and not request.url.path.startswith('/api/upload') and request.url.path.startswith('/api/'):
-            # Don't redirect if path contains a file extension or already has trailing slash
-            if '.' not in request.url.path.split('/')[-1]:
-                url = str(request.url).replace(request.url.path, request.url.path + '/')
-                # Preserve the original method instead of redirecting
-                # Just modify the scope
-                request.scope['path'] = request.url.path + '/'
-        response = await call_next(request)
-        return response
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
