@@ -224,39 +224,46 @@ async def register_for_event_compat(
     db.commit()
     db.refresh(new_registration)
 
-    # Send confirmation email
+    # Send confirmation email (simplified, without QR code attachment)
     try:
         from services.email_service import EmailService
-        from services.qr_service import QRCodeService
         
-        # Generate QR code for the registration
-        qr_code_path = None
-        try:
-            qr_code_path = QRCodeService.generate_registration_qr(
-                registration_id=new_registration.id,
-                event_id=event.id,
-                registration_data={
-                    "name": new_registration.name,
-                    "email": new_registration.email,
-                    "event_title": event.title
-                }
-            )
-            # Save QR code path to registration
-            new_registration.qr_code_path = qr_code_path
-            db.commit()
-        except Exception as qr_error:
-            print(f"Failed to generate QR code: {qr_error}")
+        # Format event details
+        start_date = event.start_date.strftime("%B %d, %Y at %I:%M %p")
+        location = event.location or "To be announced"
         
-        # Send email with event and registration objects
-        await EmailService.send_event_registration_confirmation(
-            email=new_registration.email,
-            name=new_registration.name,
-            event=event,
-            registration=new_registration,
-            qr_code_path=qr_code_path
+        # Create email body
+        email_body = f"""
+        <h2>Registration Confirmed!</h2>
+        <p>Hi {new_registration.name},</p>
+        <p>Thank you for registering for <strong>{event.title}</strong>!</p>
+        
+        <h3>Event Details:</h3>
+        <ul>
+            <li><strong>Event:</strong> {event.title}</li>
+            <li><strong>Date:</strong> {start_date}</li>
+            <li><strong>Location:</strong> {location}</li>
+        </ul>
+        
+        <p>We look forward to seeing you there!</p>
+        <p>If you have any questions, please reply to this email or contact us at izonemakers@gmail.com</p>
+        
+        <p>Best regards,<br>The iZonehub Team</p>
+        """
+        
+        html_body = EmailService.create_email_template(email_body, "Registration Confirmed")
+        
+        # Send email without attachment
+        await EmailService.send_email(
+            to_email=new_registration.email,
+            subject=f"Registration Confirmed: {event.title}",
+            body=html_body,
+            from_name="iZonehub Makerspace",
+            is_html=True
         )
+        print(f"✅ Confirmation email sent to {new_registration.email}")
     except Exception as e:
         # Don't fail the registration if email fails
-        print(f"Failed to send confirmation email: {e}")
+        print(f"❌ Failed to send confirmation email: {e}")
 
     return new_registration
