@@ -182,7 +182,7 @@ async def register_for_event_compat(
     return new_registration
 
 # Compatibility route to view registrations via events router
-@router.get("/registrations", response_model=PaginatedResponse)
+@router.get("/registrations")
 async def get_event_registrations_compat(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
