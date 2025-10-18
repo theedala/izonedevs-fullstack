@@ -186,3 +186,41 @@ async def bootstrap_admin(db: Session = Depends(get_db)):
         message=f"User '{first_user.username}' upgraded to admin successfully",
         data={"user_id": first_user.id, "role": first_user.role}
     )
+
+@router.post("/reset-admin-password", response_model=APIResponse)
+async def reset_admin_password(db: Session = Depends(get_db)):
+    """One-time endpoint to reset admin password. Remove after use."""
+    # Get user with username 'admin'
+    admin_user = db.query(User).filter(User.username == "admin").first()
+    if not admin_user:
+        # Create admin user if doesn't exist
+        from auth import get_password_hash
+        admin_user = User(
+            username="admin",
+            email="admin@izonedevs.co.zw",
+            full_name="Administrator",
+            hashed_password=get_password_hash("Admin@iZone2025!"),
+            role="admin",
+            is_active=True
+        )
+        db.add(admin_user)
+        db.commit()
+        db.refresh(admin_user)
+        return APIResponse(
+            success=True,
+            message="Admin user created successfully",
+            data={"username": "admin", "password": "Admin@iZone2025!"}
+        )
+    
+    # Reset password
+    from auth import get_password_hash
+    admin_user.hashed_password = get_password_hash("Admin@iZone2025!")
+    admin_user.role = "admin"
+    admin_user.is_active = True
+    db.commit()
+    
+    return APIResponse(
+        success=True,
+        message="Admin password reset successfully",
+        data={"username": "admin", "password": "Admin@iZone2025!"}
+    )
