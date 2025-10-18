@@ -47,7 +47,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(communities.router, prefix="/api/communities", tags=["Communities"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
-app.include_router(event_registrations.router, prefix="/api/events", tags=["Event Registrations"])
+app.include_router(event_registrations.router, prefix="/api/event-registrations", tags=["Event Registrations"])
 app.include_router(events.router, prefix="/api/events", tags=["Events"])
 app.include_router(blog.router, prefix="/api/blog", tags=["Blog"])
 app.include_router(store.router, prefix="/api/store", tags=["Store"])
@@ -124,4 +124,5 @@ async def serve_spa(full_path: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=settings.debug)
+
 
