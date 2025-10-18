@@ -227,13 +227,33 @@ async def register_for_event_compat(
     # Send confirmation email
     try:
         from services.email_service import EmailService
+        from services.qr_service import QRCodeService
+        
+        # Generate QR code for the registration
+        qr_code_path = None
+        try:
+            qr_code_path = QRCodeService.generate_registration_qr(
+                registration_id=new_registration.id,
+                event_id=event.id,
+                registration_data={
+                    "name": new_registration.name,
+                    "email": new_registration.email,
+                    "event_title": event.title
+                }
+            )
+            # Save QR code path to registration
+            new_registration.qr_code_path = qr_code_path
+            db.commit()
+        except Exception as qr_error:
+            print(f"Failed to generate QR code: {qr_error}")
+        
+        # Send email with event and registration objects
         await EmailService.send_event_registration_confirmation(
             email=new_registration.email,
             name=new_registration.name,
-            event_title=event.title,
-            event_date=event.start_date.strftime("%B %d, %Y at %I:%M %p"),
-            event_location=event.location or "To be announced",
-            qr_code_path=None  # QR code generation can be added later if needed
+            event=event,
+            registration=new_registration,
+            qr_code_path=qr_code_path
         )
     except Exception as e:
         # Don't fail the registration if email fails
