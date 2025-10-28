@@ -1,4 +1,4 @@
-﻿import { apiClient, ApiResponse } from './api';
+import { apiClient, ApiResponse } from './api';
 
 export interface EventRegistrationData {
   name: string;
@@ -54,7 +54,7 @@ export class EventRegistrationService {
     eventId: number, 
     data: EventRegistrationData
   ): Promise<EventRegistration> {
-    return apiClient.post<EventRegistration>(`/events/${eventId}/register`, data);
+    return apiClient.post<EventRegistration>(`/event-registrations/${eventId}/register`, data);
   }
 
   static async getRegistrations(
@@ -70,7 +70,7 @@ export class EventRegistrationService {
     
     const query = params.toString();
     return apiClient.get<PaginatedEventRegistrations>(
-      `/events/registrations${query ? `?${query}` : ''}`
+      `/event-registrations/registrations${query ? `?${query}` : ''}`
     );
   }
 
@@ -79,13 +79,13 @@ export class EventRegistrationService {
     status: string
   ): Promise<ApiResponse> {
     return apiClient.put<ApiResponse>(
-      `/events/registrations/${registrationId}/status`, 
+      `/event-registrations/registrations/${registrationId}/status`, 
       { status }
     );
   }
 
   static async deleteRegistration(registrationId: number): Promise<ApiResponse> {
-    return apiClient.delete<ApiResponse>(`/events/registrations/${registrationId}`);
+    return apiClient.delete<ApiResponse>(`/event-registrations/registrations/${registrationId}`);
   }
 
   static async exportRegistrations(filters: EventRegistrationFilters = {}): Promise<Blob> {
@@ -107,7 +107,7 @@ export class EventRegistrationService {
     
     // Use direct fetch with proper authentication for blob response
     const response = await fetch(
-      `${API_BASE_URL}/events/registrations/export${query ? `?${query}` : ''}`,
+      `${API_BASE_URL}/event-registrations/registrations/export${query ? `?${query}` : ''}`,
       {
         method: 'GET',
         headers: {
@@ -158,3 +158,4 @@ export class EventRegistrationService {
     return blob;
   }
 }
+
