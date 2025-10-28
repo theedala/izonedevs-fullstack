@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import SectionTitle from '../components/ui/SectionTitle';
 import Button from '../components/ui/Button';
 import JoinForm from '../components/communities/JoinForm';
-import { CodeIcon, CpuIcon, CheckCircleIcon } from 'lucide-react';
+import { CodeIcon, CpuIcon, CheckCircleIcon, User } from 'lucide-react';
 import { ProjectsService, Project } from '../services';
 const CommunityDetailPage = () => {
   const {
@@ -253,7 +253,7 @@ const CommunityDetailPage = () => {
                 </div>
                 <div className="p-6">
                   <div className="flex items-center mb-4">
-                    <img src={community.leadImage} alt={community.leadName} className="w-16 h-16 rounded-full object-cover mr-4 border-2 border-primary" />
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mr-4 border-2 border-primary"><User size={32} className="text-primary" /></div>
                     <div>
                       <h4 className="font-bold">{community.leadName}</h4>
                       <p className="text-primary text-sm">
@@ -287,3 +287,4 @@ const CommunityDetailPage = () => {
     </div>;
 };
 export default CommunityDetailPage;
+
