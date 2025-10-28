@@ -25,7 +25,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
-                src="https://izonehub.org.zw/wp-content/uploads/2022/01/Full-Logo.jpg" 
+                src="/logo.png" 
                 alt="iZonehub Makerspace" 
                 className="h-8 w-auto mr-3"
                 onError={(e) => {
