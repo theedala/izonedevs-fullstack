@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SectionTitle from '../components/ui/SectionTitle';
 import ProductCard from '../components/store/ProductCard';
-import { SearchIcon, FilterIcon, LoaderIcon } from 'lucide-react';
+import { SearchIcon, FilterIcon, LoaderIcon, ShoppingCartIcon } from 'lucide-react';
 import { StoreService, Product } from '../services';
+import { useCart } from '../context/CartContext';
 
 const StorePage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -15,6 +17,7 @@ const StorePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { cartItems, cartCount, cartTotal } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -243,6 +246,25 @@ const StorePage = () => {
             </div>
           )}
         </div>
+
+        {/* Floating Cart Bar */}
+        {cartCount > 0 && (
+          <Link
+            to="/cart"
+            className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-primary to-secondary hover:shadow-neon text-white px-6 py-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 group"
+          >
+            <div className="relative">
+              <ShoppingCartIcon size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="absolute -top-2 -right-2 bg-white text-primary text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                {cartCount}
+              </span>
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-medium">Cart</span>
+              <span className="text-xs opacity-90">${cartTotal.toFixed(2)}</span>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );
