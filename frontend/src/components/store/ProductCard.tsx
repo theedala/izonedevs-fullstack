@@ -1,5 +1,8 @@
 import React from 'react';
 import Button from '../ui/Button';
+import { ShoppingCartIcon } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
+import { Product } from '../../services/api';
 interface ProductCardProps {
   id: string;
   name: string;
@@ -18,9 +21,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
   inStock,
   className = ''
 }) => {
-  // WhatsApp message template
-  const whatsappMessage = `Hi, I'm interested in purchasing the ${name} for $${price.toFixed(2)} from iZonehub Makerspace. Please send me the store catalogue.`;
-  const whatsappLink = `https://wa.me/263712491104?text=${encodeURIComponent(whatsappMessage)}`;
+  const { addToCart } = useCart();
+  
+  const handleAddToCart = () => {
+    const product: Product = {
+      id: parseInt(id),
+      name,
+      price,
+      description: '',
+      image_url: image,
+      category,
+      stock_quantity: 1,
+      is_available: inStock,
+      featured: false,
+      created_at: new Date().toISOString()
+    };
+    addToCart(product);
+  };
   return <div className={`card overflow-hidden hover:shadow-neon-sm transition-all duration-300 ${className}`}>
       <div className="relative h-48 overflow-hidden">
         <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
@@ -44,13 +61,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
               In Stock
             </span>}
         </div>
-        <div className="flex justify-between">
-          <Button href={`/store/${id}`} variant="outline" size="sm">
-            Details
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleAddToCart}
+            disabled={!inStock}
+            className={`w-full px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-primary to-secondary text-white hover:shadow-neon transition-all duration-300 flex items-center justify-center gap-2 ${!inStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <ShoppingCartIcon size={16} />
+            Add to Cart
+          </button>
+          <Button href={`/store/${id}`} variant="outline" size="sm" className="w-full">
+            View Details
           </Button>
-          <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className={`px-4 py-2 rounded-full text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors ${!inStock ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}>
-            Order via WhatsApp
-          </a>
         </div>
       </div>
     </div>;

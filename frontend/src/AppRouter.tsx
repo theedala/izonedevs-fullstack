@@ -10,6 +10,7 @@ import CommunitiesPage from './pages/CommunitiesPage';
 import CommunityDetailPage from './pages/CommunityDetailPage';
 import StorePage from './pages/StorePage';
 import ProductPage from './pages/ProductPage';
+import CartPage from './pages/CartPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ContactPage from './pages/ContactPage';
@@ -30,6 +31,7 @@ function AppRouter() {
             <Route path="/communities/:id" element={<CommunityDetailPage />} />
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<ProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/contact" element={<ContactPage />} />

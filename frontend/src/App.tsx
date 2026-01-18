@@ -15,16 +15,19 @@ import BlogPostPage from './pages/BlogPostPage';
 import GalleryPage from './pages/GalleryPage';
 import StorePage from './pages/StorePage';
 import ProductPage from './pages/ProductPage';
+import CartPage from './pages/CartPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import { CartProvider } from './context/CartContext';
 export function App() {
-  return <BrowserRouter  future={{ 
-    v7_startTransition: true,
-    v7_relativeSplatPath: true 
-  }}>
+  return <CartProvider>
+    <BrowserRouter  future={{ 
+      v7_startTransition: true,
+      v7_relativeSplatPath: true 
+    }}>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-dark text-white font-sans">
         <Header />
@@ -42,6 +45,7 @@ export function App() {
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<ProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -52,5 +56,6 @@ export function App() {
         <Footer />
         <BackToTop />
       </div>
-    </BrowserRouter>;
+    </BrowserRouter>
+  </CartProvider>;
 }

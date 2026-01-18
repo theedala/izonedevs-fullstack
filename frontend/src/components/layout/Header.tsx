@@ -1,10 +1,12 @@
 ﻿import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MenuIcon, XIcon } from 'lucide-react';
+import { MenuIcon, XIcon, ShoppingCartIcon } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { cartCount } = useCart();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -51,6 +53,18 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <Link
+              to="/cart"
+              className="relative p-2 text-white/80 hover:text-white transition-colors"
+              title="Shopping Cart"
+            >
+              <ShoppingCartIcon size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-primary to-secondary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
             <div className="ml-4">
               <Link to="/communities" className="px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:shadow-neon transition-all duration-300">
                 Join Us
@@ -58,8 +72,20 @@ const Header = () => {
             </div>
           </nav>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile cart and menu */}
+          <div className="md:hidden flex items-center gap-2">
+            <Link
+              to="/cart"
+              className="relative p-2 text-white/80 hover:text-white transition-colors"
+              title="Shopping Cart"
+            >
+              <ShoppingCartIcon size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-primary to-secondary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-dark-lighter transition-colors"
