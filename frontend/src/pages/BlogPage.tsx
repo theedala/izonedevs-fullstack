@@ -4,6 +4,8 @@ import SectionTitle from '../components/ui/SectionTitle';
 import { CalendarIcon, UserIcon, SearchIcon, TagIcon, LoaderIcon } from 'lucide-react';
 import { BlogService, BlogPost } from '../services';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
 const BlogPage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -117,7 +119,7 @@ const BlogPage = () => {
                 <div className="h-64 lg:h-auto overflow-hidden">
                   <img 
                     src={filteredPosts[0].image_url ? 
-                      (filteredPosts[0].image_url.startsWith('http') ? filteredPosts[0].image_url : `${window.location.origin}${filteredPosts[0].image_url}`) : 
+                      (filteredPosts[0].image_url.startsWith('http') ? filteredPosts[0].image_url : `${API_BASE_URL}${filteredPosts[0].image_url}`) : 
                       'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
                     } 
                     alt={filteredPosts[0].title} 
@@ -149,7 +151,7 @@ const BlogPage = () => {
                       <UserIcon size={20} />
                     </div>
                     <div>
-                      <p className="font-medium">Author #{filteredPosts[0].author_id}</p>
+                      <p className="font-medium">{filteredPosts[0].author || `Author #${filteredPosts[0].author_id}`}</p>
                       <div className="flex items-center text-sm text-white/60">
                         <CalendarIcon size={14} className="mr-1" />
                         <time dateTime={filteredPosts[0].created_at}>
@@ -179,7 +181,7 @@ const BlogPage = () => {
                   <div className="relative h-48 overflow-hidden">
                     <img 
                       src={post.image_url ? 
-                        (post.image_url.startsWith('http') ? post.image_url : `${window.location.origin}${post.image_url}`) : 
+                        (post.image_url.startsWith('http') ? post.image_url : `${API_BASE_URL}${post.image_url}`) : 
                         'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
                       } 
                       alt={post.title} 
@@ -213,7 +215,7 @@ const BlogPage = () => {
                         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-2">
                           <UserIcon size={16} />
                         </div>
-                        <span className="text-sm">Author #{post.author_id}</span>
+                        <span className="text-sm">{post.author || `Author #${post.author_id}`}</span>
                       </div>
                       <div className="flex items-center text-sm text-white/60">
                         <CalendarIcon size={14} className="mr-1" />

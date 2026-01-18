@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { CalendarIcon } from 'lucide-react';
 import { BlogService, BlogPost } from '../../services';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+
 const BlogPreview = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +54,7 @@ const BlogPreview = () => {
             <div key={post.id} className="bg-dark-lighter rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
               <img 
                 src={post.image_url ? 
-                  (post.image_url.startsWith('http') ? post.image_url : `${window.location.origin}${post.image_url}`) : 
+                  (post.image_url.startsWith('http') ? post.image_url : `${API_BASE_URL}${post.image_url}`) : 
                   'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
                 } 
                 alt={post.title} 
