@@ -157,7 +157,7 @@ class BlogPost(Base):
     slug = Column(String(255), unique=True, index=True, nullable=False)
     excerpt = Column(Text, nullable=True)
     content = Column(Text, nullable=False)
-    image_url = Column(String(500), nullable=True)
+    image_url = Column(Text, nullable=True)  # Changed to Text for base64 support
     author = Column(String(255), nullable=False)  # Explicit author name field
     status = Column(String(50), default="draft")  # draft, published, archived
     featured = Column(Boolean, default=False)
