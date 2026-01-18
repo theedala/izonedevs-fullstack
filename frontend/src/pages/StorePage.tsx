@@ -95,8 +95,7 @@ const StorePage = () => {
         {/* WhatsApp Store Notice */}
         <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4 mb-8 text-center">
           <p className="text-white">
-            To purchase any item, click the "Order via WhatsApp" button on the
-            product. Our team will assist you with payment and delivery options.
+            Add items to your cart and checkout multiple products at once via WhatsApp, or click "View Details" to order individual items directly. Our team will assist you with payment and delivery options.
           </p>
         </div>
         
