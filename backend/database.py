@@ -51,14 +51,14 @@ class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    full_name = Column(String, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    avatar_url = Column(String, nullable=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    username = Column(String(100), unique=True, index=True, nullable=False)
+    full_name = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    avatar_url = Column(String(500), nullable=True)
     bio = Column(Text, nullable=True)
     skills = Column(Text, nullable=True)  # JSON string
-    role = Column(String, default="admin")  # admin, moderator, member
+    role = Column(String(50), default="admin")  # admin, moderator, member
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -77,10 +77,10 @@ class Community(Base):
     __tablename__ = "communities"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
-    image_url = Column(String, nullable=True)
-    category = Column(String, nullable=False)  # tech, design, maker, etc.
+    image_url = Column(String(500), nullable=True)
+    category = Column(String(100), nullable=False)  # tech, design, maker, etc.
     member_count = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -95,17 +95,17 @@ class Project(Base):
     __tablename__ = "projects"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
+    title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
     content = Column(Text, nullable=True)  # Detailed project content
-    image_url = Column(String, nullable=True)
+    image_url = Column(String(500), nullable=True)
     gallery_images = Column(Text, nullable=True)  # JSON array of image URLs
-    github_url = Column(String, nullable=True)
-    demo_url = Column(String, nullable=True)
+    github_url = Column(String(500), nullable=True)
+    demo_url = Column(String(500), nullable=True)
     technologies = Column(Text, nullable=True)  # JSON array of technologies
-    category = Column(String, nullable=True)  # web, mobile, iot, ai, etc.
-    status = Column(String, default="in_progress")  # planning, in_progress, completed, on_hold
-    difficulty = Column(String, nullable=True)  # beginner, intermediate, advanced
+    category = Column(String(100), nullable=True)  # web, mobile, iot, ai, etc.
+    status = Column(String(50), default="in_progress")  # planning, in_progress, completed, on_hold
+    difficulty = Column(String(50), nullable=True)  # beginner, intermediate, advanced
     featured = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -125,18 +125,18 @@ class Event(Base):
     __tablename__ = "events"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
+    title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
     content = Column(Text, nullable=True)
-    image_url = Column(String, nullable=True)
+    image_url = Column(String(500), nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
-    location = Column(String, nullable=True)
+    location = Column(String(255), nullable=True)
     is_online = Column(Boolean, default=False)
-    meeting_url = Column(String, nullable=True)
+    meeting_url = Column(String(500), nullable=True)
     max_attendees = Column(Integer, nullable=True)
     registration_fee = Column(Float, default=0.0)
-    status = Column(String, default="upcoming")  # upcoming, ongoing, completed, cancelled
+    status = Column(String(50), default="upcoming")  # upcoming, ongoing, completed, cancelled
     featured = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
@@ -153,12 +153,12 @@ class BlogPost(Base):
     __tablename__ = "blog_posts"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    slug = Column(String, unique=True, index=True, nullable=False)
+    title = Column(String(255), nullable=False)
+    slug = Column(String(255), unique=True, index=True, nullable=False)
     excerpt = Column(Text, nullable=True)
     content = Column(Text, nullable=False)
-    image_url = Column(String, nullable=True)
-    status = Column(String, default="draft")  # draft, published, archived
+    image_url = Column(String(500), nullable=True)
+    status = Column(String(50), default="draft")  # draft, published, archived
     featured = Column(Boolean, default=False)
     views = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -177,12 +177,12 @@ class Product(Base):
     __tablename__ = "products"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
     price = Column(Float, nullable=False)
-    image_url = Column(String, nullable=True)
+    image_url = Column(String(500), nullable=True)
     gallery_images = Column(Text, nullable=True)  # JSON array
-    category = Column(String, nullable=False)
+    category = Column(String(100), nullable=False)
     stock_quantity = Column(Integer, default=0)
     is_available = Column(Boolean, default=True)
     featured = Column(Boolean, default=False)
@@ -196,9 +196,9 @@ class Order(Base):
     __tablename__ = "orders"
     
     id = Column(Integer, primary_key=True, index=True)
-    order_number = Column(String, unique=True, nullable=False)
+    order_number = Column(String(100), unique=True, nullable=False)
     total_amount = Column(Float, nullable=False)
-    status = Column(String, default="pending")  # pending, confirmed, shipped, delivered, cancelled
+    status = Column(String(50), default="pending")  # pending, confirmed, shipped, delivered, cancelled
     shipping_address = Column(Text, nullable=False)
     contact_info = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -231,8 +231,8 @@ class Tag(Base):
     __tablename__ = "tags"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, nullable=False)
-    color = Column(String, nullable=True)
+    name = Column(String(100), unique=True, nullable=False)
+    color = Column(String(20), nullable=True)
     
     # Relationships
     projects = relationship("Project", secondary=project_tags, back_populates="tags")
@@ -260,10 +260,10 @@ class GalleryItem(Base):
     __tablename__ = "gallery_items"
     
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
+    title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    image_url = Column(String, nullable=False)
-    category = Column(String, nullable=True)
+    image_url = Column(String(500), nullable=False)
+    category = Column(String(100), nullable=True)
     featured = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -289,16 +289,16 @@ class EventRegistration(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     event_id = Column(Integer, ForeignKey('events.id'), nullable=False)
-    name = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    phone = Column(String, nullable=True)
-    organization = Column(String, nullable=True)
-    experience_level = Column(String, nullable=True)  # beginner, intermediate, advanced
+    name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    phone = Column(String(20), nullable=True)
+    organization = Column(String(255), nullable=True)
+    experience_level = Column(String(50), nullable=True)  # beginner, intermediate, advanced
     interests = Column(Text, nullable=True)
-    dietary_restrictions = Column(String, nullable=True)
+    dietary_restrictions = Column(String(255), nullable=True)
     special_requirements = Column(Text, nullable=True)
-    qr_code_path = Column(String, nullable=True)  # Path to generated QR code
-    registration_status = Column(String, default="confirmed")  # confirmed, cancelled, attended
+    qr_code_path = Column(String(500), nullable=True)  # Path to generated QR code
+    registration_status = Column(String(50), default="confirmed")  # confirmed, cancelled, attended
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationship to event
@@ -309,11 +309,11 @@ class Partner(Base):
     __tablename__ = "partners"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    logo_url = Column(String, nullable=True)
-    website_url = Column(String, nullable=True)
-    category = Column(String, nullable=True)  # tech, education, government, ngo, etc.
+    logo_url = Column(String(500), nullable=True)
+    website_url = Column(String(500), nullable=True)
+    category = Column(String(100), nullable=True)  # tech, education, government, ngo, etc.
     is_active = Column(Boolean, default=True)
     featured = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -323,11 +323,11 @@ class TeamMember(Base):
     __tablename__ = "team_members"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    role = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
+    role = Column(String(100), nullable=False)
     bio = Column(Text, nullable=True)
-    image_url = Column(String, nullable=True)
-    email = Column(String, nullable=True)
+    image_url = Column(String(500), nullable=True)
+    email = Column(String(255), nullable=True)
     github_url = Column(String, nullable=True)
     linkedin_url = Column(String, nullable=True)
     twitter_url = Column(String, nullable=True)
