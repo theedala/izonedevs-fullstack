@@ -1,11 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ShoppingCartIcon, TrashIcon, PlusIcon, MinusIcon, ArrowLeftIcon } from 'lucide-react';
 import SectionTitle from '../components/ui/SectionTitle';
+import { StoreService } from '../services';
 
 const CartPage = () => {
-  const { cartItems, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, clearCart, cartTotal, validateCart } = useCart();
+  const [validating, setValidating] = useState(true);
+
+  useEffect(() => {
+    const validateCartItems = async () => {
+      try {
+        const response = await StoreService.getProducts({ page: 1, size: 100 });
+        const availableProductIds = response.items.map(p => p.id);
+        validateCart(availableProductIds);
+      } catch (error) {
+        console.error('Error validating cart:', error);
+      } finally {
+        setValidating(false);
+      }
+    };
+    
+    validateCartItems();
+  }, []);
+
+  if (validating) {
+    return (
+      <div className="min-h-screen bg-dark py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-white/70">Validating cart...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getImageUrl = (url?: string) => {
     if (!url) return 'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';

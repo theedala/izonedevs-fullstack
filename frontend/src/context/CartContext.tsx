@@ -11,6 +11,7 @@ interface CartContextType {
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
+  validateCart: (availableProductIds: number[]) => void;
   cartCount: number;
   cartTotal: number;
 }
@@ -61,6 +62,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCartItems([]);
   };
 
+  const validateCart = (availableProductIds: number[]) => {
+    setCartItems(prev => {
+      const validItems = prev.filter(item => availableProductIds.includes(item.id));
+      // Only update if items were removed
+      if (validItems.length !== prev.length) {
+        console.log(`Removed ${prev.length - validItems.length} invalid items from cart`);
+      }
+      return validItems;
+    });
+  };
+
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -72,6 +84,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         removeFromCart,
         updateQuantity,
         clearCart,
+        validateCart,
         cartCount,
         cartTotal,
       }}

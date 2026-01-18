@@ -17,7 +17,7 @@ const StorePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { cartItems, cartCount, cartTotal } = useCart();
+  const { cartItems, cartCount, cartTotal, validateCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -35,6 +35,10 @@ const StorePage = () => {
       });
       console.log('Products response:', response);
       setProducts(response.items);
+      
+      // Validate cart items against fetched products
+      const availableProductIds = response.items.map(p => p.id);
+      validateCart(availableProductIds);
     } catch (err) {
       console.error('Error fetching products:', err);
       setError('Failed to load products. Please check if the backend server is running.');
