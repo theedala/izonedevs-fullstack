@@ -158,6 +158,7 @@ class BlogPost(Base):
     excerpt = Column(Text, nullable=True)
     content = Column(Text, nullable=False)
     image_url = Column(String(500), nullable=True)
+    author = Column(String(255), nullable=False)  # Explicit author name field
     status = Column(String(50), default="draft")  # draft, published, archived
     featured = Column(Boolean, default=False)
     views = Column(Integer, default=0)

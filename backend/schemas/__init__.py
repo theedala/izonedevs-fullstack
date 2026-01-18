@@ -220,6 +220,7 @@ class BlogPostBase(BaseModel):
     excerpt: Optional[str] = None
     content: str
     image_url: Optional[str] = None
+    author: str
 
 
 class BlogPostCreate(BlogPostBase):
@@ -231,6 +232,7 @@ class BlogPostUpdate(BaseModel):
     excerpt: Optional[str] = None
     content: Optional[str] = None
     image_url: Optional[str] = None
+    author: Optional[str] = None
     status: Optional[str] = None
 
 

@@ -34,7 +34,13 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173", 
+        "https://izonedevs.co.zw",
+        "https://www.izonedevs.co.zw",
+        "https://coral-app-ycosl.ondigitalocean.app"
+    ],  # Specific origins instead of wildcard
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
