@@ -85,6 +85,7 @@ export interface BlogPost {
   excerpt?: string;
   content: string;
   image_url?: string;
+  author: string;
   status: string;
   featured: boolean;
   views: number;

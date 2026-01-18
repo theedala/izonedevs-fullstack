@@ -13,6 +13,7 @@ export interface BlogPostCreateData {
   excerpt?: string;
   content: string;
   image_url?: string;
+  author: string;
   status?: string;
 }
 

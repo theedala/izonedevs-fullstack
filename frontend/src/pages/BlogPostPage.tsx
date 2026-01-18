@@ -81,7 +81,9 @@ const BlogPostPage = () => {
   // Get proper image URL (handle both absolute and relative URLs)
   const getImageUrl = (imageUrl?: string) => {
     if (!imageUrl) return 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80';
-    return imageUrl.startsWith('http') ? imageUrl : `${window.location.origin}${imageUrl}`;
+    if (imageUrl.startsWith('http')) return imageUrl;
+    // For backend uploads, use the backend URL
+    return `${API_BASE_URL}${imageUrl}`;
   };
 
   return (
@@ -215,7 +217,7 @@ const BlogPostPage = () => {
                 >
                   {relatedPost.image_url && (
                     <img 
-                      src={relatedPost.image_url.startsWith('http') ? relatedPost.image_url : `${API_BASE_URL}${relatedPost.image_url}`}
+                      src={getImageUrl(relatedPost.image_url)}
                       alt={relatedPost.title}
                       className="w-full h-48 object-cover"
                     />
