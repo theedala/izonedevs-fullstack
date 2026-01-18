@@ -51,9 +51,15 @@ const BlogPreview = () => {
           {posts.map((post) => (
             <div key={post.id} className="bg-dark-lighter rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
               <img 
-                src={post.image_url || 'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'} 
+                src={post.image_url ? 
+                  (post.image_url.startsWith('http') ? post.image_url : `${window.location.origin}${post.image_url}`) : 
+                  'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                } 
                 alt={post.title} 
-                className="w-full h-48 object-cover" 
+                className="w-full h-48 object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                }}
               />
               <div className="p-6">
                 <div className="flex items-center text-sm text-white/60 mb-3">
@@ -72,7 +78,7 @@ const BlogPreview = () => {
                 <p className="text-white/70 mb-4 line-clamp-3">
                   {post.excerpt}
                 </p>
-                <Link to={`/blog/${post.id}`} className="inline-flex items-center text-orange-400 hover:text-orange-300 font-medium transition-colors">
+                <Link to={`/blog/${post.slug}`} className="inline-flex items-center text-orange-400 hover:text-orange-300 font-medium transition-colors">
                   Read More
                   <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

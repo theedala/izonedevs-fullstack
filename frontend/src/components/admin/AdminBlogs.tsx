@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { BlogService, BlogPost, BlogPostCreateData } from '../../services';
+import { BlogService, BlogPost, BlogPostCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, EyeIcon, FileTextIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, EyeIcon, FileTextIcon, UploadIcon } from 'lucide-react';
 
 const AdminBlogs = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<BlogPostCreateData>({
     title: '',
     excerpt: '',
@@ -39,13 +41,31 @@ const AdminBlogs = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
     try {
-      console.log('Submitting blog post data:', formData);
+      let imageUrl = formData.image_url;
+      
+      // Upload file if selected
+      if (selectedFile) {
+        const response = await UploadService.uploadImage(selectedFile, 'blog');
+        if (response.success && response.data?.url) {
+          imageUrl = response.data.url;
+        } else {
+          throw new Error('Failed to upload image');
+        }
+      }
+      
+      const postData = {
+        ...formData,
+        image_url: imageUrl
+      };
+      
+      console.log('Submitting blog post data:', postData);
       if (editingPost) {
-        const result = await BlogService.updateBlogPost(editingPost.id, formData);
+        const result = await BlogService.updateBlogPost(editingPost.id, postData);
         console.log('Blog post updated successfully:', result);
       } else {
-        const result = await BlogService.createBlogPost(formData);
+        const result = await BlogService.createBlogPost(postData);
         console.log('Blog post created successfully:', result);
       }
       setShowForm(false);
@@ -68,6 +88,8 @@ const AdminBlogs = () => {
       } else {
         alert('Error saving blog post. Please check the console for details.');
       }
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -102,6 +124,7 @@ const AdminBlogs = () => {
       image_url: '',
       status: 'draft'
     });
+    setSelectedFile(null);
   };
 
   if (loading) {
@@ -166,14 +189,37 @@ const AdminBlogs = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Featured Image URL</label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                  placeholder="https://example.com/image.jpg"
-                />
+                <label className="block text-sm font-medium mb-2">Featured Image</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Upload Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      className="block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary/90"
+                    />
+                    {selectedFile && (
+                      <p className="text-sm text-white/60 mt-2">
+                        Selected: {selectedFile.name} ({UploadService.formatFileSize(selectedFile.size)})
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="text-center text-white/50">OR</div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Image URL</label>
+                    <input
+                      type="url"
+                      value={formData.image_url}
+                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                      className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                      placeholder="https://example.com/image.jpg"
+                      disabled={!!selectedFile}
+                    />
+                  </div>
+                </div>
               </div>
               
               <div>
@@ -193,9 +239,17 @@ const AdminBlogs = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                disabled={uploading}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 flex items-center"
               >
-                {editingPost ? 'Update Post' : 'Create Post'}
+                {uploading ? (
+                  <>
+                    <UploadIcon size={16} className="mr-2 animate-spin" />
+                    {selectedFile ? 'Uploading...' : 'Saving...'}
+                  </>
+                ) : (
+                  editingPost ? 'Update Post' : 'Create Post'
+                )}
               </button>
               <button 
                 type="button" 

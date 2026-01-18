@@ -112,13 +112,19 @@ const BlogPage = () => {
         {/* Featured post */}
         {filteredPosts.length > 0 && (
           <div className="mb-12">
-            <Link to={`/blog/${filteredPosts[0].id}`} className="block">
+            <Link to={`/blog/${filteredPosts[0].slug}`} className="block">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-dark-lighter rounded-lg overflow-hidden border border-neutral/20 hover:border-primary/40 transition-all duration-300">
                 <div className="h-64 lg:h-auto overflow-hidden">
                   <img 
-                    src={filteredPosts[0].image_url || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'} 
+                    src={filteredPosts[0].image_url ? 
+                      (filteredPosts[0].image_url.startsWith('http') ? filteredPosts[0].image_url : `${window.location.origin}${filteredPosts[0].image_url}`) : 
+                      'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                    } 
                     alt={filteredPosts[0].title} 
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                    }}
                   />
                 </div>
                 <div className="p-8 flex flex-col">
@@ -169,12 +175,18 @@ const BlogPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.slice(1).map(post => (
               <article key={post.id} className="card hover:transform hover:-translate-y-1 hover:shadow-neon-sm">
-                <Link to={`/blog/${post.id}`} className="block">
+                <Link to={`/blog/${post.slug}`} className="block">
                   <div className="relative h-48 overflow-hidden">
                     <img 
-                      src={post.image_url || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'} 
+                      src={post.image_url ? 
+                        (post.image_url.startsWith('http') ? post.image_url : `${window.location.origin}${post.image_url}`) : 
+                        'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                      } 
                       alt={post.title} 
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                      }}
                     />
                     <div className="absolute top-4 right-4 bg-dark-lighter/80 backdrop-blur-sm text-white/80 text-xs px-3 py-1 rounded-full">
                       {post.views} views

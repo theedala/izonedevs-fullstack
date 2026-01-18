@@ -26,7 +26,14 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredItems.map(item => <div key={item.id} className="overflow-hidden rounded-lg cursor-pointer group relative" onClick={() => setSelectedItem(item)}>
-            <img src={item.image} alt={item.title} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" />
+            <img 
+              src={item.image.startsWith('http') ? item.image : `${window.location.origin}${item.image}`} 
+              alt={item.title} 
+              className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+              }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
               <h3 className="text-lg font-bold">{item.title}</h3>
               <p className="text-white/70 text-sm">{item.date}</p>
@@ -41,7 +48,14 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <img src={selectedItem.image} alt={selectedItem.title} className="max-w-full max-h-[80vh] object-contain" />
+            <img 
+              src={selectedItem.image.startsWith('http') ? selectedItem.image : `${window.location.origin}${selectedItem.image}`} 
+              alt={selectedItem.title} 
+              className="max-w-full max-h-[80vh] object-contain" 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x600?text=Image+Not+Found';
+              }}
+            />
             <div className="mt-4">
               <h3 className="text-xl font-bold">{selectedItem.title}</h3>
               <p className="text-white/70">

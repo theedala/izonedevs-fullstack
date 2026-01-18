@@ -31,7 +31,7 @@ function AppRouter() {
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<ProductPage />} />
             <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
           </Routes>

@@ -58,22 +58,21 @@ const AdminGallery = () => {
     setUploading(true);
     
     try {
-      let imageUrl = formData.image_url;
-      
-      // Upload file if selected
       if (selectedFile) {
-        const uploadedUrl = await handleFileUpload(selectedFile);
-        if (!uploadedUrl) {
-          setUploading(false);
-          return;
-        }
-        imageUrl = uploadedUrl;
+        // Use proper gallery upload service
+        await GalleryService.uploadImage(
+          selectedFile,
+          formData.title || selectedFile.name,
+          formData.description,
+          formData.category || 'general'
+        );
+      } else {
+        // Create gallery item with URL
+        await GalleryService.createGalleryItem({
+          ...formData,
+          image_url: formData.image_url
+        });
       }
-
-      await GalleryService.createGalleryItem({
-        ...formData,
-        image_url: imageUrl
-      });
       
       setShowForm(false);
       resetForm();
@@ -238,7 +237,7 @@ const AdminGallery = () => {
           <div key={item.id} className="bg-dark border border-neutral/30 rounded-lg overflow-hidden group">
             <div className="aspect-video relative overflow-hidden">
               <img 
-                src={item.image_url} 
+                src={item.image_url.startsWith('http') ? item.image_url : `${window.location.origin}${item.image_url}`} 
                 alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {

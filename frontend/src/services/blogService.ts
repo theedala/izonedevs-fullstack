@@ -38,7 +38,11 @@ export class BlogService {
   }
 
   static async getBlogPostBySlug(slug: string): Promise<BlogPost> {
-    return apiClient.get<BlogPost>(`/blog/slug/${slug}`);
+    console.log('BlogService: Making request to get blog post by slug:', slug);
+    console.log('BlogService: Request URL:', `/blog/slug/${slug}`);
+    const response = await apiClient.get<BlogPost>(`/blog/slug/${slug}`);
+    console.log('BlogService: Response for getBlogPostBySlug:', response);
+    return response;
   }
 
   static async createBlogPost(data: BlogPostCreateData): Promise<BlogPost> {
