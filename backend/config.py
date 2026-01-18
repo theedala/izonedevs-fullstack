@@ -3,7 +3,7 @@ from typing import List
 
 
 class Settings(BaseSettings):
-    # Database
+    # Database - will use MySQL in production, SQLite locally
     database_url: str = "sqlite:///./izonedevs.db"
     
     # Security

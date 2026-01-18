@@ -4,8 +4,23 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
 from config import settings
 
-# Create engine
-engine = create_engine(settings.database_url)
+# Create engine with appropriate parameters for different database types
+if settings.database_url.startswith('mysql'):
+    # MySQL configuration
+    engine = create_engine(
+        settings.database_url,
+        pool_pre_ping=True,
+        pool_recycle=300,
+        echo=False
+    )
+else:
+    # SQLite configuration (for local development)
+    engine = create_engine(
+        settings.database_url,
+        connect_args={"check_same_thread": False},
+        echo=False
+    )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
