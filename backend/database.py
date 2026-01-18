@@ -67,7 +67,7 @@ class User(Base):
     # Relationships
     communities = relationship("Community", secondary=user_communities, back_populates="members")
     projects = relationship("Project", back_populates="creator")
-    blog_posts = relationship("BlogPost", back_populates="author")
+    blog_posts = relationship("BlogPost", back_populates="author_user")
     events_attending = relationship("Event", secondary=event_attendees, back_populates="attendees")
     comments = relationship("Comment", back_populates="author")
     orders = relationship("Order", back_populates="user")
@@ -170,7 +170,7 @@ class BlogPost(Base):
     author_id = Column(Integer, ForeignKey("users.id"))
     
     # Relationships
-    author = relationship("User", back_populates="blog_posts")
+    author_user = relationship("User", back_populates="blog_posts")
     comments = relationship("Comment", back_populates="blog_post")
 
 

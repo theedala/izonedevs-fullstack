@@ -106,7 +106,13 @@ async def create_blog_post(
         counter += 1
     
     db_post = BlogPost(
-        **post_data.dict(),
+        title=post_data.title,
+        content=post_data.content,
+        excerpt=post_data.excerpt,
+        image_url=post_data.image_url,
+        author=post_data.author,
+        status=post_data.status,
+        featured=post_data.featured,
         slug=slug,
         author_id=current_user.id
     )
