@@ -60,10 +60,10 @@ async def get_blog_posts(
     )
 
 
-@router.get("/{post_id}", response_model=BlogPostSchema)
-async def get_blog_post(post_id: int, db: Session = Depends(get_db)):
-    """Get blog post by ID"""
-    post = db.query(BlogPost).filter(BlogPost.id == post_id).first()
+@router.get("/slug/{slug}", response_model=BlogPostSchema)
+async def get_blog_post_by_slug(slug: str, db: Session = Depends(get_db)):
+    """Get blog post by slug"""
+    post = db.query(BlogPost).filter(BlogPost.slug == slug).first()
     if not post:
         raise HTTPException(status_code=404, detail="Blog post not found")
     
@@ -74,10 +74,10 @@ async def get_blog_post(post_id: int, db: Session = Depends(get_db)):
     return post
 
 
-@router.get("/slug/{slug}", response_model=BlogPostSchema)
-async def get_blog_post_by_slug(slug: str, db: Session = Depends(get_db)):
-    """Get blog post by slug"""
-    post = db.query(BlogPost).filter(BlogPost.slug == slug).first()
+@router.get("/{post_id}", response_model=BlogPostSchema)
+async def get_blog_post(post_id: int, db: Session = Depends(get_db)):
+    """Get blog post by ID"""
+    post = db.query(BlogPost).filter(BlogPost.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Blog post not found")
     
