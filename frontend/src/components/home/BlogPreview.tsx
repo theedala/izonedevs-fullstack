@@ -8,7 +8,9 @@ const BACKEND_URL = API_BASE_URL.replace('/api', '');
 
 const getImageUrl = (imageUrl?: string) => {
   if (!imageUrl) return 'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-  if (imageUrl.startsWith('http')) return imageUrl;
+  // If it's a data URL or external URL, use it directly
+  if (imageUrl.startsWith('data:') || imageUrl.startsWith('http')) return imageUrl;
+  // For backend uploads (legacy), use the backend URL without /api
   return `${BACKEND_URL}${imageUrl}`;
 };
 

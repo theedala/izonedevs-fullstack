@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 import os
 import uuid
+import base64
 from PIL import Image
+from io import BytesIO
 from typing import Optional
 
 from database import get_db, User
@@ -54,45 +56,52 @@ async def upload_image(
     resize: bool = Form(True),
     current_user: User = Depends(get_current_active_user)
 ):
-    """Upload an image file"""
+    """Upload an image file and return as base64 data URL"""
     validate_file_size(file)
     file_extension = validate_file_type(file.filename, ALLOWED_IMAGE_EXTENSIONS)
     
-    # Generate unique filename
-    filename = f"{uuid.uuid4()}{file_extension}"
-    
-    # Create category directory
-    upload_path = os.path.join(settings.upload_dir, "images", category)
-    os.makedirs(upload_path, exist_ok=True)
-    
-    file_path = os.path.join(upload_path, filename)
-    
-    # Save file
     try:
-        with open(file_path, "wb") as buffer:
-            content = await file.read()
-            buffer.write(content)
+        # Read file content
+        content = await file.read()
         
         # Resize image if requested
         if resize:
-            resize_image(file_path)
+            img = Image.open(BytesIO(content))
+            if img.size[0] > 1200 or img.size[1] > 1200:
+                img.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+                buffer = BytesIO()
+                # Convert to RGB if image has alpha channel
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    img = img.convert('RGB')
+                img.save(buffer, format='JPEG', optimize=True, quality=85)
+                content = buffer.getvalue()
         
-        image_url = f"/uploads/images/{category}/{filename}"
+        # Convert to base64
+        base64_image = base64.b64encode(content).decode('utf-8')
+        
+        # Determine MIME type
+        mime_type = "image/jpeg"
+        if file_extension in [".png"]:
+            mime_type = "image/png"
+        elif file_extension in [".gif"]:
+            mime_type = "image/gif"
+        elif file_extension in [".webp"]:
+            mime_type = "image/webp"
+        
+        # Create data URL
+        image_url = f"data:{mime_type};base64,{base64_image}"
         
         return APIResponse(
             success=True,
             message="Image uploaded successfully",
             data={
-                "filename": filename,
+                "filename": file.filename,
                 "url": image_url,
                 "category": category
             }
         )
     
     except Exception as e:
-        # Clean up file if something went wrong
-        if os.path.exists(file_path):
-            os.remove(file_path)
         raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
 
 
