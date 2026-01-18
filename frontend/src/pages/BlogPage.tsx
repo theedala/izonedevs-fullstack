@@ -5,6 +5,13 @@ import { CalendarIcon, UserIcon, SearchIcon, TagIcon, LoaderIcon } from 'lucide-
 import { BlogService, BlogPost } from '../services';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const BACKEND_URL = API_BASE_URL.replace('/api', '');
+
+const getImageUrl = (imageUrl?: string) => {
+  if (!imageUrl) return 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+  if (imageUrl.startsWith('http')) return imageUrl;
+  return `${BACKEND_URL}${imageUrl}`;
+};
 
 const BlogPage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -118,10 +125,7 @@ const BlogPage = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-dark-lighter rounded-lg overflow-hidden border border-neutral/20 hover:border-primary/40 transition-all duration-300">
                 <div className="h-64 lg:h-auto overflow-hidden">
                   <img 
-                    src={filteredPosts[0].image_url ? 
-                      (filteredPosts[0].image_url.startsWith('http') ? filteredPosts[0].image_url : `${API_BASE_URL}${filteredPosts[0].image_url}`) : 
-                      'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-                    } 
+                    src={getImageUrl(filteredPosts[0].image_url)} 
                     alt={filteredPosts[0].title} 
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     onError={(e) => {
@@ -180,10 +184,7 @@ const BlogPage = () => {
                 <Link to={`/blog/${post.slug}`} className="block">
                   <div className="relative h-48 overflow-hidden">
                     <img 
-                      src={post.image_url ? 
-                        (post.image_url.startsWith('http') ? post.image_url : `${API_BASE_URL}${post.image_url}`) : 
-                        'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-                      } 
+                      src={getImageUrl(post.image_url)} 
                       alt={post.title} 
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                       onError={(e) => {

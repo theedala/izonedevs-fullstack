@@ -4,6 +4,7 @@ import { CalendarIcon, UserIcon, ArrowLeftIcon, ShareIcon, EyeIcon, LoaderIcon }
 import { BlogService, BlogPost } from '../services';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const BACKEND_URL = API_BASE_URL.replace('/api', '');
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -82,8 +83,8 @@ const BlogPostPage = () => {
   const getImageUrl = (imageUrl?: string) => {
     if (!imageUrl) return 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80';
     if (imageUrl.startsWith('http')) return imageUrl;
-    // For backend uploads, use the backend URL
-    return `${API_BASE_URL}${imageUrl}`;
+    // For backend uploads, use the backend URL without /api
+    return `${BACKEND_URL}${imageUrl}`;
   };
 
   return (
