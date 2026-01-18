@@ -7,7 +7,7 @@ import os
 
 from config import settings
 from database import engine, create_tables
-from routers import auth, users, communities, projects, events, blog, store, gallery, contact, upload, event_registrations, partners, team_members
+from routers import auth, users, communities, projects, events, blog, store, gallery, contact, upload, event_registrations, partners, team_members, admin_dashboard
 
 # Create upload directory if it doesn't exist (must happen before app initialization)
 if not os.path.exists(settings.upload_dir):
@@ -63,6 +63,7 @@ app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
 app.include_router(partners.router, prefix="/api/partners", tags=["Partners"])
 app.include_router(team_members.router, prefix="/api/team-members", tags=["Team Members"])
+app.include_router(admin_dashboard.router, prefix="/api/admin", tags=["Admin"])
 
 
 # Health check endpoint
