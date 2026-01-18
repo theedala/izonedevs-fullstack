@@ -38,7 +38,7 @@ export function App() {
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
             <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<ProductPage />} />
