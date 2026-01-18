@@ -15,6 +15,7 @@ const AdminBlogs = () => {
     excerpt: '',
     content: '',
     image_url: '',
+    author: '',
     status: 'draft'
   });
 
@@ -45,19 +46,26 @@ const AdminBlogs = () => {
     try {
       let imageUrl = formData.image_url;
       
-      // Upload file if selected
+      // Upload file if selected (and clear any existing URL to prevent base64 upload)
       if (selectedFile) {
+        console.log('Uploading file:', selectedFile.name);
         const response = await UploadService.uploadImage(selectedFile, 'blog');
+        console.log('Upload response:', response);
         if (response.success && response.data?.url) {
           imageUrl = response.data.url;
+          console.log('Image uploaded successfully:', imageUrl);
         } else {
           throw new Error('Failed to upload image');
         }
       }
       
       const postData = {
-        ...formData,
-        image_url: imageUrl
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        author: formData.author,
+        image_url: imageUrl,
+        status: formData.status
       };
       
       console.log('Submitting blog post data:', postData);
@@ -99,6 +107,7 @@ const AdminBlogs = () => {
       title: post.title,
       excerpt: post.excerpt || '',
       content: post.content,
+      author: post.author || '',
       image_url: post.image_url || '',
       status: post.status
     });
@@ -121,6 +130,7 @@ const AdminBlogs = () => {
       title: '',
       excerpt: '',
       content: '',
+      author: '',
       image_url: '',
       status: 'draft'
     });
@@ -161,6 +171,18 @@ const AdminBlogs = () => {
                 className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 required
                 placeholder="Your blog post title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Author</label>
+              <input
+                type="text"
+                value={formData.author}
+                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                required
+                placeholder="Author name"
               />
             </div>
 
