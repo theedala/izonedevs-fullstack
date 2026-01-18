@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { TeamMembersService, TeamMember, TeamMemberCreateData } from '../../services';
+import { TeamMembersService, TeamMember, TeamMemberCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, UserIcon, GithubIcon, LinkedinIcon, TwitterIcon, MailIcon, EyeIcon, EyeOffIcon, ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, UserIcon, GithubIcon, LinkedinIcon, TwitterIcon, MailIcon, EyeIcon, EyeOffIcon, ArrowUpIcon, ArrowDownIcon, UploadIcon } from 'lucide-react';
 
 const AdminTeamMembers = () => {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<TeamMemberCreateData>({
     name: '',
     role: '',
@@ -38,18 +40,38 @@ const AdminTeamMembers = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
+    
     try {
+      let imageUrl = formData.image_url;
+      
+      // Upload image file if selected
+      if (selectedFile) {
+        const uploadResponse = await UploadService.uploadImage(selectedFile, 'team');
+        imageUrl = uploadResponse.data.url;
+        console.log('Image uploaded successfully:', imageUrl);
+      }
+      
+      const dataToSubmit = {
+        ...formData,
+        image_url: imageUrl
+      };
+      
       if (editingMember) {
-        await TeamMembersService.updateTeamMember(editingMember.id, formData);
+        await TeamMembersService.updateTeamMember(editingMember.id, dataToSubmit);
       } else {
-        await TeamMembersService.createTeamMember(formData);
+        await TeamMembersService.createTeamMember(dataToSubmit);
       }
       setShowForm(false);
       setEditingMember(null);
+      setSelectedFile(null);
       resetForm();
       fetchMembers();
     } catch (error) {
       console.error('Error saving team member:', error);
+      alert('Failed to save team member');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -115,6 +137,7 @@ const AdminTeamMembers = () => {
   const handleCancel = () => {
     setShowForm(false);
     setEditingMember(null);
+    setSelectedFile(null);
     resetForm();
   };
 
@@ -188,9 +211,45 @@ const AdminTeamMembers = () => {
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                   className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/photo.jpg"
+                  disabled={!!selectedFile}
                 />
+                <p className="text-xs text-white/50 mt-1">Or upload a file below</p>
               </div>
               
+              <div>
+                <label className="block text-sm font-medium mb-2">Upload Profile Image</label>
+                <div className="flex items-center gap-2">
+                  <label className="flex-1 bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
+                    <UploadIcon size={16} className="mr-2" />
+                    <span className="text-sm">{selectedFile ? selectedFile.name : 'Choose file...'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setSelectedFile(file);
+                          setFormData({ ...formData, image_url: '' });
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFile(null)}
+                      className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-white/50 mt-1">JPG, PNG, GIF (max 10MB)</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Email</label>
                 <input
@@ -252,14 +311,16 @@ const AdminTeamMembers = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                disabled={uploading}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {editingMember ? 'Update Member' : 'Add Member'}
+                {uploading ? 'Uploading...' : (editingMember ? 'Update Member' : 'Add Member')}
               </button>
               <button 
                 type="button" 
                 onClick={handleCancel}
-                className="px-6 py-2 bg-neutral text-white rounded-lg hover:bg-neutral/80 transition-all duration-300"
+                disabled={uploading}
+                className="px-6 py-2 bg-neutral text-white rounded-lg hover:bg-neutral/80 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
