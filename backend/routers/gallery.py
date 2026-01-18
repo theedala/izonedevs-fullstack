@@ -79,45 +79,64 @@ async def upload_gallery_image(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    """Upload a new gallery image (admin only)"""
+    """Upload a new gallery image (admin only) - stores as base64"""
+    import base64
+    from PIL import Image
+    from io import BytesIO
+    
     # Validate file type
     if not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="File must be an image")
     
-    # Generate unique filename
-    file_extension = os.path.splitext(file.filename)[1]
-    filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = os.path.join(settings.upload_dir, "gallery", filename)
-    
-    # Create directory if it doesn't exist
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    
-    # Save file
-    with open(file_path, "wb") as buffer:
+    try:
+        # Read file content
         content = await file.read()
-        buffer.write(content)
-    
-    # Create gallery item
-    image_url = f"/uploads/gallery/{filename}"
-    db_item = GalleryItem(
-        title=title or file.filename,
-        description=description,
-        image_url=image_url,
-        category=category or "general"
-    )
-    
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    
-    return APIResponse(
-        success=True,
-        message="Image uploaded successfully",
-        data={
-            "id": db_item.id,
-            "image_url": image_url
-        }
-    )
+        
+        # Open image with PIL
+        img = Image.open(BytesIO(content))
+        
+        # Convert RGBA to RGB if necessary
+        if img.mode == 'RGBA':
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[3])
+            img = background
+        
+        # Resize if too large (max 1200x1200)
+        max_size = (1200, 1200)
+        img.thumbnail(max_size, Image.Resampling.LANCZOS)
+        
+        # Convert to base64
+        buffered = BytesIO()
+        img_format = 'JPEG' if img.mode == 'RGB' else 'PNG'
+        img.save(buffered, format=img_format, quality=85, optimize=True)
+        img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        
+        # Create data URL
+        mime_type = f"image/{img_format.lower()}"
+        image_url = f"data:{mime_type};base64,{img_base64}"
+        
+        # Create gallery item
+        db_item = GalleryItem(
+            title=title or file.filename,
+            description=description,
+            image_url=image_url,
+            category=category or "general"
+        )
+        
+        db.add(db_item)
+        db.commit()
+        db.refresh(db_item)
+        
+        return APIResponse(
+            success=True,
+            message="Image uploaded successfully",
+            data={
+                "id": db_item.id,
+                "image_url": image_url
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to process image: {str(e)}")
 
 
 @router.delete("/{item_id}", response_model=APIResponse)
