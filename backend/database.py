@@ -272,15 +272,15 @@ class ContactMessage(Base):
     __tablename__ = "contact_messages"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    phone = Column(String, nullable=True)
-    company = Column(String, nullable=True)
-    subject = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    phone = Column(String(20), nullable=True)
+    company = Column(String(255), nullable=True)
+    subject = Column(String(255), nullable=False)
     message = Column(Text, nullable=False)
-    priority = Column(String, default="medium")  # low, medium, high
+    priority = Column(String(20), default="medium")  # low, medium, high
     is_read = Column(Boolean, default=False)
-    status = Column(String, default="unread")  # unread, read, replied
+    status = Column(String(20), default="unread")  # unread, read, replied
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -328,9 +328,9 @@ class TeamMember(Base):
     bio = Column(Text, nullable=True)
     image_url = Column(String(500), nullable=True)
     email = Column(String(255), nullable=True)
-    github_url = Column(String, nullable=True)
-    linkedin_url = Column(String, nullable=True)
-    twitter_url = Column(String, nullable=True)
+    github_url = Column(String(500), nullable=True)
+    linkedin_url = Column(String(500), nullable=True)
+    twitter_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
     order_priority = Column(Integer, default=0)  # For custom ordering
     created_at = Column(DateTime(timezone=True), server_default=func.now())
