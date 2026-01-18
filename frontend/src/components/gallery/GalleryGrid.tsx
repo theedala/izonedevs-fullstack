@@ -18,6 +18,14 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({
   const [filter, setFilter] = useState('all');
   const categories = ['all', ...new Set(items.map(item => item.category))];
   const filteredItems = filter === 'all' ? items : items.filter(item => item.category === filter);
+  
+  const getImageUrl = (imageUrl: string) => {
+    if (!imageUrl) return 'https://via.placeholder.com/400x300?text=No+Image';
+    // If it's a data URL or external URL, use it directly
+    if (imageUrl.startsWith('data:') || imageUrl.startsWith('http')) return imageUrl;
+    // For backend uploads (legacy), use the full URL
+    return `${window.location.origin}${imageUrl}`;
+  };
   return <div className={className}>
       <div className="flex flex-wrap justify-center mb-8 gap-2">
         {categories.map(category => <button key={category} onClick={() => setFilter(category)} className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${filter === category ? 'bg-primary text-white' : 'bg-dark-lighter text-white/70 hover:bg-dark-light'}`}>
@@ -27,7 +35,7 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredItems.map(item => <div key={item.id} className="overflow-hidden rounded-lg cursor-pointer group relative" onClick={() => setSelectedItem(item)}>
             <img 
-              src={item.image.startsWith('http') ? item.image : `${window.location.origin}${item.image}`} 
+              src={getImageUrl(item.image)} 
               alt={item.title} 
               className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" 
               onError={(e) => {
@@ -49,7 +57,7 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({
               </svg>
             </button>
             <img 
-              src={selectedItem.image.startsWith('http') ? selectedItem.image : `${window.location.origin}${selectedItem.image}`} 
+              src={getImageUrl(selectedItem.image)} 
               alt={selectedItem.title} 
               className="max-w-full max-h-[80vh] object-contain" 
               onError={(e) => {
