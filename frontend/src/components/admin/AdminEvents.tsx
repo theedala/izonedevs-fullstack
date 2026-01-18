@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { EventsService, Event, EventCreateData } from '../../services';
+import { EventsService, Event, EventCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, CalendarIcon, MapPinIcon, DollarSignIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, CalendarIcon, MapPinIcon, DollarSignIcon, UploadIcon } from 'lucide-react';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<EventCreateData>({
     title: '',
     description: '',
@@ -42,17 +44,30 @@ const AdminEvents = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setUploading(true);
+      let imageUrl = formData.image_url;
+
+      // Upload file if selected
+      if (selectedFile) {
+        imageUrl = await UploadService.uploadImage(selectedFile);
+      }
+
+      const eventData = { ...formData, image_url: imageUrl };
+
       if (editingEvent) {
-        await EventsService.updateEvent(editingEvent.id, formData);
+        await EventsService.updateEvent(editingEvent.id, eventData);
       } else {
-        await EventsService.createEvent(formData);
+        await EventsService.createEvent(eventData);
       }
       setShowForm(false);
       setEditingEvent(null);
+      setSelectedFile(null);
       resetForm();
       fetchEvents();
     } catch (error) {
       console.error('Error saving event:', error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -236,15 +251,44 @@ const AdminEvents = () => {
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Image URL</label>
-              <input
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                placeholder="https://example.com/event-image.jpg"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Image URL</label>
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  placeholder="https://example.com/event-image.jpg"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Or Upload Event Image</label>
+                <div className="flex gap-2">
+                  <label className="flex-1 cursor-pointer">
+                    <div className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 hover:border-primary transition-colors flex items-center justify-center">
+                      <UploadIcon size={16} className="mr-2" />
+                      {selectedFile ? selectedFile.name : 'Choose Image'}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                  </label>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFile(null)}
+                      className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div>
@@ -259,8 +303,12 @@ const AdminEvents = () => {
             </div>
 
             <div className="flex space-x-4">
-              <Button variant="primary" onClick={() => handleSubmit({} as React.FormEvent)}>
-                {editingEvent ? 'Update Event' : 'Create Event'}
+              <Button 
+                variant="primary" 
+                onClick={() => handleSubmit({} as React.FormEvent)}
+                disabled={uploading}
+              >
+                {uploading ? 'Uploading...' : (editingEvent ? 'Update Event' : 'Create Event')}
               </Button>
               <Button 
                 variant="outline" 
