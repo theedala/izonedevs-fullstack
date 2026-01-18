@@ -309,6 +309,9 @@ const AdminBlogs = () => {
                     {post.views} views
                   </div>
                   <div>
+                    By: {post.author || 'Unknown'}
+                  </div>
+                  <div>
                     Created: {new Date(post.created_at).toLocaleDateString()}
                   </div>
                   <div className={`px-2 py-1 rounded text-xs ${
