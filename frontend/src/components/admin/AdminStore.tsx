@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { StoreService, Product, ProductCreateData } from '../../services';
+import { StoreService, Product, ProductCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, DollarSignIcon, PackageIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, DollarSignIcon, PackageIcon, UploadIcon } from 'lucide-react';
 
 const AdminStore = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<ProductCreateData>({
     name: '',
     description: '',
@@ -38,18 +40,38 @@ const AdminStore = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
+    
     try {
+      let imageUrl = formData.image_url;
+      
+      // Upload image file if selected
+      if (selectedFile) {
+        const uploadResponse = await UploadService.uploadImage(selectedFile, 'products');
+        imageUrl = uploadResponse.data.url;
+        console.log('Image uploaded successfully:', imageUrl);
+      }
+      
+      const dataToSubmit = {
+        ...formData,
+        image_url: imageUrl
+      };
+      
       if (editingProduct) {
-        await StoreService.updateProduct(editingProduct.id, formData);
+        await StoreService.updateProduct(editingProduct.id, dataToSubmit);
       } else {
-        await StoreService.createProduct(formData);
+        await StoreService.createProduct(dataToSubmit);
       }
       setShowForm(false);
       setEditingProduct(null);
+      setSelectedFile(null);
       resetForm();
       fetchProducts();
     } catch (error) {
       console.error('Error saving product:', error);
+      alert('Failed to save product');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -189,23 +211,60 @@ const AdminStore = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Product Image URL</label>
-              <input
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
-                placeholder="https://example.com/product-image.jpg"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Product Image URL</label>
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  placeholder="https://example.com/product-image.jpg"
+                  disabled={!!selectedFile}
+                />
+                <p className="text-xs text-white/50 mt-1">Or upload a file below</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Upload Product Image</label>
+                <div className="flex items-center gap-2">
+                  <label className="flex-1 bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
+                    <UploadIcon size={16} className="mr-2" />
+                    <span className="text-sm">{selectedFile ? selectedFile.name : 'Choose file...'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setSelectedFile(file);
+                          setFormData({ ...formData, image_url: '' });
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFile(null)}
+                      className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-white/50 mt-1">JPG, PNG, GIF (max 10MB)</p>
+              </div>
             </div>
 
             <div className="flex space-x-4">
               <button 
-                type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                type="submit"
+                disabled={uploading}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {editingProduct ? 'Update Product' : 'Add Product'}
+                {uploading ? 'Uploading...' : (editingProduct ? 'Update Product' : 'Add Product')}
               </button>
               <button 
                 type="button" 
