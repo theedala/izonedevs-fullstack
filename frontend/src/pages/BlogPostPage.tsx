@@ -17,14 +17,17 @@ const BlogPostPage = () => {
     const fetchPost = async () => {
       if (!slug) {
         console.log('BlogPostPage: No slug provided');
+        setError('No blog post specified');
+        setLoading(false);
         return;
       }
       
       try {
         setLoading(true);
+        setError(null);
         console.log('BlogPostPage: Fetching blog post with slug:', slug);
         const response = await BlogService.getBlogPostBySlug(slug);
-        console.log('BlogPostPage: Blog post fetched:', response);
+        console.log('BlogPostPage: Blog post fetched successfully:', response);
         setPost(response);
         
         // Fetch related posts
@@ -39,9 +42,15 @@ const BlogPostPage = () => {
           setRelatedPosts([]);
         }
         
-      } catch (err) {
-        setError('Failed to load blog post');
+      } catch (err: any) {
+        const errorMessage = err?.message || 'Failed to load blog post';
+        setError(errorMessage);
         console.error('BlogPostPage: Error fetching blog post:', err);
+        console.error('BlogPostPage: Error details:', {
+          message: err?.message,
+          status: err?.status,
+          slug: slug
+        });
       } finally {
         setLoading(false);
       }
