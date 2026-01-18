@@ -132,54 +132,39 @@ const StorePage = () => {
           
           {/* Mobile filters */}
           {showFilters && (
-            <div className="md:hidden bg-dark-lighter p-4 rounded-lg mb-4">
-              <h3 className="font-bold mb-3">Categories</h3>
-              <div className="flex flex-wrap gap-2 mb-4">
+            <div className="md:hidden bg-gradient-to-br from-dark-lighter to-dark-light p-5 rounded-xl mb-4 border border-primary/20 shadow-lg">
+              <h3 className="font-bold mb-4 text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Categories</h3>
+              <div className="flex flex-wrap gap-2 mb-6">
                 {categories.map(category => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-3 py-1 rounded-full text-xs capitalize transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-lg text-sm capitalize transition-all duration-300 ${
                       activeCategory === category
-                        ? 'bg-primary text-white'
-                        : 'bg-dark text-white/70 hover:bg-dark-light'
+                        ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-neon'
+                        : 'bg-dark/50 text-white/70 hover:bg-dark border border-neutral/20'
                     }`}
                   >
                     {category}
                   </button>
                 ))}
               </div>
-              <h3 className="font-bold mb-3">Price Range</h3>
-              <div className="mb-2 flex justify-between text-sm">
-                <span>${priceRange.min}</span>
-                <span>${priceRange.max}</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="200"
-                value={priceRange.max}
-                onChange={(e) => setPriceRange({
-                  ...priceRange,
-                  max: parseInt(e.target.value)
-                })}
-                className="w-full h-2 bg-dark rounded-lg appearance-none cursor-pointer"
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Desktop sidebar and product grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Desktop sidebar filters */}
-          <div className="hidden md:block">
-            <div className="bg-dark-lighter rounded-lg p-6 border border-neutral/20 sticky top-24">
-              <h3 className="text-xl font-bold mb-6">Filters</h3>
-              <div className="mb-6">
-                <h4 className="font-medium mb-3">Price Range</h4>
-                <div className="mb-2 flex justify-between text-sm">
-                  <span>${priceRange.min}</span>
-                  <span>${priceRange.max}</span>
+              
+              <div className="p-4 bg-dark/50 rounded-lg border border-neutral/10">
+                <h3 className="font-semibold mb-4 text-white/90 flex items-center">
+                  <span className="w-1 h-5 bg-primary rounded-full mr-2"></span>
+                  Price Range
+                </h3>
+                <div className="mb-4 flex justify-between items-center">
+                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
+                    <span className="text-xs text-white/60">Min</span>
+                    <div className="text-primary font-bold">${priceRange.min}</div>
+                  </div>
+                  <div className="h-px w-4 bg-primary/30"></div>
+                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
+                    <span className="text-xs text-white/60">Max</span>
+                    <div className="text-primary font-bold">${priceRange.max}</div>
+                  </div>
                 </div>
                 <input
                   type="range"
@@ -190,18 +175,116 @@ const StorePage = () => {
                     ...priceRange,
                     max: parseInt(e.target.value)
                   })}
-                  className="w-full h-2 bg-dark rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-dark rounded-full appearance-none cursor-pointer accent-primary
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-4
+                  [&::-webkit-slider-thumb]:h-4
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-gradient-to-r
+                  [&::-webkit-slider-thumb]:from-primary
+                  [&::-webkit-slider-thumb]:to-secondary
+                  [&::-webkit-slider-thumb]:cursor-pointer
+                  [&::-webkit-slider-thumb]:shadow-neon
+                  [&::-moz-range-thumb]:w-4
+                  [&::-moz-range-thumb]:h-4
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-gradient-to-r
+                  [&::-moz-range-thumb]:from-primary
+                  [&::-moz-range-thumb]:to-secondary
+                  [&::-moz-range-thumb]:border-0
+                  [&::-moz-range-thumb]:cursor-pointer
+                  [&::-moz-range-thumb]:shadow-neon"
+                  style={{
+                    background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) 100%)`
+                  }}
                 />
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop sidebar and product grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Desktop sidebar filters */}
+          <div className="hidden md:block">
+            <div className="bg-gradient-to-br from-dark-lighter to-dark-light rounded-xl p-6 border border-primary/20 shadow-lg sticky top-24">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Filters
+                </h3>
+                <FilterIcon size={20} className="text-primary" />
+              </div>
+              
+              <div className="mb-6 p-4 bg-dark/50 rounded-lg border border-neutral/10">
+                <h4 className="font-semibold mb-4 text-white/90 flex items-center">
+                  <span className="w-1 h-5 bg-primary rounded-full mr-2"></span>
+                  Price Range
+                </h4>
+                <div className="mb-4 flex justify-between items-center">
+                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
+                    <span className="text-xs text-white/60">Min</span>
+                    <div className="text-primary font-bold">${priceRange.min}</div>
+                  </div>
+                  <div className="h-px w-4 bg-primary/30"></div>
+                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
+                    <span className="text-xs text-white/60">Max</span>
+                    <div className="text-primary font-bold">${priceRange.max}</div>
+                  </div>
+                </div>
+                <div className="relative">
+                  <input
+                    type="range"
+                    min="0"
+                    max="200"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange({
+                      ...priceRange,
+                      max: parseInt(e.target.value)
+                    })}
+                    className="w-full h-2 bg-dark rounded-full appearance-none cursor-pointer accent-primary
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:w-4
+                    [&::-webkit-slider-thumb]:h-4
+                    [&::-webkit-slider-thumb]:rounded-full
+                    [&::-webkit-slider-thumb]:bg-gradient-to-r
+                    [&::-webkit-slider-thumb]:from-primary
+                    [&::-webkit-slider-thumb]:to-secondary
+                    [&::-webkit-slider-thumb]:cursor-pointer
+                    [&::-webkit-slider-thumb]:shadow-neon
+                    [&::-webkit-slider-thumb]:hover:scale-110
+                    [&::-webkit-slider-thumb]:transition-transform
+                    [&::-moz-range-thumb]:w-4
+                    [&::-moz-range-thumb]:h-4
+                    [&::-moz-range-thumb]:rounded-full
+                    [&::-moz-range-thumb]:bg-gradient-to-r
+                    [&::-moz-range-thumb]:from-primary
+                    [&::-moz-range-thumb]:to-secondary
+                    [&::-moz-range-thumb]:border-0
+                    [&::-moz-range-thumb]:cursor-pointer
+                    [&::-moz-range-thumb]:shadow-neon
+                    [&::-moz-range-thumb]:hover:scale-110
+                    [&::-moz-range-thumb]:transition-transform"
+                    style={{
+                      background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) 100%)`
+                    }}
+                  />
+                </div>
+              </div>
+              
               <button
                 onClick={() => {
                   setActiveCategory('all');
                   setSearchQuery('');
                   setPriceRange({ min: 0, max: 200 });
                 }}
-                className="w-full px-4 py-2 bg-dark text-white/80 hover:bg-dark-light rounded-full text-sm"
+                className="w-full px-4 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 text-primary hover:from-primary hover:to-secondary hover:text-white rounded-lg text-sm font-medium transition-all duration-300 hover:shadow-neon group"
               >
-                Reset Filters
+                <span className="flex items-center justify-center">
+                  <svg className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Reset Filters
+                </span>
               </button>
             </div>
           </div>
