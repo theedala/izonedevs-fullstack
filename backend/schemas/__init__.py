@@ -225,6 +225,7 @@ class BlogPostBase(BaseModel):
 
 class BlogPostCreate(BlogPostBase):
     status: Optional[str] = "draft"
+    featured: Optional[bool] = False
 
 
 class BlogPostUpdate(BaseModel):
@@ -234,6 +235,7 @@ class BlogPostUpdate(BaseModel):
     image_url: Optional[str] = None
     author: Optional[str] = None
     status: Optional[str] = None
+    featured: Optional[bool] = None
 
 
 class BlogPost(BlogPostBase):

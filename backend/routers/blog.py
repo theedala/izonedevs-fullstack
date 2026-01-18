@@ -112,7 +112,7 @@ async def create_blog_post(
         image_url=post_data.image_url,
         author=post_data.author,
         status=post_data.status,
-        featured=post_data.featured,
+        featured=post_data.featured or False,
         slug=slug,
         author_id=current_user.id
     )
