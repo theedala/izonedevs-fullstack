@@ -39,10 +39,11 @@ app.add_middleware(
         "http://localhost:5173", 
         "https://izonedevs.co.zw",
         "https://www.izonedevs.co.zw",
-        "https://coral-app-ycosl.ondigitalocean.app"
-    ],  # Specific origins instead of wildcard
+        "https://coral-app-ycosl.ondigitalocean.app",
+        "*"  # Allow all origins as fallback
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 # Mount static files for uploads
