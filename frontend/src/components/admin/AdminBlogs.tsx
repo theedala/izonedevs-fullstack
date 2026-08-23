@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BlogService, BlogPost, BlogPostCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, EyeIcon, FileTextIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, EyeIcon, FileTextIcon, UploadIcon } from '../ui/icons';
 
 const AdminBlogs = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);

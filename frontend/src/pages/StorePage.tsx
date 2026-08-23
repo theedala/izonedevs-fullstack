@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FilterIcon, LoaderIcon, SearchIcon, ShoppingBagIcon, ShoppingCartIcon, SlidersHorizontalIcon } from 'lucide-react';
+import { FilterIcon, LoaderIcon, SearchIcon, ShoppingBagIcon, ShoppingCartIcon, SlidersHorizontalIcon } from '../components/ui/icons';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/store/ProductCard';
 import Button from '../components/ui/Button';

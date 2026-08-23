@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ProjectsService, Project, ProjectCreateData } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, ExternalLinkIcon, GithubIcon, CodeIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, ExternalLinkIcon, GithubIcon, CodeIcon } from '../ui/icons';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);

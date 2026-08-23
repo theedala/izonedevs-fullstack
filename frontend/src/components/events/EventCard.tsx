@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import {
   CalendarDaysIcon,
+  CheckCircle2Icon,
   Clock3Icon,
   DollarSignIcon,
   MapPinIcon,
-  SparklesIcon,
   UsersIcon,
-} from 'lucide-react';
+} from '../ui/icons';
 
 interface EventCardProps {
   id: string;
@@ -49,7 +49,7 @@ const EventCard = ({
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
           {featured && (
             <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
-              <SparklesIcon size={12} /> Featured
+              <CheckCircle2Icon size={12} /> Featured
             </span>
           )}
           <span className="absolute right-4 top-4 rounded-full border border-white/50 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">

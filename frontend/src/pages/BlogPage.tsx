@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRightIcon, CalendarDaysIcon, EyeIcon, LoaderIcon, SearchIcon, SparklesIcon, UserRoundIcon } from 'lucide-react';
+import { ArrowUpRightIcon, BookOpenIcon, CalendarDaysIcon, EyeIcon, LoaderIcon, SearchIcon, UserRoundIcon } from '../components/ui/icons';
 import { BlogService, BlogPost } from '../services';
 import Button from '../components/ui/Button';
 
@@ -106,7 +106,7 @@ const BlogPage = () => {
               <div className="relative min-h-72 overflow-hidden bg-slate-100 lg:min-h-[360px]">
                 <img src={getImageUrl(featuredPost.image_url)} alt={featuredPost.title} onError={event => { event.currentTarget.src = fallbackImage; }} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
-                <span className="absolute left-5 top-5 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"><SparklesIcon size={12} /> Featured story</span>
+                <span className="absolute left-5 top-5 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"><BookOpenIcon size={12} /> Featured story</span>
               </div>
               <div className="flex flex-col justify-center p-7 sm:p-10">
                 <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-secondary">Editor’s pick</span>

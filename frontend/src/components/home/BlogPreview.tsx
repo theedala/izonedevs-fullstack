@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import { CalendarDaysOutlined, ArrowRightOutlined } from '@lineiconshq/free-icons';
+import { ArrowRightIcon, CalendarDaysIcon } from '../ui/icons';
 import { BlogService, BlogPost } from '../../services';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -69,7 +68,7 @@ const BlogPreview = () => {
             to="/blog"
             className="inline-flex items-center gap-1.5 text-sm font-grotesk font-semibold text-slate-400 hover:text-slate-700 transition-colors mb-1"
           >
-            View all posts <Lineicons icon={ArrowRightOutlined} size={13} color="currentColor" />
+            View all posts <ArrowRightIcon size={13} />
           </Link>
         </motion.div>
 
@@ -103,7 +102,7 @@ const BlogPreview = () => {
 
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-3 font-grotesk">
-                      <Lineicons icon={CalendarDaysOutlined} size={11} color="currentColor" />
+                      <CalendarDaysIcon size={11} />
                       <time dateTime={post.created_at}>
                         {new Date(post.created_at).toLocaleDateString('en-US', {
                           year: 'numeric', month: 'long', day: 'numeric',
@@ -122,7 +121,7 @@ const BlogPreview = () => {
                       to={`/blog/${post.slug}`}
                       className="inline-flex items-center gap-1.5 text-secondary hover:text-secondary/80 font-grotesk font-semibold text-sm transition-colors duration-200"
                     >
-                      Read More <Lineicons icon={ArrowRightOutlined} size={13} color="currentColor" />
+                      Read More <ArrowRightIcon size={13} />
                     </Link>
                   </div>
                 </motion.div>

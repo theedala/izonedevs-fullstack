@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { XIcon, Maximize2Icon, ImageIcon } from 'lucide-react';
+import { XIcon, Maximize2Icon, ImageIcon } from '../ui/icons';
 
 interface GalleryItem {
   id: string;

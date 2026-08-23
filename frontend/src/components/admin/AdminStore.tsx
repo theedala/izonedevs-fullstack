@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { StoreService, Product, ProductCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, DollarSignIcon, PackageIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, DollarSignIcon, PackageIcon, UploadIcon } from '../ui/icons';
 
 const AdminStore = () => {
   const [products, setProducts] = useState<Product[]>([]);

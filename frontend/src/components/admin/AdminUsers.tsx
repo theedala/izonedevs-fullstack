@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserService, User } from '../../services';
-import { UserIcon, EditIcon, TrashIcon, ShieldIcon, CrownIcon, UserCheckIcon } from 'lucide-react';
+import { UserIcon, EditIcon, TrashIcon, ShieldIcon, CrownIcon, UserCheckIcon } from '../ui/icons';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<User[]>([]);

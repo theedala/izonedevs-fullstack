@@ -12,8 +12,7 @@ import {
   LoaderIcon,
   PencilRulerIcon,
   SearchIcon,
-  SparklesIcon,
-} from 'lucide-react';
+} from '../components/ui/icons';
 import Button from '../components/ui/Button';
 import { ProjectsService, Project } from '../services';
 
@@ -171,7 +170,7 @@ const ProjectsPage = () => {
                       </span>
                       {project.featured && (
                         <span className="absolute bottom-4 left-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
-                          <SparklesIcon size={12} /> Featured
+                          <Code2Icon size={12} /> Featured
                         </span>
                       )}
                     </div>

@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { CheckCircle2Icon, SendIcon } from 'lucide-react';
+import { CheckCircle2Icon, SendIcon } from '../ui/icons';
 import Button from '../ui/Button';
 
 interface JoinFormProps { className?: string; }

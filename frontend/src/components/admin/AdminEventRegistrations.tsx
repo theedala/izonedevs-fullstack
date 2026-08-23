@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Download, 
-  Search, 
-  Eye, 
-  Trash2, 
-  Filter,
+import {
+  DownloadIcon,
+  SearchIcon,
+  EyeIcon,
+  Trash2Icon,
+  FilterIcon,
   Calendar,
-  User,
-  Mail,
-  Phone,
-  Star,
+  UserIcon,
+  MailIcon,
+  PhoneIcon,
+  ActivityIcon,
   CheckCircle,
-  XCircle,
-  AlertCircle
-} from 'lucide-react';
+  XCircleIcon,
+  AlertCircleIcon,
+} from '../ui/icons';
 import Button from '../ui/Button';
 import { EventRegistrationService } from '../../services';
 
@@ -137,11 +137,11 @@ const AdminEventRegistrations: React.FC = () => {
       case 'confirmed':
         return <CheckCircle className="text-green-400" size={16} />;
       case 'cancelled':
-        return <XCircle className="text-red-400" size={16} />;
+        return <XCircleIcon className="text-red-400" size={16} />;
       case 'attended':
-        return <Star className="text-yellow-400" size={16} />;
+        return <ActivityIcon className="text-yellow-400" size={16} />;
       default:
-        return <AlertCircle className="text-gray-400" size={16} />;
+        return <AlertCircleIcon className="text-gray-400" size={16} />;
     }
   };
 
@@ -175,7 +175,7 @@ const AdminEventRegistrations: React.FC = () => {
           variant="secondary"
           className="flex items-center"
         >
-          <Download size={20} className="mr-2" />
+          <DownloadIcon size={20} className="mr-2" />
           Export Excel
         </Button>
       </div>
@@ -183,7 +183,7 @@ const AdminEventRegistrations: React.FC = () => {
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
           <input
             type="text"
             placeholder="Search registrations..."
@@ -223,7 +223,7 @@ const AdminEventRegistrations: React.FC = () => {
           }}
           variant="outline"
         >
-          <Filter size={20} className="mr-2" />
+          <FilterIcon size={20} className="mr-2" />
           Clear Filters
         </Button>
       </div>
@@ -260,7 +260,7 @@ const AdminEventRegistrations: React.FC = () => {
                   <td className="p-4">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-3">
-                        <User size={20} className="text-primary" />
+                        <UserIcon size={20} className="text-primary" />
                       </div>
                       <div>
                         <div className="font-medium">{registration.name}</div>
@@ -283,12 +283,12 @@ const AdminEventRegistrations: React.FC = () => {
                   <td className="p-4">
                     <div className="text-sm">
                       <div className="flex items-center mb-1">
-                        <Mail size={14} className="mr-2 text-slate-400" />
+                        <MailIcon size={14} className="mr-2 text-slate-400" />
                         {registration.email}
                       </div>
                       {registration.phone && (
                         <div className="flex items-center">
-                          <Phone size={14} className="mr-2 text-slate-400" />
+                          <PhoneIcon size={14} className="mr-2 text-slate-400" />
                           {registration.phone}
                         </div>
                       )}
@@ -316,7 +316,7 @@ const AdminEventRegistrations: React.FC = () => {
                         className="p-2 hover:bg-primary/20 rounded-lg transition-colors"
                         title="View Details"
                       >
-                        <Eye size={16} />
+                        <EyeIcon size={16} />
                       </button>
                       
                       <select
@@ -334,7 +334,7 @@ const AdminEventRegistrations: React.FC = () => {
                         className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400"
                         title="Delete Registration"
                       >
-                        <Trash2 size={16} />
+                        <Trash2Icon size={16} />
                       </button>
                     </div>
                   </td>

@@ -1,4 +1,4 @@
-import { MapPinIcon, ClockIcon, PhoneIcon, MailIcon, ArrowRightIcon } from 'lucide-react';
+import { MapPinIcon, ClockIcon, PhoneIcon, MailIcon, ArrowRightIcon } from '../ui/icons';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 

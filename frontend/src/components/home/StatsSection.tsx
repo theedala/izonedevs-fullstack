@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { UsersIcon, CodeIcon, CalendarIcon, AwardIcon } from 'lucide-react';
+import { UsersIcon, CodeIcon, CalendarIcon, AwardIcon } from '../ui/icons';
 
 const stats = [
   { value: '500+', label: 'Community Members', Icon: UsersIcon },

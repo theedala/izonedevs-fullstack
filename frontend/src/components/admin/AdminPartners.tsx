@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PartnersService, Partner, PartnerCreateData } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, ExternalLinkIcon, StarIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, ExternalLinkIcon, CheckCircle2Icon, EyeIcon, EyeOffIcon } from '../ui/icons';
 
 const AdminPartners = () => {
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -252,7 +252,7 @@ const AdminPartners = () => {
                   }`}
                   title={partner.featured ? 'Remove from featured' : 'Mark as featured'}
                 >
-                  <StarIcon size={16} />
+                  <CheckCircle2Icon size={16} />
                 </button>
                 
                 <button

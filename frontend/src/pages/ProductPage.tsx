@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeftIcon, ArrowUpRightIcon, CheckCircle2Icon, LoaderIcon, MessageCircleIcon, PackageCheckIcon, ShoppingCartIcon, TagIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowUpRightIcon, CheckCircle2Icon, LoaderIcon, MessageCircleIcon, PackageCheckIcon, ShoppingCartIcon, TagIcon } from '../components/ui/icons';
 import { StoreService } from '../services/storeService';
 import { Product } from '../services/api';
 import { useCart } from '../context/CartContext';

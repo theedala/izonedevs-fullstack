@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDownIcon } from 'lucide-react';
+import { ChevronDownIcon } from '../ui/icons';
 interface FAQItem {
   question: string;
   answer: string;

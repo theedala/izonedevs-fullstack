@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import { ChevronLeftOutlined, ArrowRightOutlined } from '@lineiconshq/free-icons';
+import { ArrowRightIcon, ChevronLeftIcon } from '../ui/icons';
 import { ProjectsService, Project } from '../../services';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -80,7 +79,7 @@ const ProjectsCarousel = () => {
               disabled={loading || projects.length === 0}
               className="w-10 h-10 rounded-full border border-slate-200 bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 shadow-sm text-slate-500"
             >
-              <Lineicons icon={ChevronLeftOutlined} size={18} color="currentColor" />
+              <ChevronLeftIcon size={18} />
             </button>
             <button
               onClick={next}
@@ -88,7 +87,7 @@ const ProjectsCarousel = () => {
               className="w-10 h-10 rounded-full border border-slate-200 bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 shadow-sm text-slate-500"
               style={{ transform: 'scaleX(-1)' }}
             >
-              <Lineicons icon={ChevronLeftOutlined} size={18} color="currentColor" />
+              <ChevronLeftIcon size={18} />
             </button>
           </div>
         </motion.div>
@@ -152,7 +151,7 @@ const ProjectsCarousel = () => {
                       to={`/projects/${projects[current].id}`}
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-sm font-grotesk font-semibold hover:bg-primary/90 hover:shadow-[0_4px_20px_rgba(44,55,139,0.3)] transition-all duration-300 self-start"
                     >
-                      View Project <Lineicons icon={ArrowRightOutlined} size={14} color="currentColor" />
+                      View Project <ArrowRightIcon size={14} />
                     </Link>
                   </div>
                 </motion.div>
@@ -174,7 +173,7 @@ const ProjectsCarousel = () => {
                 to="/projects"
                 className="inline-flex items-center gap-1.5 text-sm font-grotesk font-semibold text-slate-400 hover:text-slate-700 transition-colors"
               >
-                View all projects <Lineicons icon={ArrowRightOutlined} size={13} color="currentColor" />
+                View all projects <ArrowRightIcon size={13} />
               </Link>
             </div>
           </>

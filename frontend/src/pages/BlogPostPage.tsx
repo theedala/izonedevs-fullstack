@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeftIcon, ArrowUpRightIcon, CalendarDaysIcon, EyeIcon, LoaderIcon, MessageCircleIcon, Share2Icon, UserRoundIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowUpRightIcon, CalendarDaysIcon, EyeIcon, LoaderIcon, MessageCircleIcon, Share2Icon, UserRoundIcon } from '../components/ui/icons';
 import { BlogService, BlogPost } from '../services';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CameraIcon, ImageIcon, LoaderIcon } from 'lucide-react';
+import { CameraIcon, ImageIcon, LoaderIcon } from '../components/ui/icons';
 import GalleryGrid from '../components/gallery/GalleryGrid';
 import { GalleryService, GalleryItem } from '../services';
 

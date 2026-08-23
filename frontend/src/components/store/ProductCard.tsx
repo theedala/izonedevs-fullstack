@@ -1,5 +1,5 @@
 import Button from '../ui/Button';
-import { ArrowUpRightIcon, CheckCircle2Icon, ShoppingCartIcon } from 'lucide-react';
+import { ArrowUpRightIcon, CheckCircle2Icon, ShoppingCartIcon } from '../ui/icons';
 import { useCart } from '../../context/CartContext';
 import { Product } from '../../services/api';
 

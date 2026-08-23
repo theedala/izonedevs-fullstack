@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TeamMembersService, TeamMember, TeamMemberCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, UserIcon, GithubIcon, LinkedinIcon, TwitterIcon, MailIcon, EyeIcon, EyeOffIcon, ArrowUpIcon, ArrowDownIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, UserIcon, GithubIcon, LinkedinIcon, TwitterIcon, MailIcon, EyeIcon, EyeOffIcon, ArrowUpIcon, ArrowDownIcon, UploadIcon } from '../ui/icons';
 
 const AdminTeamMembers = () => {
   const [members, setMembers] = useState<TeamMember[]>([]);

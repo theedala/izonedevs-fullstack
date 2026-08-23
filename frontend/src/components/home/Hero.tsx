@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import { ArrowRightOutlined, UserMultiple4Outlined, Code1Outlined, CalendarDaysOutlined } from '@lineiconshq/free-icons';
+import { ArrowRightIcon, CalendarIcon, CodeIcon, UsersIcon } from '../ui/icons';
 
 const stats = [
-  { value: '500+', label: 'Members', icon: UserMultiple4Outlined },
-  { value: '50+', label: 'Projects', icon: Code1Outlined },
-  { value: '120+', label: 'Workshops/yr', icon: CalendarDaysOutlined },
+  { value: '500+', label: 'Members', icon: UsersIcon },
+  { value: '50+', label: 'Projects', icon: CodeIcon },
+  { value: '120+', label: 'Workshops/yr', icon: CalendarIcon },
 ];
 
 const cyclingWords = ['Create.', 'Innovate.', 'Disrupt.', 'Impact.'];
@@ -128,7 +127,7 @@ const Hero = () => {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white font-grotesk font-semibold text-base hover:bg-primary/90 hover:shadow-[0_4px_24px_rgba(44,55,139,0.3)] transition-all duration-300"
             >
               Join the Hub
-              <Lineicons icon={ArrowRightOutlined} size={17} color="currentColor" />
+              <ArrowRightIcon size={17} />
             </Link>
             <Link
               to="/projects"
@@ -145,10 +144,10 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="flex flex-wrap gap-8 pt-6 border-t border-slate-100"
           >
-            {stats.map(({ value, label, icon }, i) => (
+            {stats.map(({ value, label, icon: Icon }, i) => (
               <div key={label} className="flex items-center gap-2.5">
                 <span className={i % 2 === 0 ? 'text-primary' : 'text-secondary'}>
-                  <Lineicons icon={icon} size={15} color="currentColor" />
+                  <Icon size={15} />
                 </span>
                 <span className="font-grotesk font-black text-slate-900 text-base">{value}</span>
                 <span className="text-slate-400 text-sm">{label}</span>

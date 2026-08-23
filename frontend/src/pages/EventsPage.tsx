@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CalendarDaysIcon, Code2Icon, LoaderIcon, MapPinnedIcon, SearchIcon, SparklesIcon, UsersRoundIcon } from 'lucide-react';
+import { CalendarDaysIcon, Code2Icon, LoaderIcon, MapPinnedIcon, SearchIcon, UsersRoundIcon } from '../components/ui/icons';
 import EventCard from '../components/events/EventCard';
 import EventRegistrationForm from '../components/events/EventRegistrationForm';
 import Button from '../components/ui/Button';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { EventsService, Event, EventCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, CalendarIcon, MapPinIcon, DollarSignIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, CalendarIcon, MapPinIcon, DollarSignIcon, UploadIcon } from '../ui/icons';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ArrowUpRightIcon, CalendarDaysIcon, CheckCircle2Icon, Code2Icon, CpuIcon, MapPinIcon, UsersRoundIcon } from 'lucide-react';
+import { ArrowUpRightIcon, CalendarDaysIcon, CheckCircle2Icon, Code2Icon, CpuIcon, MapPinIcon, UsersRoundIcon } from '../components/ui/icons';
 import Button from '../components/ui/Button';
 import JoinForm from '../components/communities/JoinForm';
 import { ProjectsService, Project } from '../services';

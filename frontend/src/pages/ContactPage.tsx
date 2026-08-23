@@ -1,6 +1,6 @@
 import ContactForm from '../components/contact/ContactForm';
 import FAQ from '../components/contact/FAQ';
-import { ArrowUpRightIcon, AtSignIcon, Clock3Icon, FacebookIcon, LinkedinIcon, MapPinIcon, MessageCircleIcon, PhoneCallIcon } from 'lucide-react';
+import { ArrowUpRightIcon, AtSignIcon, Clock3Icon, FacebookIcon, LinkedinIcon, MapPinIcon, MessageCircleIcon, PhoneCallIcon } from '../components/ui/icons';
 
 const ContactPage = () => {
   const faqItems = [

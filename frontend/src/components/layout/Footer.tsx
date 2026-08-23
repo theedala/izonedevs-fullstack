@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPinIcon, PhoneIcon, MailIcon, FacebookIcon, LinkedinIcon } from 'lucide-react';
+import { MapPinIcon, PhoneIcon, MailIcon, FacebookIcon, LinkedinIcon } from '../ui/icons';
 
 const Footer = () => {
   return (

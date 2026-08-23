@@ -1,18 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import {
-  Code1Outlined,
-  Book1Outlined,
-  UserMultiple4Outlined,
-  GraduationCap1Outlined,
-  Gears3Outlined,
-  CheckOutlined,
-} from '@lineiconshq/free-icons';
+import { AwardIcon, BookOpenIcon, CheckIcon, CodeIcon, CpuIcon, UsersIcon } from '../ui/icons';
 
 const offerings = [
   {
-    num: '01', icon: UserMultiple4Outlined,
+    num: '01', icon: UsersIcon,
     title: 'Find Your Community',
     tagline: 'It starts with people.',
     description: 'Every great thing built at iZonehub started with the right room. Regular meetups, workshops, and networking events connect you with developers, engineers, founders, and industry voices from across Zimbabwe and beyond. This is where your journey begins.',
@@ -21,7 +13,7 @@ const offerings = [
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80',
   },
   {
-    num: '02', icon: Book1Outlined,
+    num: '02', icon: BookOpenIcon,
     title: 'Knowledge Hub',
     tagline: 'Then, level up.',
     description: 'Once you\'re connected, the learning starts. Our library of tutorials, documentation, and curated learning paths — built by the community, for the community — gives you everything you need to go from curious to capable, at your own pace.',
@@ -30,7 +22,7 @@ const offerings = [
     image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80',
   },
   {
-    num: '03', icon: GraduationCap1Outlined,
+    num: '03', icon: AwardIcon,
     title: 'Mentorship Programs',
     tagline: 'Guided at every step.',
     description: 'Knowledge moves faster with someone who\'s been there. Get matched 1-on-1 with experienced practitioners for structured mentorship, honest career direction, and skill-building sessions designed around exactly where you want to go — not a generic syllabus.',
@@ -39,7 +31,7 @@ const offerings = [
     image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80',
   },
   {
-    num: '04', icon: Code1Outlined,
+    num: '04', icon: CodeIcon,
     title: 'Software Development',
     tagline: 'Now, build something real.',
     description: 'Armed with community, knowledge, and mentorship — it\'s time to ship. Join hackathons, coding sprints, and real-world software collaborations using modern tools and frameworks. Work alongside peers, push code that matters, and grow your portfolio with projects that actually exist in the world.',
@@ -48,7 +40,7 @@ const offerings = [
     image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80',
   },
   {
-    num: '05', icon: Gears3Outlined,
+    num: '05', icon: CpuIcon,
     title: 'Hardware Prototyping',
     tagline: 'Or build something you can hold.',
     description: 'If your idea lives beyond the screen, our hardware lab brings it to life. 3D printers, microcontrollers, soldering stations, and a full electronics bench — everything you need to go from napkin sketch to working prototype. Because some of Zimbabwe\'s best ideas are physical ones.',
@@ -136,7 +128,7 @@ const OfferingsSection = () => {
                       className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-200"
                       style={{ background: isActive ? o.accent + '22' : '#f1f5f9' }}
                     >
-                      <Lineicons icon={o.icon} size={15} color={isActive ? o.accent : '#94a3b8'} />
+                      <o.icon size={15} color={isActive ? o.accent : '#94a3b8'} />
                     </div>
 
                     {/* Title — first word only on mobile, full on desktop */}
@@ -192,7 +184,7 @@ const OfferingsSection = () => {
                       <div key={b} className="flex items-center gap-2.5">
                         <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
                           style={{ background: current.accent + '18' }}>
-                          <Lineicons icon={CheckOutlined} size={11} color={current.accent} />
+                          <CheckIcon size={11} color={current.accent} />
                         </div>
                         <span className="font-grotesk text-slate-600 text-sm">{b}</span>
                       </div>

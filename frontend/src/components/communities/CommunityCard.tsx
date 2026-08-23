@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, UsersIcon } from 'lucide-react';
+import { ArrowRightIcon, UsersIcon } from '../ui/icons';
 
 interface CommunityCardProps {
   id: string;

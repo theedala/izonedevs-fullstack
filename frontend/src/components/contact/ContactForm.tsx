@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertCircleIcon, CheckCircle2Icon, SendIcon } from 'lucide-react';
+import { AlertCircleIcon, CheckCircle2Icon, SendIcon } from '../ui/icons';
 import Button from '../ui/Button';
 import { ContactService } from '../../services';
 

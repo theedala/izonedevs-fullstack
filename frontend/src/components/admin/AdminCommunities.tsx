@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CommunitiesService, Community, CommunityCreateData } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, EditIcon, TrashIcon, UsersIcon } from 'lucide-react';
+import { PlusIcon, EditIcon, TrashIcon, UsersIcon } from '../ui/icons';
 
 const AdminCommunities = () => {
   const [communities, setCommunities] = useState<Community[]>([]);

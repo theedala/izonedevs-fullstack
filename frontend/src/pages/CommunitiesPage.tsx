@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import JoinForm from '../components/communities/JoinForm';
-import { CodeIcon, CpuIcon, UsersIcon, ArrowRightIcon } from 'lucide-react';
+import { CodeIcon, CpuIcon, UsersIcon, ArrowRightIcon } from '../components/ui/icons';
 
 const communities = [
   {

@@ -1,17 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import {
-  UserMultiple4Outlined,
-  ArrowRightOutlined,
-  Code1Outlined,
-  Gears3Outlined,
-} from '@lineiconshq/free-icons';
+import { ArrowRightIcon, CodeIcon, CpuIcon, UsersIcon } from '../ui/icons';
 
 const communities = [
   {
     id: 'sdc',
-    icon: Code1Outlined,
+    icon: CodeIcon,
     title: 'Software Development Community',
     description: 'Coding bootcamps, hackathons, peer mentorship, and real project collaborations — for developers at every level.',
     memberCount: 150,
@@ -20,7 +14,7 @@ const communities = [
   },
   {
     id: 'hdc',
-    icon: Gears3Outlined,
+    icon: CpuIcon,
     title: 'Hardware Development Community',
     description: 'Hands-on access to 3D printers, microcontrollers, and a full electronics lab to prototype physical products.',
     memberCount: 120,
@@ -44,7 +38,7 @@ const FeatureSection = () => {
         >
           <div className="inline-flex items-center gap-2 mb-5">
             <span className="text-primary">
-              <Lineicons icon={UserMultiple4Outlined} size={13} color="currentColor" />
+              <UsersIcon size={13} />
             </span>
             <span className="text-[11px] font-grotesk font-bold tracking-[0.18em] uppercase text-primary">
               Communities
@@ -86,7 +80,7 @@ const FeatureSection = () => {
               {/* Text */}
               <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Lineicons icon={c.icon} size={14} color={c.accent} />
+                  <c.icon size={14} color={c.accent} />
                   <h3 className="font-grotesk font-bold text-slate-900 text-base leading-snug">
                     {c.title}
                   </h3>
@@ -98,7 +92,7 @@ const FeatureSection = () => {
 
                 <div className="flex items-center gap-4 mt-auto">
                   <div className="flex items-center gap-1.5">
-                    <Lineicons icon={UserMultiple4Outlined} size={11} color={c.accent} />
+                    <UsersIcon size={11} color={c.accent} />
                     <span className="text-xs font-grotesk font-semibold" style={{ color: c.accent }}>
                       {c.memberCount} members
                     </span>
@@ -107,7 +101,7 @@ const FeatureSection = () => {
                     to={`/communities/${c.id}`}
                     className="inline-flex items-center gap-1 text-xs font-grotesk font-semibold text-slate-400 hover:text-slate-700 transition-colors"
                   >
-                    Learn more <Lineicons icon={ArrowRightOutlined} size={11} color="currentColor" />
+                    Learn more <ArrowRightIcon size={11} />
                   </Link>
                 </div>
               </div>
@@ -127,7 +121,7 @@ const FeatureSection = () => {
             to="/communities"
             className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-primary text-white text-sm font-grotesk font-semibold hover:bg-primary/90 hover:shadow-[0_4px_24px_rgba(44,55,139,0.3)] transition-all duration-300"
           >
-            Explore all communities <Lineicons icon={ArrowRightOutlined} size={15} color="currentColor" />
+            Explore all communities <ArrowRightIcon size={15} />
           </Link>
         </motion.div>
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lineicons } from '@lineiconshq/react-lineicons';
-import { DoubleQuotesEnd1Outlined, User4Outlined, ChevronLeftOutlined } from '@lineiconshq/free-icons';
+import { ArrowLeft2, QuoteUp, User } from 'iconsax-react';
 
 interface Testimonial {
   id: number;
@@ -109,7 +108,7 @@ const TestimonialsSection = () => {
 
                 {/* Quote icon */}
                 <div className="mb-6">
-                  <Lineicons icon={DoubleQuotesEnd1Outlined} size={28} color={t.accent} strokeWidth={1.5} />
+                  <QuoteUp size={28} color={t.accent} />
                 </div>
 
                 {/* Quote text */}
@@ -123,7 +122,7 @@ const TestimonialsSection = () => {
                     className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
                     style={{ background: `${t.accent}18`, border: `2px solid ${t.accent}30` }}
                   >
-                    <Lineicons icon={User4Outlined} size={20} color={t.accent} />
+                    <User size={20} color={t.accent} />
                   </div>
                   <div>
                     <div className="font-grotesk font-bold text-slate-900 text-sm">{t.name}</div>
@@ -139,14 +138,14 @@ const TestimonialsSection = () => {
             onClick={prev}
             className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 w-10 h-10 rounded-full bg-white border border-slate-200 items-center justify-center shadow-sm text-slate-400 hover:text-primary hover:border-primary/30 transition-all duration-200"
           >
-            <Lineicons icon={ChevronLeftOutlined} size={16} color="currentColor" />
+            <ArrowLeft2 size={16} />
           </button>
           <button
             onClick={next}
             className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 w-10 h-10 rounded-full bg-white border border-slate-200 items-center justify-center shadow-sm text-slate-400 hover:text-primary hover:border-primary/30 transition-all duration-200"
             style={{ transform: 'translateY(-50%) translateX(20px) scaleX(-1)' }}
           >
-            <Lineicons icon={ChevronLeftOutlined} size={16} color="currentColor" />
+            <ArrowLeft2 size={16} />
           </button>
         </div>
 

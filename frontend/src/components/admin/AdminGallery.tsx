@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GalleryService, GalleryItem, GalleryItemCreateData, UploadService } from '../../services';
 import Button from '../ui/Button';
-import { PlusIcon, TrashIcon, ImageIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, TrashIcon, ImageIcon, UploadIcon } from '../ui/icons';
 
 const AdminGallery = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);

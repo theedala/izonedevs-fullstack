@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { X, Calendar, MapPin, Clock, DollarSign, CheckCircle } from 'lucide-react';
+import { X, Calendar, MapPin, Clock, DollarSign, CheckCircle } from '../ui/icons';
 import Button from '../ui/Button';
 
 interface Event {

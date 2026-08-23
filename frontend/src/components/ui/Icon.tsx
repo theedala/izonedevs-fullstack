@@ -1,8 +1,7 @@
 import React from 'react';
-import { Lineicons } from '@lineiconshq/react-lineicons';
 
 interface IconProps {
-  icon: object;
+  icon: React.ElementType;
   size?: number;
   color?: string;
   strokeWidth?: number;
@@ -11,7 +10,7 @@ interface IconProps {
 }
 
 const Icon: React.FC<IconProps> = ({
-  icon,
+  icon: IconComponent,
   size = 20,
   color = 'currentColor',
   strokeWidth = 1.5,
@@ -19,7 +18,7 @@ const Icon: React.FC<IconProps> = ({
   style,
 }) => (
   <span className={`inline-flex items-center justify-center leading-none${className ? ` ${className}` : ''}`} style={style}>
-    <Lineicons icon={icon} size={size} color={color} strokeWidth={strokeWidth} />
+    <IconComponent size={size} color={color} strokeWidth={strokeWidth} variant="Linear" />
   </span>
 );
 

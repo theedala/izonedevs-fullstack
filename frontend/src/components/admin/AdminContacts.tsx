@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ContactService, ContactMessage } from '../../services';
-import { MailIcon, TrashIcon, CheckIcon, ClockIcon, AlertCircleIcon, DownloadIcon } from 'lucide-react';
+import { MailIcon, TrashIcon, CheckIcon, ClockIcon, AlertCircleIcon, DownloadIcon } from '../ui/icons';
 import * as XLSX from 'xlsx';
 
 const AdminContacts = () => {
