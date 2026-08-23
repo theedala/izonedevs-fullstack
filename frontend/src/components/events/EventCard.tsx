@@ -22,6 +22,7 @@ interface EventCardProps {
   registrationFee?: number;
   className?: string;
   onRegister?: () => void;
+  canRegister?: boolean;
 }
 
 const EventCard = ({
@@ -38,6 +39,7 @@ const EventCard = ({
   registrationFee = 0,
   className = '',
   onRegister,
+  canRegister = true,
 }: EventCardProps) => {
   return (
     <article className={`group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-card-hover ${className}`}>
@@ -72,9 +74,9 @@ const EventCard = ({
 
         <div className="mt-6 flex items-center justify-between gap-3">
           <Link to={`/events/${id}`} className="inline-flex items-center gap-1 text-sm font-bold text-primary transition-colors hover:text-secondary">View details <span aria-hidden>↗</span></Link>
-          <button onClick={onRegister} className="rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-card-blue transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.98]">
+          {canRegister && <button onClick={onRegister} className="rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-card-blue transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.98]">
             {registrationFee > 0 ? 'Register' : 'RSVP'}
-          </button>
+          </button>}
         </div>
       </div>
     </article>

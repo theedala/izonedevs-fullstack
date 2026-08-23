@@ -133,10 +133,11 @@ const EventsPage = () => {
                 time={`${new Date(event.start_date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} – ${new Date(event.end_date).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}
                 location={event.is_online ? 'Online event' : (event.location || 'iZonehub Makerspace, Harare')}
                 image={event.image_url || fallbackImage}
-                category={event.status}
+                category={new Date(event.end_date) < new Date() ? 'past' : event.status}
                 attendees={0}
                 featured={event.featured}
                 registrationFee={event.registration_fee}
+                canRegister={new Date(event.end_date) >= new Date()}
                 onRegister={() => handleRegister(event)}
               />
             ))}
