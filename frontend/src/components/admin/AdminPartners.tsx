@@ -124,7 +124,7 @@ const AdminPartners = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingPartner ? 'Edit Partner' : 'Add New Partner'}
           </h3>
@@ -137,7 +137,7 @@ const AdminPartners = () => {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="Partner name"
                 />
@@ -148,7 +148,7 @@ const AdminPartners = () => {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 >
                   <option value="">Select category</option>
                   <option value="tech">Technology</option>
@@ -166,7 +166,7 @@ const AdminPartners = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={3}
                 placeholder="Brief description of the partnership"
               />
@@ -179,7 +179,7 @@ const AdminPartners = () => {
                   type="url"
                   value={formData.logo_url}
                   onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/logo.png"
                 />
               </div>
@@ -190,7 +190,7 @@ const AdminPartners = () => {
                   type="url"
                   value={formData.website_url}
                   onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://partner-website.com"
                 />
               </div>
@@ -199,14 +199,14 @@ const AdminPartners = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300"
               >
                 {editingPartner ? 'Update Partner' : 'Add Partner'}
               </button>
               <button 
                 type="button" 
                 onClick={handleCancel}
-                className="px-6 py-2 bg-neutral text-white rounded-lg hover:bg-neutral/80 transition-all duration-300"
+                className="px-6 py-2 bg-neutral text-slate-900 rounded-lg hover:bg-neutral/80 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -218,7 +218,7 @@ const AdminPartners = () => {
       {/* Partners List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {partners.map((partner) => (
-          <div key={partner.id} className="bg-dark border border-neutral/30 rounded-lg p-4">
+          <div key={partner.id} className="bg-white border border-slate/30 rounded-lg p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center">
                 {partner.logo_url && (
@@ -270,7 +270,7 @@ const AdminPartners = () => {
             </div>
             
             {partner.description && (
-              <p className="text-white/70 text-sm mb-3 line-clamp-2">{partner.description}</p>
+              <p className="text-slate-500 text-sm mb-3 line-clamp-2">{partner.description}</p>
             )}
             
             <div className="flex items-center justify-between">
@@ -304,7 +304,7 @@ const AdminPartners = () => {
               </div>
             </div>
             
-            <div className="text-xs text-white/50 mt-2">
+            <div className="text-xs text-slate-400 mt-2">
               Created: {new Date(partner.created_at).toLocaleDateString()}
             </div>
           </div>
@@ -312,7 +312,7 @@ const AdminPartners = () => {
       </div>
 
       {partners.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           No partners found. Add your first partner!
         </div>
       )}

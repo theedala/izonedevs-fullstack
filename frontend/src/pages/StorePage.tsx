@@ -1,275 +1,82 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { FilterIcon, LoaderIcon, SearchIcon, ShoppingBagIcon, ShoppingCartIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SectionTitle from '../components/ui/SectionTitle';
 import ProductCard from '../components/store/ProductCard';
-import { SearchIcon, FilterIcon, LoaderIcon, ShoppingCartIcon } from 'lucide-react';
+import Button from '../components/ui/Button';
 import { StoreService, Product } from '../services';
 import { useCart } from '../context/CartContext';
 
 const StorePage = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [priceRange, setPriceRange] = useState({
-    min: 0,
-    max: 200
-  });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 200 });
   const [showFilters, setShowFilters] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { cartItems, cartCount, cartTotal, validateCart } = useCart();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [activeCategory]);
+  const { cartCount, cartTotal, validateCart } = useCart();
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Fetching products with category:', activeCategory);
-      const response = await StoreService.getProducts({
-        page: 1,
-        size: 50,
-        ...(activeCategory !== 'all' && { category: activeCategory })
-      });
-      console.log('Products response:', response);
+      const response = await StoreService.getProducts({ page: 1, size: 50, ...(activeCategory !== 'all' && { category: activeCategory }) });
       setProducts(response.items);
-      
-      // Validate cart items against fetched products
-      const availableProductIds = response.items.map(p => p.id);
-      validateCart(availableProductIds);
+      validateCart(response.items.map(product => product.id));
     } catch (err) {
       console.error('Error fetching products:', err);
-      setError('Failed to load products. Please check if the backend server is running.');
+      setError('We could not load the catalogue right now.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Extract all unique categories from products
-  const categories = ['all', ...new Set(products.map(product => product.category))];
-  
-  // Filter products based on active filters
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
-    return matchesSearch && matchesPrice;
-  });
+  useEffect(() => {
+    fetchProducts();
+  }, [activeCategory]);
+
+  const categories = useMemo(() => ['all', ...new Set(products.map(product => product.category))], [products]);
+  const filteredProducts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return products.filter(product => {
+      const matchesSearch = !query || product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query);
+      return matchesSearch && product.price >= priceRange.min && product.price <= priceRange.max;
+    });
+  }, [priceRange, products, searchQuery]);
+
+  const resetFilters = () => {
+    setActiveCategory('all');
+    setSearchQuery('');
+    setPriceRange({ min: 0, max: 200 });
+  };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-dark flex justify-center items-center">
-        <div className="flex items-center">
-          <LoaderIcon className="animate-spin text-primary mr-3" size={40} />
-          <span className="text-white/70">Loading products...</span>
-        </div>
-      </div>
-    );
+    return <div className="min-h-[70vh] bg-white flex items-center justify-center"><div className="flex items-center gap-3 text-slate-500"><LoaderIcon className="animate-spin text-secondary" size={22} /><span className="text-sm font-medium">Loading the catalogue…</span></div></div>;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-dark py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-16 bg-dark-lighter rounded-lg">
-            <div className="text-red-400 mb-4">⚠️ {error}</div>
-            <button 
-              onClick={fetchProducts}
-              className="px-6 py-2 bg-primary text-white rounded-full hover:shadow-neon transition-all duration-300"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return <main className="min-h-[70vh] bg-slate-50 px-4 py-24"><div className="mx-auto max-w-xl rounded-3xl border border-red-100 bg-white p-10 text-center shadow-card"><div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-500">!</div><h1 className="font-grotesk text-2xl font-bold text-slate-900">Catalogue unavailable</h1><p className="mt-3 text-sm leading-6 text-slate-500">{error}</p><button onClick={fetchProducts} className="btn btn-primary mt-7 bg-primary text-white">Try again</button></div></main>;
   }
 
   return (
-    <div className="min-h-screen bg-dark py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionTitle title="iZonehub Store" subtitle="Browse our products and order via WhatsApp. We offer components, kits, and merchandise to support your projects." />
-        
-        {/* WhatsApp Store Notice */}
-        <div className="bg-green-600/20 border border-green-600/30 rounded-lg p-4 mb-8 text-center">
-          <p className="text-white">
-            Add items to your cart and checkout multiple products at once via WhatsApp, or click "View Details" to order individual items directly. Our team will assist you with payment and delivery options.
-          </p>
-        </div>
-        
-        {/* Search and filters */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-            <div className="relative w-full md:w-64">
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:border-primary"
-              />
-              <SearchIcon size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" />
-            </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden flex items-center px-4 py-2 bg-dark-lighter rounded-full"
-            >
-              <FilterIcon size={18} className="mr-2" />
-              Filters
-            </button>
-            <div className="hidden md:flex flex-wrap gap-2">
-              {categories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm capitalize transition-all duration-300 ${
-                    activeCategory === category
-                      ? 'bg-primary text-white'
-                      : 'bg-dark-lighter text-white/70 hover:bg-dark-light'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Mobile filters */}
-          {showFilters && (
-            <div className="md:hidden bg-gradient-to-br from-dark-lighter to-dark-light p-5 rounded-xl mb-4 border border-primary/20 shadow-lg">
-              <h3 className="font-bold mb-4 text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Categories</h3>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {categories.map(category => (
-                  <button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 rounded-lg text-sm capitalize transition-all duration-300 ${
-                      activeCategory === category
-                        ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-neon'
-                        : 'bg-dark/50 text-white/70 hover:bg-dark border border-neutral/20'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="p-4 bg-dark/50 rounded-lg border border-neutral/10">
-                <h3 className="font-semibold mb-4 text-white/90 flex items-center">
-                  <span className="w-1 h-5 bg-primary rounded-full mr-2"></span>
-                  Price Range
-                </h3>
-                <div className="mb-4 flex justify-between items-center">
-                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
-                    <span className="text-xs text-white/60">Min</span>
-                    <div className="text-primary font-bold">${priceRange.min}</div>
-                  </div>
-                  <div className="h-px w-4 bg-primary/30"></div>
-                  <div className="bg-dark px-3 py-2 rounded-lg border border-primary/30">
-                    <span className="text-xs text-white/60">Max</span>
-                    <div className="text-primary font-bold">${priceRange.max}</div>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="200"
-                  value={priceRange.max}
-                  onChange={(e) => setPriceRange({
-                    ...priceRange,
-                    max: parseInt(e.target.value)
-                  })}
-                  className="w-full h-2 bg-dark rounded-full appearance-none cursor-pointer accent-primary
-                  [&::-webkit-slider-thumb]:appearance-none
-                  [&::-webkit-slider-thumb]:w-4
-                  [&::-webkit-slider-thumb]:h-4
-                  [&::-webkit-slider-thumb]:rounded-full
-                  [&::-webkit-slider-thumb]:bg-gradient-to-r
-                  [&::-webkit-slider-thumb]:from-primary
-                  [&::-webkit-slider-thumb]:to-secondary
-                  [&::-webkit-slider-thumb]:cursor-pointer
-                  [&::-webkit-slider-thumb]:shadow-neon
-                  [&::-moz-range-thumb]:w-4
-                  [&::-moz-range-thumb]:h-4
-                  [&::-moz-range-thumb]:rounded-full
-                  [&::-moz-range-thumb]:bg-gradient-to-r
-                  [&::-moz-range-thumb]:from-primary
-                  [&::-moz-range-thumb]:to-secondary
-                  [&::-moz-range-thumb]:border-0
-                  [&::-moz-range-thumb]:cursor-pointer
-                  [&::-moz-range-thumb]:shadow-neon"
-                  style={{
-                    background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) ${(priceRange.max / 200) * 100}%, rgba(255,255,255,0.1) 100%)`
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+    <main className="min-h-screen bg-white">
+      <section className="relative overflow-hidden border-b border-slate-100 bg-slate-50 px-4 pb-14 pt-20 sm:px-6 lg:px-8">
+        <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-orange-100/60 blur-3xl" /><div className="pointer-events-none absolute -bottom-40 right-1/4 h-72 w-72 rounded-full bg-blue-100/60 blur-3xl" />
+        <div className="relative mx-auto max-w-6xl text-center"><span className="font-grotesk text-[11px] font-bold uppercase tracking-[0.2em] text-secondary">iZonehub supply room</span><h1 className="mx-auto mt-4 max-w-3xl font-grotesk text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">Tools for <span className="text-secondary">building.</span></h1><p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-500">Components, kits, and maker essentials to help turn your next idea into something real.</p></div>
+      </section>
 
-        {/* Products grid */}
-        <div>
-          {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredProducts.map(product => (
-                <ProductCard 
-                  key={product.id} 
-                  id={product.id.toString()} 
-                  name={product.name} 
-                  price={product.price} 
-                  image={product.image_url || 'https://images.unsplash.com/photo-1553406830-ef2513450d76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'} 
-                  category={product.category} 
-                  inStock={product.is_available && product.stock_quantity > 0} 
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-dark-lighter rounded-lg">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-dark rounded-full mb-4">
-                <SearchIcon size={24} className="text-white/50" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">No products found</h3>
-              <p className="text-white/70 mb-6">
-                {searchQuery 
-                  ? "We couldn't find any products matching your search criteria." 
-                  : "No products available for the selected filter."}
-              </p>
-              <button
-                onClick={() => {
-                  setActiveCategory('all');
-                  setSearchQuery('');
-                  setPriceRange({ min: 0, max: 200 });
-                }}
-                className="px-6 py-2 bg-primary text-white rounded-full hover:shadow-neon transition-all duration-300"
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
-        </div>
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 rounded-3xl border border-emerald-100 bg-emerald-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div className="flex items-start gap-3"><div className="mt-0.5 rounded-2xl bg-white p-2.5 text-emerald-600 shadow-sm"><ShoppingBagIcon size={19} /></div><div><h2 className="text-sm font-bold text-slate-900">Simple ordering, human support.</h2><p className="mt-1 text-xs leading-5 text-slate-600">Add several items to your cart and our team will help with payment and delivery over WhatsApp.</p></div></div><Button href="/cart" variant="outline" size="sm" className="shrink-0 border-emerald-200 text-emerald-700 hover:bg-white">View cart</Button></div>
 
-        {/* Floating Cart Bar */}
-        {cartCount > 0 && (
-          <Link
-            to="/cart"
-            className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-primary to-secondary hover:shadow-neon text-white px-6 py-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 group"
-          >
-            <div className="relative">
-              <ShoppingCartIcon size={24} className="group-hover:scale-110 transition-transform" />
-              <span className="absolute -top-2 -right-2 bg-white text-primary text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
-                {cartCount}
-              </span>
-            </div>
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium">Cart</span>
-              <span className="text-xs opacity-90">${cartTotal.toFixed(2)}</span>
-            </div>
-          </Link>
-        )}
-      </div>
-    </div>
+        <div className="mt-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div className="flex flex-wrap gap-2"><button onClick={() => setShowFilters(!showFilters)} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:border-primary/30 hover:text-primary lg:hidden"><FilterIcon size={15} /> Filters</button>{categories.map(category => <button key={category} onClick={() => setActiveCategory(category)} className={`rounded-full border px-4 py-2.5 text-sm font-semibold capitalize transition-all duration-200 ${activeCategory === category ? 'border-primary bg-primary text-white shadow-card-blue' : 'border-slate-200 bg-white text-slate-500 hover:border-primary/30 hover:text-primary'}`}>{category.replace('-', ' ')}</button>)}</div><label className="relative block w-full lg:max-w-xs"><span className="sr-only">Search products</span><SearchIcon size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input type="search" placeholder="Search products…" value={searchQuery} onChange={event => setSearchQuery(event.target.value)} className="w-full rounded-full border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10" /></label></div>
+
+        <div className={`${showFilters ? 'block' : 'hidden'} mt-5 rounded-3xl border border-slate-200 bg-slate-50 p-5 lg:block`}><div className="flex items-center gap-2 text-sm font-bold text-slate-700"><SlidersHorizontalIcon size={16} className="text-primary" /> Price range</div><div className="mt-4 flex items-center gap-4"><span className="rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">${priceRange.min}</span><input type="range" min="0" max="200" value={priceRange.max} onChange={event => setPriceRange({ ...priceRange, max: parseInt(event.target.value, 10) })} className="h-1.5 w-full cursor-pointer accent-secondary" /><span className="rounded-xl bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">${priceRange.max}</span></div></div>
+
+        {filteredProducts.length > 0 ? <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{filteredProducts.map(product => <ProductCard key={product.id} id={product.id.toString()} name={product.name} price={product.price} image={product.image_url || 'https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=900&q=85'} category={product.category} inStock={product.is_available && product.stock_quantity > 0} />)}</div> : <div className="mt-10 rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-20 text-center"><SearchIcon className="mx-auto text-slate-400" size={28} /><h2 className="mt-4 font-grotesk text-2xl font-bold text-slate-900">No products found</h2><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">Try another search or reset the catalogue filters.</p><button onClick={resetFilters} className="btn btn-outline mt-6">Reset filters</button></div>}
+      </section>
+
+      {cartCount > 0 && <Link to="/cart" className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-3 rounded-full bg-primary px-5 py-3.5 text-white shadow-2xl transition hover:-translate-y-1 sm:bottom-8 sm:right-8"><span className="relative"><ShoppingCartIcon size={20} /><span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-primary">{cartCount}</span></span><span><span className="block text-xs font-bold">Your cart</span><span className="block text-[11px] text-white/75">${cartTotal.toFixed(2)}</span></span></Link>}
+    </main>
   );
 };
 

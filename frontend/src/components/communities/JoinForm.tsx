@@ -1,146 +1,33 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
+import { CheckCircle2Icon, SendIcon } from 'lucide-react';
 import Button from '../ui/Button';
-interface JoinFormProps {
-  className?: string;
-}
-const JoinForm: React.FC<JoinFormProps> = ({
-  className = ''
-}) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    community: '',
-    experience: '',
-    interests: ''
-  });
+
+interface JoinFormProps { className?: string; }
+
+const JoinForm = ({ className = '' }: JoinFormProps) => {
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', community: '', experience: '', interests: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const {
-      name,
-      value
-    } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-    const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      // Use the dedicated join application endpoint
-      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000/api"}/contact/join-application`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          community: formData.community,
-          experience: formData.experience,
-          interests: formData.interests
-        })
-      });
-      
-      if (response.ok) {
-        setIsSubmitted(true);
-        setFormData({ name: '', email: '', phone: '', community: '', experience: '', interests: '' });
-      } else {
-        throw new Error('Failed to submit application');
-      }
-    } catch (error: any) {
-      console.error('Failed to submit application:', error);
-      // Still show success for better UX
-      setIsSubmitted(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  return <div className={`bg-dark-lighter p-6 rounded-lg border border-primary/30 ${className}`}>
-      <h3 className="text-2xl font-bold mb-6">Join Our Community</h3>
-      {isSubmitted ? <div className="text-center py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
-            <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h4 className="text-xl font-bold mb-2">Application Received!</h4>
-          <p className="text-white/70 mb-4">
-            Thank you for your interest in joining iZonehub. We'll review your
-            application and get back to you within 48 hours.
-          </p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline">
-            Submit Another Application
-          </Button>
-        </div> : <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="name" className="block mb-2 text-sm font-medium">
-                Full Name
-              </label>
-              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="John Doe" />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">
-                Email Address
-              </label>
-              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="john@example.com" />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block mb-2 text-sm font-medium">
-                Phone Number
-              </label>
-              <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="+263 123 456 789" />
-            </div>
-            <div>
-              <label htmlFor="community" className="block mb-2 text-sm font-medium">
-                Preferred Community
-              </label>
-              <select id="community" name="community" value={formData.community} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary">
-                <option value="">Select a community</option>
-                <option value="software">Software Development</option>
-                <option value="hardware">Hardware Development</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="experience" className="block mb-2 text-sm font-medium">
-                Experience Level
-              </label>
-              <select id="experience" name="experience" value={formData.experience} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary">
-                <option value="">Select your level</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-                <option value="professional">Professional</option>
-              </select>
-            </div>
-          </div>
-          <div className="mb-6">
-            <label htmlFor="interests" className="block mb-2 text-sm font-medium">
-              What are you interested in learning or working on?
-            </label>
-            <textarea id="interests" name="interests" value={formData.interests} onChange={handleChange} rows={4} className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="Tell us about your interests and what you hope to achieve by joining our community..."></textarea>
-          </div>
-          <div className="flex justify-end">
-            <button 
-              type="submit" 
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-300 w-full md:w-auto ${
-                isSubmitting 
-                  ? 'bg-primary/50 text-white/50 cursor-not-allowed' 
-                  : 'bg-primary text-white hover:shadow-neon'
-              }`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Application'}
-            </button>
-          </div>
-        </form>}
-    </div>;
-};
-export default JoinForm;
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setFormData(previous => ({ ...previous, [event.target.name]: event.target.value }));
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/contact/join-application`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+      if (!response.ok) throw new Error('Failed to submit application');
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', community: '', experience: '', interests: '' });
+    } catch (error) {
+      console.error('Failed to submit application:', error);
+      setIsSubmitted(true);
+    } finally { setIsSubmitting(false); }
+  };
+
+  const inputClass = 'w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10';
+
+  return <div className={`rounded-3xl border border-slate-200 bg-white p-6 shadow-card ${className}`}><div className="mb-6"><span className="font-grotesk text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">Start here</span><h2 className="mt-2 font-grotesk text-2xl font-bold text-slate-900">Join our community</h2><p className="mt-2 text-sm leading-6 text-slate-500">Tell us a little about yourself and we will help you find the right room.</p></div>{isSubmitted ? <div className="py-8 text-center"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"><CheckCircle2Icon size={28} /></div><h3 className="mt-5 font-grotesk text-xl font-bold text-slate-900">Application received</h3><p className="mt-2 text-sm leading-6 text-slate-500">Thanks for your interest. The team will be in touch within 48 hours.</p><Button onClick={() => setIsSubmitted(false)} variant="outline" className="mt-6">Submit another application</Button></div> : <form onSubmit={handleSubmit} className="space-y-4"><div><label htmlFor="name" className="mb-2 block text-xs font-bold text-slate-600">Full name</label><input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className={inputClass} placeholder="John Doe" /></div><div><label htmlFor="email" className="mb-2 block text-xs font-bold text-slate-600">Email address</label><input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className={inputClass} placeholder="john@example.com" /></div><div><label htmlFor="phone" className="mb-2 block text-xs font-bold text-slate-600">Phone number</label><input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} className={inputClass} placeholder="+263 123 456 789" /></div><div className="grid gap-4 sm:grid-cols-2"><div><label htmlFor="community" className="mb-2 block text-xs font-bold text-slate-600">Preferred community</label><select id="community" name="community" value={formData.community} onChange={handleChange} required className={inputClass}><option value="">Select a community</option><option value="software">Software Development</option><option value="hardware">Hardware Development</option></select></div><div><label htmlFor="experience" className="mb-2 block text-xs font-bold text-slate-600">Experience level</label><select id="experience" name="experience" value={formData.experience} onChange={handleChange} required className={inputClass}><option value="">Select your level</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option><option value="professional">Professional</option></select></div></div><div><label htmlFor="interests" className="mb-2 block text-xs font-bold text-slate-600">What are you interested in?</label><textarea id="interests" name="interests" value={formData.interests} onChange={handleChange} rows={4} className={inputClass} placeholder="Tell us what you hope to learn or work on…" /></div><button type="submit" disabled={isSubmitting} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-white shadow-card-blue transition hover:-translate-y-0.5 hover:shadow-card-orange disabled:cursor-not-allowed disabled:opacity-50">{isSubmitting ? 'Submitting…' : <>Submit application <SendIcon size={16} /></>}</button></form>}</div>;
+};
+
+export default JoinForm;

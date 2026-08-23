@@ -36,7 +36,7 @@ const TerminalBlock: React.FC<TerminalBlockProps> = ({
     };
   }, [text, typingSpeed, onComplete]);
   return <div ref={containerRef} className={`font-mono bg-dark-lighter p-4 rounded-lg border border-primary/30 ${className}`}>
-      <div className="flex items-center mb-2 text-white/60">
+      <div className="flex items-center mb-2 text-slate-500">
         <div className="w-3 h-3 rounded-full bg-danger mr-2"></div>
         <div className="w-3 h-3 rounded-full bg-warning mr-2"></div>
         <div className="w-3 h-3 rounded-full bg-success mr-2"></div>

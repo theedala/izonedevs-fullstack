@@ -1,93 +1,164 @@
-import { useState } from 'react';
-import TerminalBlock from '../ui/TerminalBlock';
-import Button from '../ui/Button';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Lineicons } from '@lineiconshq/react-lineicons';
+import { ArrowRightOutlined, UserMultiple4Outlined, Code1Outlined, CalendarDaysOutlined } from '@lineiconshq/free-icons';
+
+const stats = [
+  { value: '500+', label: 'Members', icon: UserMultiple4Outlined },
+  { value: '50+', label: 'Projects', icon: Code1Outlined },
+  { value: '120+', label: 'Workshops/yr', icon: CalendarDaysOutlined },
+];
+
+const cyclingWords = ['Create.', 'Innovate.', 'Disrupt.', 'Impact.'];
+
 const Hero = () => {
-  const [typingComplete, setTypingComplete] = useState(false);
-  return <div className="relative min-h-[600px] flex items-center overflow-hidden">
-      {/* Modern Tech Grid Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Animated grid pattern */}
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `
-            linear-gradient(rgba(46, 52, 138, 0.4) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(46, 52, 138, 0.4) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          animation: 'gridShift 20s linear infinite'
-        }}></div>
-        
-        {/* Floating geometric shapes */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-32 h-32 border border-primary/20 rounded-lg" style={{
-            animation: 'techGrid 8s ease-in-out infinite'
-          }}></div>
-          <div className="absolute top-40 right-32 w-24 h-24 border border-secondary/20 rounded-full" style={{
-            animation: 'techGrid 6s ease-in-out infinite 2s'
-          }}></div>
-          <div className="absolute bottom-32 left-1/4 w-16 h-16 bg-primary/10 rounded" style={{
-            animation: 'circuitPulse 4s ease-in-out infinite'
-          }}></div>
-          <div className="absolute bottom-20 right-20 w-20 h-20 border border-secondary/30 transform rotate-45" style={{
-            animation: 'techGrid 7s ease-in-out infinite 1s'
-          }}></div>
-        </div>
-        
-        {/* Data flow lines */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" style={{
-            animation: 'dataFlow 8s ease-in-out infinite'
-          }}></div>
-          <div className="absolute top-2/3 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary/40 to-transparent" style={{
-            animation: 'dataFlow 10s ease-in-out infinite 3s'
-          }}></div>
-        </div>
-        
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
-      </div>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.div initial={{
-          y: -20,
-          opacity: 0
-        }} animate={{
-          y: 0,
-          opacity: 1
-        }} transition={{
-          duration: 0.6
-        }}>
-            <TerminalBlock text="Welcome to iZonehub Makerspace — Zimbabwe's innovation hub." typingSpeed={40} className="mb-6" onComplete={() => setTypingComplete(true)} />
+  const [ready, setReady] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 180);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex(i => (i + 1) % cyclingWords.length);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative min-h-[92vh] flex items-center overflow-hidden bg-white">
+
+      {/* Gradient orb — blue, top-left behind headline */}
+      <div
+        className="absolute -top-20 -left-20 w-[560px] h-[560px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 40% 40%, rgba(44,55,139,0.28) 0%, rgba(44,55,139,0.10) 45%, transparent 70%)',
+          filter: 'blur(16px)',
+          animation: 'orbDrift 10s ease-in-out infinite',
+        }}
+      />
+
+      {/* Gradient orb — orange, bottom-right */}
+      <div
+        className="absolute -bottom-16 -right-16 w-[480px] h-[480px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 55% 55%, rgba(245,110,0,0.24) 0%, rgba(245,110,0,0.08) 45%, transparent 70%)',
+          filter: 'blur(16px)',
+          animation: 'orbDrift 13s ease-in-out infinite reverse',
+        }}
+      />
+
+      {/* Accent orb — amber, right-center */}
+      <div
+        className="absolute top-1/3 right-0 w-[280px] h-[280px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 50% 50%, rgba(243,165,22,0.18) 0%, transparent 65%)',
+          filter: 'blur(12px)',
+          animation: 'orbDrift 8s ease-in-out infinite',
+          animationDelay: '3s',
+        }}
+      />
+
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-24 lg:py-32">
+        <div className="max-w-2xl">
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/8 border border-primary/20 mb-8"
+          >
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-primary font-grotesk font-semibold text-sm">
+              Zimbabwe's Premier Innovation Hub
+            </span>
           </motion.div>
-          <motion.div initial={{
-          opacity: 0,
-          scale: 0.9
-        }} animate={{
-          opacity: typingComplete ? 1 : 0,
-          scale: typingComplete ? 1 : 0.9
-        }} transition={{
-          duration: 0.8,
-          ease: 'easeOut',
-          delay: 0.2
-        }}>
-            <p className="text-lg text-white/80 mb-8">
-              A collaborative space for makers, developers, and innovators to
-              learn, build, and grow through hands-on training and mentorship.
-            </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button href="/communities" variant="primary" size="lg">
-                  Join Our Community
-                </Button>
-                <Button href="/projects" variant="secondary" size="lg">
-                  Explore Projects
-                </Button>
-                <Button href="/store" variant="outline" size="lg">
-                  Visit Store
-                </Button>
+
+          {/* Headline with cycling word */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 24 }}
+            transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="font-grotesk font-black text-5xl sm:text-6xl lg:text-[4.5rem] xl:text-[5.25rem] leading-[0.93] tracking-tight text-slate-900 mb-6"
+          >
+            Build.{' '}
+            <span className="inline-block relative" style={{ minWidth: '6ch' }}>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={wordIndex}
+                  className="text-secondary inline-block"
+                  initial={{ opacity: 0, y: 28, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -28, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  {cyclingWords[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
+            <br />
+            Lead Africa.
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg sm:text-xl text-slate-500 leading-relaxed mb-10"
+          >
+            A collaborative makerspace for developers, makers, and entrepreneurs
+            to learn, build, and launch — right here in Harare.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 12 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap gap-3 mb-14"
+          >
+            <Link
+              to="/communities"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-white font-grotesk font-semibold text-base hover:bg-primary/90 hover:shadow-[0_4px_24px_rgba(44,55,139,0.3)] transition-all duration-300"
+            >
+              Join the Hub
+              <Lineicons icon={ArrowRightOutlined} size={17} color="currentColor" />
+            </Link>
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-slate-200 text-slate-700 hover:border-secondary hover:text-secondary font-grotesk font-semibold text-base transition-all duration-300"
+            >
+              See Our Work
+            </Link>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="flex flex-wrap gap-8 pt-6 border-t border-slate-100"
+          >
+            {stats.map(({ value, label, icon }, i) => (
+              <div key={label} className="flex items-center gap-2.5">
+                <span className={i % 2 === 0 ? 'text-primary' : 'text-secondary'}>
+                  <Lineicons icon={icon} size={15} color="currentColor" />
+                </span>
+                <span className="font-grotesk font-black text-slate-900 text-base">{value}</span>
+                <span className="text-slate-400 text-sm">{label}</span>
               </div>
+            ))}
           </motion.div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Hero;

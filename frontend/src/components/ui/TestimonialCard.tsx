@@ -16,11 +16,11 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       <div className="flex items-center mb-4">
         <div className="text-primary text-4xl font-serif">"</div>
       </div>
-      <p className="text-white/80 mb-6 italic">{quote}</p>
+      <p className="text-slate-600 mb-6 italic">{quote}</p>
       <div className="flex items-center">
         <div>
           <h4 className="font-bold">{name}</h4>
-          <p className="text-white/60 text-sm">{role}</p>
+          <p className="text-slate-500 text-sm">{role}</p>
         </div>
       </div>
     </div>;

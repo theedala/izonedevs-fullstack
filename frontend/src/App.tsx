@@ -29,7 +29,7 @@ export function App() {
       v7_relativeSplatPath: true 
     }}>
       <ScrollToTop />
-      <div className="flex flex-col min-h-screen bg-dark text-white font-sans">
+      <div className="theme-light flex flex-col min-h-screen bg-white text-slate-900 font-sans">
         <Header />
         <main className="flex-grow">
           <Routes>

@@ -17,7 +17,7 @@ const FAQ: React.FC<FAQProps> = ({
     setOpenIndex(openIndex === index ? null : index);
   };
   return <div className={`bg-dark-lighter rounded-lg border border-neutral/20 overflow-hidden ${className}`}>
-      <div className="p-6 border-b border-neutral/20">
+      <div className="p-6 border-b border-slate/20">
         <h3 className="text-2xl font-bold">Frequently Asked Questions</h3>
       </div>
       <div className="divide-y divide-neutral/20">
@@ -26,7 +26,7 @@ const FAQ: React.FC<FAQProps> = ({
               <h4 className="text-lg font-medium">{item.question}</h4>
               <ChevronDownIcon size={20} className={`transition-transform duration-300 ${openIndex === index ? 'transform rotate-180' : ''}`} />
             </div>
-            {openIndex === index && <div className="p-6 pt-0 text-white/70 bg-dark-light">
+            {openIndex === index && <div className="p-6 pt-0 text-slate-500 bg-slate-50">
                 <p>{item.answer}</p>
               </div>}
           </div>)}

@@ -87,7 +87,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
         </div>
       </div>
       <div className="grid grid-cols-7 gap-2 mb-2">
-        {DAYS.map(day => <div key={day} className="text-center text-sm font-medium text-white/60">
+        {DAYS.map(day => <div key={day} className="text-center text-sm font-medium text-slate-500">
             {day}
           </div>)}
       </div>

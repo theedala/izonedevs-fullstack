@@ -137,7 +137,7 @@ const AdminEvents = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingEvent ? 'Edit Event' : 'Create New Event'}
           </h3>
@@ -150,7 +150,7 @@ const AdminEvents = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -162,7 +162,7 @@ const AdminEvents = () => {
                   step="0.01"
                   value={formData.registration_fee}
                   onChange={(e) => setFormData({ ...formData, registration_fee: parseFloat(e.target.value) || 0 })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -172,7 +172,7 @@ const AdminEvents = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={3}
                 required
               />
@@ -185,7 +185,7 @@ const AdminEvents = () => {
                   type="datetime-local"
                   value={formData.start_date}
                   onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -196,7 +196,7 @@ const AdminEvents = () => {
                   type="datetime-local"
                   value={formData.end_date}
                   onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -209,7 +209,7 @@ const AdminEvents = () => {
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="iZonehub Makerspace, 4th Floor, Three Anchor House"
                 />
               </div>
@@ -220,7 +220,7 @@ const AdminEvents = () => {
                   type="number"
                   value={formData.max_attendees || ''}
                   onChange={(e) => setFormData({ ...formData, max_attendees: e.target.value ? parseInt(e.target.value) : undefined })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="Unlimited"
                 />
               </div>
@@ -245,7 +245,7 @@ const AdminEvents = () => {
                   type="url"
                   value={formData.meeting_url}
                   onChange={(e) => setFormData({ ...formData, meeting_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://meet.izonedevs.com/event"
                 />
               </div>
@@ -258,7 +258,7 @@ const AdminEvents = () => {
                   type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/event-image.jpg"
                 />
               </div>
@@ -267,7 +267,7 @@ const AdminEvents = () => {
                 <label className="block text-sm font-medium mb-2">Or Upload Event Image</label>
                 <div className="flex gap-2">
                   <label className="flex-1 cursor-pointer">
-                    <div className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 hover:border-primary transition-colors flex items-center justify-center">
+                    <div className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 hover:border-primary transition-colors flex items-center justify-center">
                       <UploadIcon size={16} className="mr-2" />
                       {selectedFile ? selectedFile.name : 'Choose Image'}
                     </div>
@@ -296,7 +296,7 @@ const AdminEvents = () => {
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={4}
                 placeholder="Detailed event description, agenda, requirements, etc."
               />
@@ -327,13 +327,13 @@ const AdminEvents = () => {
 
       <div className="grid grid-cols-1 gap-4">
         {events.map((event) => (
-          <div key={event.id} className="bg-dark border border-neutral/30 rounded-lg p-4">
+          <div key={event.id} className="bg-white border border-slate/30 rounded-lg p-4">
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h3 className="text-lg font-bold mb-2">{event.title}</h3>
-                <p className="text-white/70 mb-3">{event.description}</p>
+                <p className="text-slate-500 mb-3">{event.description}</p>
                 
-                <div className="flex flex-wrap gap-4 text-sm text-white/60">
+                <div className="flex flex-wrap gap-4 text-sm text-slate-500">
                   <div className="flex items-center">
                     <CalendarIcon size={16} className="mr-1" />
                     {new Date(event.start_date).toLocaleDateString()}
@@ -378,7 +378,7 @@ const AdminEvents = () => {
       </div>
 
       {events.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           No events found. Create your first event!
         </div>
       )}

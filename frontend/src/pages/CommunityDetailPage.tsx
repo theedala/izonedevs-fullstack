@@ -1,290 +1,38 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import SectionTitle from '../components/ui/SectionTitle';
+import { ArrowUpRightIcon, CalendarDaysIcon, CheckCircle2Icon, Code2Icon, CpuIcon, MapPinIcon, UsersRoundIcon } from 'lucide-react';
 import Button from '../components/ui/Button';
 import JoinForm from '../components/communities/JoinForm';
-import { CodeIcon, CpuIcon, CheckCircleIcon, User } from 'lucide-react';
 import { ProjectsService, Project } from '../services';
+
 const CommunityDetailPage = () => {
-  const {
-    id
-  } = useParams<{
-    id: string;
-  }>();
-  
+  const { id } = useParams<{ id: string }>();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
-  // Map frontend community IDs to backend community IDs/names
-  const communityMapping = {
-    'sdc': 'Software Development Community',
-    'hdc': 'Hardware Development Community'
-  };
-
-  useEffect(() => {
-    if (id && communityMapping[id as keyof typeof communityMapping]) {
-      fetchCommunityProjects();
-    }
-  }, [id]);
-
-  const fetchCommunityProjects = async () => {
-    try {
-      setLoadingProjects(true);
-      // For now, get all projects and filter by community name in the description or title
-      // TODO: Update backend to support filtering by community_id
-      const response = await ProjectsService.getProjects({ size: 50 });
-      
-      const communityKeywords = id === 'sdc' 
-        ? ['software', 'web', 'app', 'api', 'react', 'javascript', 'python', 'development', 'frontend', 'backend']
-        : ['hardware', 'iot', 'arduino', 'electronics', 'sensor', 'embedded', 'raspberry', 'circuit'];
-      
-      // Filter projects based on community relevance
-      const filteredProjects = response.items.filter(project => {
-        const searchText = `${project.title} ${project.description} ${project.technologies?.join(' ') || ''} ${project.category || ''}`.toLowerCase();
-        return communityKeywords.some(keyword => searchText.includes(keyword));
-      });
-      
-      setProjects(filteredProjects.slice(0, 6)); // Show max 6 projects
-    } catch (error) {
-      console.error('Error fetching community projects:', error);
-    } finally {
-      setLoadingProjects(false);
-    }
-  };
-  
+  const communityMapping = { sdc: 'Software Development Community', hdc: 'Hardware Development Community' };
   const communities = {
-    sdc: {
-      title: 'Software Development Community',
-      description: 'Foster a collaborative and innovative environment for software developers of all skill levels.',
-      icon: <CodeIcon size={32} className="text-primary" />,
-      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      meetingSchedule: 'Every Saturday, 10:30 AM - 4:00 PM',
-      location: 'iZonehub Makerspace, 4th Floor, Three Anchor House, 54 Jason Moyo Avenue, Harare',
-      leadName: 'Moses Tinotenda Mukudu',
-      leadTitle: 'Software Development Community Lead & Full-Stack Developer',
-      leadBio: 'Passionate website developer from Zimbabwe with expertise in React, Next.js, TypeScript, Django, and Flutter. Lead developer for iZone Devs platform and creator of multiple award-winning applications. Currently mentors developers and leads the Software Development Community at iZonehub.',
-      leadImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-      benefits: [
-        'Access to development tools and software licenses',
-        'Code review sessions with experienced developers', 
-        'Coding bootcamps and intensive workshops',
-        'Hackathons and coding challenges',
-        'Mentorship sessions with industry experts',
-        'Networking events and career opportunities',
-        'Collaborative project opportunities',
-        'Regular workshops on latest technologies and trends'
-      ]
-    },
-    hdc: {
-      title: 'Hardware Development Community',
-      description: 'Collaborate on innovative hardware projects and push the boundaries of technology through hands-on learning.',
-      icon: <CpuIcon size={32} className="text-primary" />,
-      image: 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      meetingSchedule: 'Every Saturday, 10:30 AM - 4:00 PM',
-      location: 'iZonehub Makerspace, 4th Floor, Three Anchor House, 54 Jason Moyo Avenue, Harare',
-      leadName: 'Ronald Tinotenda Tsatsi',
-      leadTitle: 'Hardware Development Community Lead & Electronics Engineer',
-      leadBio: 'Expert in hardware innovation, embedded systems development, and IoT solutions. Leads hands-on workshops in electronics projects, Arduino programming, and circuit design. Passionate about mentoring members in creating practical hardware solutions for real-world challenges.',
-      leadImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-      benefits: [
-        'Access to electronics lab and state-of-the-art equipment',
-        'Component library and resources', 
-        'Hands-on workshops and skill-building sessions',
-        'Prototyping support and guidance from experts',
-        'Hardware design and development workshops',
-        'Connections with manufacturing and industry partners',
-        'Collaborative hardware innovation projects',
-        'Access to tools for turning ideas into reality'
-      ]
-    }
+    sdc: { title: 'Software Development Community', eyebrow: 'Digital builders', description: 'A collaborative space for developers of every skill level to learn, ship, and grow together.', icon: <Code2Icon size={25} />, image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=85', meetingSchedule: 'Every Saturday, 10:30 AM – 4:00 PM', location: 'iZonehub Makerspace, Harare', leadName: 'Moses Tinotenda Mukudu', leadTitle: 'Community Lead · Full-stack developer', leadBio: 'Passionate about helping Zimbabwean developers build useful products with React, TypeScript, Django, and Flutter.', leadImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=85', benefits: ['Access to development tools and software licenses', 'Code review sessions with experienced developers', 'Coding bootcamps and intensive workshops', 'Hackathons and coding challenges', 'Mentorship and career conversations', 'Collaborative project opportunities'] },
+    hdc: { title: 'Hardware Development Community', eyebrow: 'Hands-on makers', description: 'A practical community for people exploring electronics, embedded systems, prototyping, and IoT.', icon: <CpuIcon size={25} />, image: 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?auto=format&fit=crop&w=1400&q=85', meetingSchedule: 'Every Saturday, 10:30 AM – 4:00 PM', location: 'iZonehub Makerspace, Harare', leadName: 'Ronald Tinotenda Tsatsi', leadTitle: 'Community Lead · Electronics engineer', leadBio: 'Focused on turning curious experiments into practical hardware through electronics, Arduino, embedded systems, and IoT.', leadImage: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=85', benefits: ['Access to the electronics lab and equipment', 'Component library and build resources', 'Hands-on workshops and skill-building', 'Prototyping support from experienced makers', 'Hardware design and development sessions', 'Connections with manufacturing partners'] },
   };
   const community = communities[id as keyof typeof communities];
-  if (!community) {
-    return <div className="min-h-screen bg-dark py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Community Not Found</h1>
-            <p className="text-white/70 mb-8">
-              The community you're looking for doesn't exist.
-            </p>
-            <Button href="/communities" variant="primary">
-              View All Communities
-            </Button>
-          </div>
-        </div>
-      </div>;
-  }
-  return <div className="min-h-screen bg-dark">
-      {/* Hero section */}
-      <div className="relative h-80 md:h-96 flex items-center" style={{
-      backgroundImage: `linear-gradient(to bottom, rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url(${community.image})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-    }}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="flex items-center mb-4">
-              <div className="p-3 bg-primary/20 rounded-lg mr-4">
-                {community.icon}
-              </div>
-              <h1 className="text-4xl font-bold">{community.title}</h1>
-            </div>
-            <p className="text-xl text-white/80 mb-6">
-              {community.description}
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button href="#join" variant="primary" size="lg">
-                Join Community
-              </Button>
-              <Button href="#projects" variant="outline" size="lg">
-                View Projects
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Main content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main content */}
-          <div className="lg:col-span-2">
-            <section className="mb-16">
-              <SectionTitle title="About This Community" centered={false} />
-              <p className="text-white/70 mb-6">
-                {community.description} Our meetings are held{' '}
-                {community.meetingSchedule} at {community.location || 'iZonehub Makerspace, 4th Floor, Three Anchor House, 54 Jason Moyo Avenue, Harare'}.
-              </p>
-              <p className="text-white/70 mb-6">
-                Whether you're a beginner looking to learn or an experienced
-                professional wanting to collaborate and share knowledge, our
-                community welcomes all skill levels and backgrounds.
-              </p>
-              <p className="text-white/70">
-                Join us to work on exciting projects, develop new skills, and
-                connect with other tech enthusiasts in Zimbabwe.
-              </p>
-            </section>
-            <section className="mb-16" id="projects">
-              <SectionTitle title="Current Projects" centered={false} />
-              {loadingProjects ? (
-                <div className="text-center py-8">
-                  <div className="text-white/70">Loading community projects...</div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {projects.length > 0 ? (
-                    projects.map((project) => (
-                      <div key={project.id} className="bg-dark-lighter p-6 rounded-lg border border-neutral/20 hover:border-primary/40 transition-all duration-300">
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-xl font-bold">{project.title}</h3>
-                          {project.featured && (
-                            <span className="bg-primary/20 text-primary px-2 py-1 rounded text-xs font-medium">
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-white/70 mb-4">{project.description}</p>
-                        {project.technologies && project.technologies.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {project.technologies.slice(0, 4).map((tech: string, index: number) => (
-                              <span key={index} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">
-                                {tech}
-                              </span>
-                            ))}
-                            {project.technologies.length > 4 && (
-                              <span className="text-white/60 text-xs">+{project.technologies.length - 4} more</span>
-                            )}
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              project.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                              project.status === 'in_progress' ? 'bg-blue-500/20 text-blue-400' :
-                              'bg-orange-500/20 text-orange-400'
-                            }`}>
-                              {project.status?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                            </span>
-                            {project.difficulty && (
-                              <span className="text-white/60 text-xs">{project.difficulty}</span>
-                            )}
-                          </div>
-                          <Button href={`/projects/${project.id}`} variant="outline" size="sm">
-                            Learn More
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-12">
-                      <div className="text-white/60 mb-4">
-                        No projects found for this community yet.
-                      </div>
-                      <p className="text-white/40 text-sm mb-6">
-                        Be the first to create a project for the {community.title}!
-                      </p>
-                      <Button href="/admin" variant="primary" size="sm">
-                        Create Project
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-            <section>
-              <SectionTitle title="Community Benefits" centered={false} />
-              <div className="bg-dark-lighter p-6 rounded-lg border border-neutral/20">
-                <ul className="space-y-4">
-                  {community.benefits.map((benefit, index) => <li key={index} className="flex items-start">
-                      <CheckCircleIcon size={20} className="text-primary mr-3 mt-1 flex-shrink-0" />
-                      <span>{benefit}</span>
-                    </li>)}
-                </ul>
-              </div>
-            </section>
-          </div>
-          {/* Sidebar */}
-          <div>
-            <div className="sticky top-24">
-              {/* Community lead */}
-              <div className="bg-dark-lighter rounded-lg border border-neutral/20 overflow-hidden mb-8">
-                <div className="p-6 border-b border-neutral/20">
-                  <h3 className="text-xl font-bold">Community Lead</h3>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mr-4 border-2 border-primary"><User size={32} className="text-primary" /></div>
-                    <div>
-                      <h4 className="font-bold">{community.leadName}</h4>
-                      <p className="text-primary text-sm">
-                        {community.leadTitle}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-white/70 text-sm">{community.leadBio}</p>
-                </div>
-              </div>
-              {/* Meeting schedule */}
-              <div className="bg-dark-lighter rounded-lg border border-neutral/20 overflow-hidden mb-8">
-                <div className="p-6 border-b border-neutral/20">
-                  <h3 className="text-xl font-bold">Meeting Schedule</h3>
-                </div>
-                <div className="p-6">
-                  <p className="text-white/70">{community.meetingSchedule}</p>
-                  <p className="text-white/70 mt-2">
-                    Location: {community.location || 'iZonehub Makerspace, 4th Floor, Three Anchor House, 54 Jason Moyo Avenue, Harare'}
-                  </p>
-                </div>
-              </div>
-              {/* Join form */}
-              <div id="join">
-                <JoinForm />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>;
-};
-export default CommunityDetailPage;
 
+  useEffect(() => {
+    if (!id || !communityMapping[id as keyof typeof communityMapping]) return;
+    const loadProjects = async () => {
+      try {
+        setLoadingProjects(true);
+        const response = await ProjectsService.getProjects({ size: 50 });
+        const keywords = id === 'sdc' ? ['software', 'web', 'app', 'api', 'react', 'javascript', 'python', 'development', 'frontend', 'backend'] : ['hardware', 'iot', 'arduino', 'electronics', 'sensor', 'embedded', 'raspberry', 'circuit'];
+        setProjects(response.items.filter(project => keywords.some(keyword => `${project.title} ${project.description} ${project.technologies?.join(' ') || ''} ${project.category || ''}`.toLowerCase().includes(keyword))).slice(0, 6));
+      } catch (error) { console.error('Error fetching community projects:', error); } finally { setLoadingProjects(false); }
+    };
+    loadProjects();
+  }, [id]);
+
+  if (!community) return <main className="min-h-[70vh] bg-slate-50 px-4 py-24"><div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-card"><h1 className="font-grotesk text-2xl font-bold text-slate-900">Community not found</h1><p className="mt-3 text-sm text-slate-500">The community you are looking for does not exist.</p><Button href="/communities" variant="primary" className="mt-7">View communities</Button></div></main>;
+
+  return <main className="min-h-screen bg-white"><section className="relative overflow-hidden border-b border-slate-100 bg-slate-50 px-4 pb-14 pt-16 sm:px-6 lg:px-8"><div className="pointer-events-none absolute -right-28 -top-24 h-80 w-80 rounded-full bg-orange-100/70 blur-3xl" /><div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_0.82fr]"><div><span className="inline-flex items-center gap-2 font-grotesk text-[11px] font-bold uppercase tracking-[0.2em] text-secondary">{community.eyebrow}</span><h1 className="mt-5 font-grotesk text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">{community.title}</h1><p className="mt-5 max-w-xl text-lg leading-8 text-slate-500">{community.description}</p><div className="mt-8 flex flex-wrap gap-3"><Button href="#join" variant="gradient">Join this community</Button><Button href="#projects" variant="outline">Explore projects</Button></div></div><div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-card"><img src={community.image} alt={community.title} className="h-64 w-full rounded-2xl object-cover sm:h-80" /><div className="absolute bottom-6 left-6 inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-slate-700 shadow-card backdrop-blur"><span className="text-secondary">{community.icon}</span> Open to all skill levels</div></div></div></section><section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[1fr_340px]"><div><div className="grid gap-4 sm:grid-cols-3"><div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-card"><UsersRoundIcon className="text-primary" size={21} /><p className="mt-4 font-grotesk text-xl font-bold text-slate-900">Learn together</p><p className="mt-1 text-xs leading-5 text-slate-500">Practical sessions and friendly feedback.</p></div><div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-card"><CalendarDaysIcon className="text-secondary" size={21} /><p className="mt-4 font-grotesk text-xl font-bold text-slate-900">Every week</p><p className="mt-1 text-xs leading-5 text-slate-500">A consistent rhythm for making progress.</p></div><div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-card"><MapPinIcon className="text-primary" size={21} /><p className="mt-4 font-grotesk text-xl font-bold text-slate-900">In Harare</p><p className="mt-1 text-xs leading-5 text-slate-500">Meet in person or join the conversation online.</p></div></div><section id="projects" className="mt-16"><div className="flex items-end justify-between gap-4"><div><span className="font-grotesk text-[11px] font-bold uppercase tracking-[0.2em] text-secondary">What we are making</span><h2 className="mt-2 font-grotesk text-3xl font-bold text-slate-900">Current projects</h2></div><Button href="/projects" variant="outline" size="sm">All projects <ArrowUpRightIcon size={14} /></Button></div>{loadingProjects ? <div className="mt-7 rounded-3xl bg-slate-50 p-10 text-center text-sm text-slate-500">Loading community projects…</div> : <div className="mt-7 grid gap-5 md:grid-cols-2">{projects.length ? projects.map(project => <article key={project.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:shadow-card-hover"><div className="flex items-start justify-between gap-4"><h3 className="font-grotesk text-xl font-bold text-slate-900">{project.title}</h3>{project.featured && <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary">Featured</span>}</div><p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-500">{project.description}</p>{project.technologies?.length ? <div className="mt-5 flex flex-wrap gap-2">{project.technologies.slice(0, 4).map((tech, index) => <span key={`${tech}-${index}`} className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold text-primary">{tech}</span>)}</div> : null}<div className="mt-6 flex items-center justify-between"><span className="text-xs font-semibold capitalize text-emerald-600">{project.status.replace('_', ' ')}</span><Button href={`/projects/${project.id}`} variant="outline" size="sm">Learn more</Button></div></article>) : <div className="col-span-full rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center text-sm text-slate-500">No projects found for this community yet.</div>}</div>}</section><section className="mt-16"><span className="font-grotesk text-[11px] font-bold uppercase tracking-[0.2em] text-secondary">Why join</span><h2 className="mt-2 font-grotesk text-3xl font-bold text-slate-900">What you get here</h2><div className="mt-7 grid gap-3 sm:grid-cols-2">{community.benefits.map(benefit => <div key={benefit} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-card"><CheckCircle2Icon className="mt-0.5 shrink-0 text-emerald-500" size={18} /><span className="text-sm leading-6 text-slate-600">{benefit}</span></div>)}</div></section></div><aside className="space-y-5 lg:sticky lg:top-24 lg:self-start"><div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-card"><div className="h-2 bg-gradient-to-r from-primary via-secondary to-orange-400" /><div className="p-6"><h2 className="font-grotesk text-xl font-bold text-slate-900">Meet your community lead</h2><div className="mt-5 flex items-center gap-3"><img src={community.leadImage} alt={community.leadName} className="h-14 w-14 rounded-2xl object-cover" /><div><h3 className="text-sm font-bold text-slate-900">{community.leadName}</h3><p className="mt-1 text-xs leading-4 text-primary">{community.leadTitle}</p></div></div><p className="mt-5 text-sm leading-6 text-slate-500">{community.leadBio}</p></div></div><div className="rounded-3xl border border-slate-200 bg-slate-50 p-6"><h2 className="font-grotesk text-xl font-bold text-slate-900">When we meet</h2><p className="mt-4 text-sm font-semibold text-slate-700">{community.meetingSchedule}</p><p className="mt-2 text-sm leading-6 text-slate-500">{community.location}</p></div><div id="join"><JoinForm /></div></aside></div></section></main>;
+};
+
+export default CommunityDetailPage;

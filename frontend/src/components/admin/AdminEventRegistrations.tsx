@@ -168,7 +168,7 @@ const AdminEventRegistrations: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Event Registrations</h2>
-          <p className="text-white/60">Manage event registrations and attendees</p>
+          <p className="text-slate-500">Manage event registrations and attendees</p>
         </div>
         <Button
           onClick={handleExportExcel}
@@ -183,20 +183,20 @@ const AdminEventRegistrations: React.FC = () => {
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" size={20} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
           <input
             type="text"
             placeholder="Search registrations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-lighter border border-white/20 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-primary"
+            className="w-full bg-white border border-white/20 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-primary"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-dark-lighter border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-primary"
+          className="bg-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-primary"
         >
           {statusOptions.map(option => (
             <option key={option.value} value={option.value}>
@@ -208,7 +208,7 @@ const AdminEventRegistrations: React.FC = () => {
         <select
           value={eventFilter}
           onChange={(e) => setEventFilter(e.target.value)}
-          className="bg-dark-lighter border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-primary"
+          className="bg-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-primary"
         >
           <option value="all">All Events</option>
           {/* TODO: Add dynamic event options */}
@@ -241,10 +241,10 @@ const AdminEventRegistrations: React.FC = () => {
       )}
 
       {/* Registrations Table */}
-      <div className="bg-dark-lighter rounded-lg overflow-hidden">
+      <div className="bg-white rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-dark">
+            <thead className="bg-white">
               <tr>
                 <th className="text-left p-4 font-medium">Attendee</th>
                 <th className="text-left p-4 font-medium">Event</th>
@@ -265,7 +265,7 @@ const AdminEventRegistrations: React.FC = () => {
                       <div>
                         <div className="font-medium">{registration.name}</div>
                         {registration.organization && (
-                          <div className="text-sm text-white/60">{registration.organization}</div>
+                          <div className="text-sm text-slate-500">{registration.organization}</div>
                         )}
                       </div>
                     </div>
@@ -274,7 +274,7 @@ const AdminEventRegistrations: React.FC = () => {
                   <td className="p-4">
                     <div>
                       <div className="font-medium">{registration.event?.title || 'Unknown Event'}</div>
-                      <div className="text-sm text-white/60">
+                      <div className="text-sm text-slate-500">
                         {registration.event?.start_date && formatDate(registration.event.start_date)}
                       </div>
                     </div>
@@ -283,12 +283,12 @@ const AdminEventRegistrations: React.FC = () => {
                   <td className="p-4">
                     <div className="text-sm">
                       <div className="flex items-center mb-1">
-                        <Mail size={14} className="mr-2 text-white/40" />
+                        <Mail size={14} className="mr-2 text-slate-400" />
                         {registration.email}
                       </div>
                       {registration.phone && (
                         <div className="flex items-center">
-                          <Phone size={14} className="mr-2 text-white/40" />
+                          <Phone size={14} className="mr-2 text-slate-400" />
                           {registration.phone}
                         </div>
                       )}
@@ -302,7 +302,7 @@ const AdminEventRegistrations: React.FC = () => {
                     </div>
                   </td>
                   
-                  <td className="p-4 text-sm text-white/60">
+                  <td className="p-4 text-sm text-slate-500">
                     {formatDate(registration.created_at)}
                   </td>
                   
@@ -322,7 +322,7 @@ const AdminEventRegistrations: React.FC = () => {
                       <select
                         value={registration.registration_status}
                         onChange={(e) => handleStatusUpdate(registration.id, e.target.value)}
-                        className="bg-dark border border-white/20 rounded px-2 py-1 text-xs"
+                        className="bg-white border border-white/20 rounded px-2 py-1 text-xs"
                       >
                         <option value="confirmed">Confirmed</option>
                         <option value="cancelled">Cancelled</option>
@@ -348,7 +348,7 @@ const AdminEventRegistrations: React.FC = () => {
           <div className="text-center py-16">
             <Calendar className="mx-auto text-white/30 mb-4" size={48} />
             <h3 className="text-lg font-medium mb-2">No registrations found</h3>
-            <p className="text-white/60">No event registrations match your current filters.</p>
+            <p className="text-slate-500">No event registrations match your current filters.</p>
           </div>
         )}
       </div>
@@ -359,7 +359,7 @@ const AdminEventRegistrations: React.FC = () => {
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
             disabled={page === 1}
-            className="px-4 py-2 bg-dark-lighter border border-white/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark transition-colors"
+            className="px-4 py-2 bg-white border border-white/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark transition-colors"
           >
             Previous
           </button>
@@ -371,7 +371,7 @@ const AdminEventRegistrations: React.FC = () => {
           <button
             onClick={() => setPage(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 bg-dark-lighter border border-white/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark transition-colors"
+            className="px-4 py-2 bg-white border border-white/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark transition-colors"
           >
             Next
           </button>
@@ -381,7 +381,7 @@ const AdminEventRegistrations: React.FC = () => {
       {/* Registration Details Modal */}
       {showDetails && selectedRegistration && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-lighter rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-xl font-bold">Registration Details</h3>
@@ -396,27 +396,27 @@ const AdminEventRegistrations: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Name</label>
-                    <p className="text-white">{selectedRegistration.name}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Name</label>
+                    <p className="text-slate-900">{selectedRegistration.name}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Email</label>
-                    <p className="text-white">{selectedRegistration.email}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Email</label>
+                    <p className="text-slate-900">{selectedRegistration.email}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Phone</label>
-                    <p className="text-white">{selectedRegistration.phone || 'Not provided'}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Phone</label>
+                    <p className="text-slate-900">{selectedRegistration.phone || 'Not provided'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Organization</label>
-                    <p className="text-white">{selectedRegistration.organization || 'Not provided'}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Organization</label>
+                    <p className="text-slate-900">{selectedRegistration.organization || 'Not provided'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Experience Level</label>
-                    <p className="text-white capitalize">{selectedRegistration.experience_level || 'Not specified'}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Experience Level</label>
+                    <p className="text-slate-900 capitalize">{selectedRegistration.experience_level || 'Not specified'}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Status</label>
                     <div className="flex items-center">
                       {getStatusIcon(selectedRegistration.registration_status)}
                       <span className="ml-2 capitalize">{selectedRegistration.registration_status}</span>
@@ -426,28 +426,28 @@ const AdminEventRegistrations: React.FC = () => {
 
                 {selectedRegistration.interests && (
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Interests & Goals</label>
-                    <p className="text-white">{selectedRegistration.interests}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Interests & Goals</label>
+                    <p className="text-slate-900">{selectedRegistration.interests}</p>
                   </div>
                 )}
 
                 {selectedRegistration.dietary_restrictions && (
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Dietary Restrictions</label>
-                    <p className="text-white">{selectedRegistration.dietary_restrictions}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Dietary Restrictions</label>
+                    <p className="text-slate-900">{selectedRegistration.dietary_restrictions}</p>
                   </div>
                 )}
 
                 {selectedRegistration.special_requirements && (
                   <div>
-                    <label className="block text-sm font-medium text-white/60 mb-1">Special Requirements</label>
-                    <p className="text-white">{selectedRegistration.special_requirements}</p>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Special Requirements</label>
+                    <p className="text-slate-900">{selectedRegistration.special_requirements}</p>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-white/60 mb-1">Registration Date</label>
-                  <p className="text-white">{formatDate(selectedRegistration.created_at)}</p>
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Registration Date</label>
+                  <p className="text-slate-900">{formatDate(selectedRegistration.created_at)}</p>
                 </div>
               </div>
             </div>

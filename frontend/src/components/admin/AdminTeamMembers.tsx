@@ -159,7 +159,7 @@ const AdminTeamMembers = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingMember ? 'Edit Team Member' : 'Add New Team Member'}
           </h3>
@@ -172,7 +172,7 @@ const AdminTeamMembers = () => {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="John Doe"
                 />
@@ -184,7 +184,7 @@ const AdminTeamMembers = () => {
                   type="text"
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="Lead Developer"
                 />
@@ -196,7 +196,7 @@ const AdminTeamMembers = () => {
               <textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={4}
                 placeholder="Brief bio or description..."
               />
@@ -209,17 +209,17 @@ const AdminTeamMembers = () => {
                   type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/photo.jpg"
                   disabled={!!selectedFile}
                 />
-                <p className="text-xs text-white/50 mt-1">Or upload a file below</p>
+                <p className="text-xs text-slate-400 mt-1">Or upload a file below</p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-2">Upload Profile Image</label>
                 <div className="flex items-center gap-2">
-                  <label className="flex-1 bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
+                  <label className="flex-1 bg-white border border-slate/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
                     <UploadIcon size={16} className="mr-2" />
                     <span className="text-sm">{selectedFile ? selectedFile.name : 'Choose file...'}</span>
                     <input
@@ -245,7 +245,7 @@ const AdminTeamMembers = () => {
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-white/50 mt-1">JPG, PNG, GIF (max 10MB)</p>
+                <p className="text-xs text-slate-400 mt-1">JPG, PNG, GIF (max 10MB)</p>
               </div>
             </div>
 
@@ -256,7 +256,7 @@ const AdminTeamMembers = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="john@example.com"
                 />
               </div>
@@ -269,7 +269,7 @@ const AdminTeamMembers = () => {
                   type="url"
                   value={formData.github_url}
                   onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://github.com/username"
                 />
               </div>
@@ -280,7 +280,7 @@ const AdminTeamMembers = () => {
                   type="url"
                   value={formData.linkedin_url}
                   onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
@@ -291,7 +291,7 @@ const AdminTeamMembers = () => {
                   type="url"
                   value={formData.twitter_url}
                   onChange={(e) => setFormData({ ...formData, twitter_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://twitter.com/username"
                 />
               </div>
@@ -303,7 +303,7 @@ const AdminTeamMembers = () => {
                 type="number"
                 value={formData.order_priority}
                 onChange={(e) => setFormData({ ...formData, order_priority: parseInt(e.target.value) || 0 })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 placeholder="0"
               />
             </div>
@@ -312,7 +312,7 @@ const AdminTeamMembers = () => {
               <button 
                 type="submit" 
                 disabled={uploading}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploading ? 'Uploading...' : (editingMember ? 'Update Member' : 'Add Member')}
               </button>
@@ -320,7 +320,7 @@ const AdminTeamMembers = () => {
                 type="button" 
                 onClick={handleCancel}
                 disabled={uploading}
-                className="px-6 py-2 bg-neutral text-white rounded-lg hover:bg-neutral/80 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-neutral text-slate-900 rounded-lg hover:bg-neutral/80 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
@@ -332,7 +332,7 @@ const AdminTeamMembers = () => {
       {/* Team Members List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {members.map((member) => (
-          <div key={member.id} className="bg-dark border border-neutral/30 rounded-lg p-6">
+          <div key={member.id} className="bg-white border border-slate/30 rounded-lg p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center">
                 {member.image_url ? (
@@ -355,7 +355,7 @@ const AdminTeamMembers = () => {
                 <div>
                   <h3 className="font-bold text-lg">{member.name}</h3>
                   <p className="text-primary text-sm">{member.role}</p>
-                  <div className="flex items-center mt-1 text-xs text-white/60">
+                  <div className="flex items-center mt-1 text-xs text-slate-500">
                     <span>Order: {member.order_priority}</span>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ const AdminTeamMembers = () => {
             </div>
             
             {member.bio && (
-              <p className="text-white/70 text-sm mb-4 line-clamp-3">{member.bio}</p>
+              <p className="text-slate-500 text-sm mb-4 line-clamp-3">{member.bio}</p>
             )}
             
             <div className="flex items-center justify-between">
@@ -456,7 +456,7 @@ const AdminTeamMembers = () => {
               </div>
             </div>
             
-            <div className="text-xs text-white/50 mt-3">
+            <div className="text-xs text-slate-400 mt-3">
               Created: {new Date(member.created_at).toLocaleDateString()}
             </div>
           </div>
@@ -464,7 +464,7 @@ const AdminTeamMembers = () => {
       </div>
 
       {members.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           No team members found. Add your first team member!
         </div>
       )}

@@ -141,7 +141,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-dark-lighter rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           {/* Header */}
           <div className="flex justify-between items-start mb-6">
@@ -158,7 +158,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
           </div>
 
           {/* Event Details */}
-          <div className="bg-dark rounded-lg p-4 mb-6">
+          <div className="bg-white rounded-lg p-4 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center">
                 <Calendar className="text-primary mr-2" size={16} />
@@ -245,7 +245,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -257,7 +257,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     name="organization"
                     value={formData.organization}
                     onChange={handleInputChange}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                     placeholder="Enter your organization or company"
                   />
                 </div>
@@ -284,7 +284,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     name="experience_level"
                     value={formData.experience_level}
                     onChange={handleInputChange}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="">Select your experience level</option>
                     <option value="beginner">Beginner</option>
@@ -300,7 +300,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     value={formData.interests}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                     placeholder="Tell us about your interests and what you hope to gain from this event..."
                   />
                 </div>
@@ -312,7 +312,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     name="dietary_restrictions"
                     value={formData.dietary_restrictions}
                     onChange={handleInputChange}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                     placeholder="Any dietary restrictions or food allergies?"
                   />
                 </div>
@@ -324,7 +324,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                     value={formData.special_requirements}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full bg-dark border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                     placeholder="Any accessibility needs or special requirements?"
                   />
                 </div>
@@ -345,7 +345,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-6 py-2 bg-primary text-white rounded-full hover:shadow-neon transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-primary text-white rounded-full hover:shadow-card-orange transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? 'Registering...' : 'Complete Registration'}
                   </button>
@@ -360,10 +360,10 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                   <CheckCircle className="text-green-400" size={32} />
                 </div>
                 <h4 className="text-xl font-semibold mb-2">Registration Successful!</h4>
-                <p className="text-white/70 mb-4">
+                <p className="text-slate-500 mb-4">
                   Thank you for registering! You'll receive a confirmation email with your QR code shortly.
                 </p>
-                <p className="text-sm text-white/60">
+                <p className="text-sm text-slate-500">
                   Please bring your QR code to the event for quick check-in.
                 </p>
               </div>

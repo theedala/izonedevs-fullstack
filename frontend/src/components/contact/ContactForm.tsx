@@ -1,111 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { AlertCircleIcon, CheckCircle2Icon, SendIcon } from 'lucide-react';
 import Button from '../ui/Button';
 import { ContactService } from '../../services';
-interface ContactFormProps {
-  className?: string;
-}
-const ContactForm: React.FC<ContactFormProps> = ({
-  className = ''
-}) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+
+interface ContactFormProps { className?: string; }
+
+const ContactForm = ({ className = '' }: ContactFormProps) => {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const {
-      name,
-      value
-    } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const inputClass = 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10';
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFormData(previous => ({ ...previous, [event.target.name]: event.target.value }));
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); setIsSubmitting(true); setError('');
+    try { await ContactService.sendMessage(formData); setIsSubmitted(true); setFormData({ name: '', email: '', subject: '', message: '' }); }
+    catch (err: any) { setError(err.response?.data?.detail || 'Failed to send message. Please try again.'); }
+    finally { setIsSubmitting(false); }
   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError('');
-    
-    try {
-      await ContactService.sendMessage({
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message
-      });
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to send message. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  return <div className={`bg-dark-lighter p-6 rounded-lg border border-neutral/20 ${className}`}>
-      <h3 className="text-2xl font-bold mb-6">Get In Touch</h3>
-      {isSubmitted ? <div className="text-center py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
-            <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h4 className="text-xl font-bold mb-2">Message Sent!</h4>
-          <p className="text-white/70 mb-4">
-            Thank you for contacting us. We'll get back to you as soon as
-            possible.
-          </p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline">
-            Send Another Message
-          </Button>
-        </div> : <form onSubmit={handleSubmit}>
-          {error && <div className="mb-6 p-4 bg-danger/20 border border-danger/30 rounded-lg text-white">
-              {error}
-            </div>}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="name" className="block mb-2 text-sm font-medium">
-                Your Name
-              </label>
-              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="John Doe" />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">
-                Email Address
-              </label>
-              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="john@example.com" />
-            </div>
-          </div>
-          <div className="mb-6">
-            <label htmlFor="subject" className="block mb-2 text-sm font-medium">
-              Subject
-            </label>
-            <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleChange} required className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="How can we help you?" />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="message" className="block mb-2 text-sm font-medium">
-              Message
-            </label>
-            <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={5} className="w-full bg-dark border border-neutral/30 rounded-lg p-3 focus:outline-none focus:border-primary" placeholder="Your message here..."></textarea>
-          </div>
-          <div className="flex justify-end">
-            <button 
-              type="submit" 
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-300 w-full md:w-auto ${
-                isSubmitting 
-                  ? 'bg-primary/50 text-white/50 cursor-not-allowed' 
-                  : 'bg-primary text-white hover:shadow-neon'
-              }`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-            </button>
-          </div>
-        </form>}
-    </div>;
+  return <div className={className}>{isSubmitted ? <div className="py-10 text-center"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"><CheckCircle2Icon size={28} /></div><h3 className="mt-5 font-grotesk text-xl font-bold text-slate-900">Message sent</h3><p className="mt-2 text-sm leading-6 text-slate-500">Thank you for reaching out. We will get back to you as soon as possible.</p><Button onClick={() => setIsSubmitted(false)} variant="outline" className="mt-6">Send another message</Button></div> : <form onSubmit={handleSubmit} className="space-y-5"><div>{error && <div className="mb-5 flex items-start gap-2 rounded-2xl border border-red-100 bg-red-50 p-3 text-xs text-red-600"><AlertCircleIcon size={15} className="mt-0.5 shrink-0" /> {error}</div>}<div className="grid gap-5 sm:grid-cols-2"><div><label htmlFor="name" className="mb-2 block text-xs font-bold text-slate-600">Your name</label><input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className={inputClass} placeholder="John Doe" /></div><div><label htmlFor="email" className="mb-2 block text-xs font-bold text-slate-600">Email address</label><input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className={inputClass} placeholder="john@example.com" /></div></div></div><div><label htmlFor="subject" className="mb-2 block text-xs font-bold text-slate-600">Subject</label><input type="text" id="subject" name="subject" value={formData.subject} onChange={handleChange} required className={inputClass} placeholder="How can we help you?" /></div><div><label htmlFor="message" className="mb-2 block text-xs font-bold text-slate-600">Message</label><textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={6} className={inputClass} placeholder="Your message here…" /></div><button type="submit" disabled={isSubmitting} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-white shadow-card-blue transition hover:-translate-y-0.5 hover:shadow-card-orange disabled:cursor-not-allowed disabled:opacity-50">{isSubmitting ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> Sending…</> : <>Send message <SendIcon size={16} /></>}</button></form>}</div>;
 };
+
 export default ContactForm;

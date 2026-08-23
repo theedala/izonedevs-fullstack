@@ -107,7 +107,7 @@ const AdminCommunities = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingCommunity ? 'Edit Community' : 'Create New Community'}
           </h3>
@@ -120,7 +120,7 @@ const AdminCommunities = () => {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="Community name"
                 />
@@ -131,7 +131,7 @@ const AdminCommunities = () => {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 >
                   <option value="">Select Category</option>
@@ -152,7 +152,7 @@ const AdminCommunities = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={4}
                 required
                 placeholder="Community description and purpose"
@@ -165,7 +165,7 @@ const AdminCommunities = () => {
                 type="url"
                 value={formData.image_url}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -173,7 +173,7 @@ const AdminCommunities = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300"
               >
                 {editingCommunity ? 'Update Community' : 'Create Community'}
               </button>
@@ -184,7 +184,7 @@ const AdminCommunities = () => {
                   setEditingCommunity(null);
                   resetForm();
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -195,7 +195,7 @@ const AdminCommunities = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {communities.map((community) => (
-          <div key={community.id} className="bg-dark border border-neutral/30 rounded-lg p-6">
+          <div key={community.id} className="bg-white border border-slate/30 rounded-lg p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-start space-x-4 flex-1">
                 {community.image_url && (
@@ -211,10 +211,10 @@ const AdminCommunities = () => {
                 
                 <div className="flex-1">
                   <h3 className="text-lg font-bold mb-2">{community.name}</h3>
-                  <p className="text-white/70 mb-3 line-clamp-2">{community.description}</p>
+                  <p className="text-slate-500 mb-3 line-clamp-2">{community.description}</p>
                   
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 text-sm text-white/60">
+                    <div className="flex items-center space-x-4 text-sm text-slate-500">
                       <span className="bg-secondary/20 text-secondary px-2 py-1 rounded text-xs capitalize">
                         {community.category}
                       </span>
@@ -236,7 +236,7 @@ const AdminCommunities = () => {
                     </button>
                   </div>
                   
-                  <div className="text-xs text-white/50 mt-2">
+                  <div className="text-xs text-slate-400 mt-2">
                     Created: {new Date(community.created_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -262,7 +262,7 @@ const AdminCommunities = () => {
       </div>
 
       {communities.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           <UsersIcon size={48} className="mx-auto mb-4 opacity-50" />
           No communities found. Create your first community!
         </div>

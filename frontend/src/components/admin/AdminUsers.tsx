@@ -109,13 +109,13 @@ const AdminUsers = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Manage Users</h2>
-        <div className="text-sm text-white/60">
+        <div className="text-sm text-slate-500">
           Total Users: {users.length}
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-dark border border-neutral/30 rounded-lg p-4 mb-6">
+      <div className="bg-white border border-slate/30 rounded-lg p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">Search Users</label>
@@ -123,7 +123,7 @@ const AdminUsers = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+              className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
               placeholder="Search by name, email, or username"
             />
           </div>
@@ -133,7 +133,7 @@ const AdminUsers = () => {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+              className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
             >
               <option value="">All Roles</option>
               <option value="admin">Admin</option>
@@ -146,7 +146,7 @@ const AdminUsers = () => {
 
       {/* Edit User Form */}
       {showEditForm && editingUser && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">Edit User</h3>
           
           <form onSubmit={handleUpdateUser} className="space-y-4">
@@ -157,7 +157,7 @@ const AdminUsers = () => {
                   type="text"
                   value={editingUser.full_name || ''}
                   onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="Full name"
                 />
               </div>
@@ -168,7 +168,7 @@ const AdminUsers = () => {
                   type="email"
                   value={editingUser.email}
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -177,7 +177,7 @@ const AdminUsers = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300"
               >
                 Update User
               </button>
@@ -187,7 +187,7 @@ const AdminUsers = () => {
                   setShowEditForm(false);
                   setEditingUser(null);
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -197,10 +197,10 @@ const AdminUsers = () => {
       )}
 
       {/* Users List */}
-      <div className="bg-dark border border-neutral/30 rounded-lg overflow-hidden">
+      <div className="bg-white border border-slate/30 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-dark-lighter border-b border-neutral/30">
+            <thead className="bg-white border-b border-slate/30">
               <tr>
                 <th className="text-left px-6 py-3 font-medium">User</th>
                 <th className="text-left px-6 py-3 font-medium">Role</th>
@@ -211,7 +211,7 @@ const AdminUsers = () => {
             </thead>
             <tbody>
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="border-b border-neutral/30 hover:bg-dark-lighter">
+                <tr key={user.id} className="border-b border-slate/30 hover:bg-slate-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-3">
@@ -219,9 +219,9 @@ const AdminUsers = () => {
                       </div>
                       <div>
                         <div className="font-medium">{user.full_name || 'No name set'}</div>
-                        <div className="text-sm text-white/60">{user.email}</div>
+                        <div className="text-sm text-slate-500">{user.email}</div>
                         {user.username && (
-                          <div className="text-xs text-white/50">@{user.username}</div>
+                          <div className="text-xs text-slate-400">@{user.username}</div>
                         )}
                       </div>
                     </div>
@@ -235,9 +235,9 @@ const AdminUsers = () => {
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         className={`ml-2 px-2 py-1 rounded text-xs border-none bg-transparent ${getRoleBadgeColor(user.role)}`}
                       >
-                        <option value="member" className="bg-dark text-white">Member</option>
-                        <option value="moderator" className="bg-dark text-white">Moderator</option>
-                        <option value="admin" className="bg-dark text-white">Admin</option>
+                        <option value="member" className="bg-white text-white">Member</option>
+                        <option value="moderator" className="bg-white text-white">Moderator</option>
+                        <option value="admin" className="bg-white text-white">Admin</option>
                       </select>
                     </div>
                   </td>
@@ -250,7 +250,7 @@ const AdminUsers = () => {
                     </span>
                   </td>
                   
-                  <td className="px-6 py-4 text-sm text-white/60">
+                  <td className="px-6 py-4 text-sm text-slate-500">
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   
@@ -280,7 +280,7 @@ const AdminUsers = () => {
       </div>
 
       {filteredUsers.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           {searchTerm || roleFilter ? (
             <div>
               <UserIcon size={48} className="mx-auto mb-4 opacity-50" />
@@ -297,32 +297,32 @@ const AdminUsers = () => {
       
       {/* User Stats */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-dark border border-neutral/30 rounded-lg p-4 text-center">
+        <div className="bg-white border border-slate/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-primary">
             {users.filter(u => u.role === 'admin').length}
           </div>
-          <div className="text-sm text-white/60">Admins</div>
+          <div className="text-sm text-slate-500">Admins</div>
         </div>
         
-        <div className="bg-dark border border-neutral/30 rounded-lg p-4 text-center">
+        <div className="bg-white border border-slate/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-blue-400">
             {users.filter(u => u.role === 'moderator').length}
           </div>
-          <div className="text-sm text-white/60">Moderators</div>
+          <div className="text-sm text-slate-500">Moderators</div>
         </div>
         
-        <div className="bg-dark border border-neutral/30 rounded-lg p-4 text-center">
+        <div className="bg-white border border-slate/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-green-400">
             {users.filter(u => u.role === 'member').length}
           </div>
-          <div className="text-sm text-white/60">Members</div>
+          <div className="text-sm text-slate-500">Members</div>
         </div>
         
-        <div className="bg-dark border border-neutral/30 rounded-lg p-4 text-center">
+        <div className="bg-white border border-slate/30 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-yellow-400">
             {users.filter(u => u.is_active).length}
           </div>
-          <div className="text-sm text-white/60">Active Users</div>
+          <div className="text-sm text-slate-500">Active Users</div>
         </div>
       </div>
     </div>

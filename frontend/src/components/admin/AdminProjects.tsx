@@ -143,7 +143,7 @@ const AdminProjects = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingProject ? 'Edit Project' : 'Create New Project'}
           </h3>
@@ -156,7 +156,7 @@ const AdminProjects = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="Project title"
                 />
@@ -167,7 +167,7 @@ const AdminProjects = () => {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 >
                   <option value="">Select Category</option>
                   <option value="web">Web Development</option>
@@ -186,7 +186,7 @@ const AdminProjects = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={3}
                 required
                 placeholder="Brief project description"
@@ -198,7 +198,7 @@ const AdminProjects = () => {
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={6}
                 placeholder="Detailed project description, features, goals, etc."
               />
@@ -211,7 +211,7 @@ const AdminProjects = () => {
                   type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
@@ -222,7 +222,7 @@ const AdminProjects = () => {
                   type="url"
                   value={formData.github_url}
                   onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://github.com/username/repo"
                 />
               </div>
@@ -233,7 +233,7 @@ const AdminProjects = () => {
                   type="url"
                   value={formData.demo_url}
                   onChange={(e) => setFormData({ ...formData, demo_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://demo.example.com"
                 />
               </div>
@@ -247,7 +247,7 @@ const AdminProjects = () => {
                   value={techInput}
                   onChange={(e) => setTechInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
-                  className="flex-1 bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="flex-1 bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="Add technology (React, Python, etc.)"
                 />
                 <button
@@ -285,7 +285,7 @@ const AdminProjects = () => {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 >
                   <option value="planning">Planning</option>
                   <option value="in_progress">In Progress</option>
@@ -299,7 +299,7 @@ const AdminProjects = () => {
                 <select
                   value={formData.difficulty}
                   onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 >
                   <option value="">Select Difficulty</option>
                   <option value="beginner">Beginner</option>
@@ -324,7 +324,7 @@ const AdminProjects = () => {
             <div className="flex space-x-4">
               <button 
                 type="submit" 
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300"
               >
                 {editingProject ? 'Update Project' : 'Create Project'}
               </button>
@@ -335,7 +335,7 @@ const AdminProjects = () => {
                   setEditingProject(null);
                   resetForm();
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -346,7 +346,7 @@ const AdminProjects = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {projects.map((project) => (
-          <div key={project.id} className="bg-dark border border-neutral/30 rounded-lg p-6">
+          <div key={project.id} className="bg-white border border-slate/30 rounded-lg p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <div className="flex items-center mb-2">
@@ -358,7 +358,7 @@ const AdminProjects = () => {
                   )}
                 </div>
                 
-                <p className="text-white/70 mb-3 line-clamp-3">{project.description}</p>
+                <p className="text-slate-500 mb-3 line-clamp-3">{project.description}</p>
                 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
@@ -370,7 +370,7 @@ const AdminProjects = () => {
                   </div>
                 )}
                 
-                <div className="flex items-center justify-between text-sm text-white/60">
+                <div className="flex items-center justify-between text-sm text-slate-500">
                   <div className="flex items-center space-x-4">
                     {project.category && (
                       <span className="capitalize">{project.category}</span>
@@ -391,7 +391,7 @@ const AdminProjects = () => {
                         href={project.github_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-white/60 hover:text-primary"
+                        className="text-slate-500 hover:text-primary"
                       >
                         <GithubIcon size={16} />
                       </a>
@@ -401,7 +401,7 @@ const AdminProjects = () => {
                         href={project.demo_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-white/60 hover:text-primary"
+                        className="text-slate-500 hover:text-primary"
                       >
                         <ExternalLinkIcon size={16} />
                       </a>
@@ -430,7 +430,7 @@ const AdminProjects = () => {
       </div>
 
       {projects.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           <CodeIcon size={48} className="mx-auto mb-4 opacity-50" />
           No projects found. Create your first project!
         </div>

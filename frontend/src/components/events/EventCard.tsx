@@ -1,6 +1,12 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon, DollarSignIcon, StarIcon } from 'lucide-react';
+import {
+  CalendarDaysIcon,
+  Clock3Icon,
+  DollarSignIcon,
+  MapPinIcon,
+  SparklesIcon,
+  UsersIcon,
+} from 'lucide-react';
 
 interface EventCardProps {
   id: string;
@@ -18,7 +24,7 @@ interface EventCardProps {
   onRegister?: () => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({
+const EventCard = ({
   id,
   title,
   description,
@@ -31,71 +37,47 @@ const EventCard: React.FC<EventCardProps> = ({
   featured = false,
   registrationFee = 0,
   className = '',
-  onRegister
-}) => {
+  onRegister,
+}: EventCardProps) => {
   return (
-    <div className={`card overflow-hidden hover:transform hover:-translate-y-1 transition-all duration-300 relative ${className}`}>
-      {featured && (
-        <div className="absolute top-4 left-4 bg-secondary text-white text-xs px-2 py-1 rounded-full flex items-center z-10">
-          <StarIcon size={12} className="mr-1" />
-          Featured
+    <article className={`group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-card-hover ${className}`}>
+      <Link to={`/events/${id}`} className="block">
+        <div className="relative h-52 overflow-hidden bg-slate-100">
+          <img src={image} alt={title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+          {featured && (
+            <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+              <SparklesIcon size={12} /> Featured
+            </span>
+          )}
+          <span className="absolute right-4 top-4 rounded-full border border-white/50 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
+            {category || 'Event'}
+          </span>
         </div>
-      )}
-      
-      <div className="h-48 relative overflow-hidden">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
-        <div className="absolute top-4 right-4 bg-primary/90 text-white text-xs px-3 py-1 rounded-full capitalize">
-          {category}
-        </div>
-      </div>
-      
+      </Link>
+
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-2 line-clamp-1">{title}</h3>
-        <p className="text-white/70 mb-4 line-clamp-2">{description}</p>
-        
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm">
-            <CalendarIcon size={16} className="text-primary mr-2 flex-shrink-0" />
-            <span>{date}</span>
-          </div>
-          <div className="flex items-center text-sm">
-            <ClockIcon size={16} className="text-primary mr-2 flex-shrink-0" />
-            <span>{time}</span>
-          </div>
-          <div className="flex items-center text-sm">
-            <MapPinIcon size={16} className="text-primary mr-2 flex-shrink-0" />
-            <span className="line-clamp-1">{location}</span>
-          </div>
-          {attendees > 0 && (
-            <div className="flex items-center text-sm">
-              <UsersIcon size={16} className="text-primary mr-2 flex-shrink-0" />
-              <span>{attendees} attending</span>
-            </div>
-          )}
-          {registrationFee > 0 && (
-            <div className="flex items-center text-sm">
-              <DollarSignIcon size={16} className="text-primary mr-2 flex-shrink-0" />
-              <span>${registrationFee.toFixed(2)}</span>
-            </div>
-          )}
+        <Link to={`/events/${id}`} className="block">
+          <h3 className="font-grotesk text-xl font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary">{title}</h3>
+          <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-500">{description}</p>
+        </Link>
+
+        <div className="mt-5 space-y-2.5 border-t border-slate-100 pt-5 text-xs text-slate-500">
+          <div className="flex items-center gap-2"><CalendarDaysIcon size={15} className="text-primary" /><span>{date}</span></div>
+          <div className="flex items-center gap-2"><Clock3Icon size={15} className="text-primary" /><span>{time}</span></div>
+          <div className="flex items-center gap-2"><MapPinIcon size={15} className="text-primary" /><span className="line-clamp-1">{location}</span></div>
+          {attendees > 0 && <div className="flex items-center gap-2"><UsersIcon size={15} className="text-primary" /><span>{attendees} attending</span></div>}
+          {registrationFee > 0 && <div className="flex items-center gap-2"><DollarSignIcon size={15} className="text-primary" /><span>${registrationFee.toFixed(2)}</span></div>}
         </div>
-        
-        <div className="flex justify-between items-center">
-          <Link 
-            to={`/events/${id}`} 
-            className="text-primary hover:text-primary/80 font-medium transition-colors duration-200"
-          >
-            View Details
-          </Link>
-          <button 
-            onClick={onRegister}
-            className="bg-primary text-white px-4 py-2 rounded-full text-sm hover:shadow-neon-sm transition-all duration-300"
-          >
+
+        <div className="mt-6 flex items-center justify-between gap-3">
+          <Link to={`/events/${id}`} className="inline-flex items-center gap-1 text-sm font-bold text-primary transition-colors hover:text-secondary">View details <span aria-hidden>↗</span></Link>
+          <button onClick={onRegister} className="rounded-full bg-primary px-4 py-2.5 text-xs font-bold text-white shadow-card-blue transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.98]">
             {registrationFee > 0 ? 'Register' : 'RSVP'}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

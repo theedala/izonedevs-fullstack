@@ -119,7 +119,7 @@ const AdminStore = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Manage Store</h2>
-          <p className="text-white/70 text-sm mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             Store Contact: <span className="text-primary font-mono">{STORE_ROUTING_NUMBER}</span>
           </p>
         </div>
@@ -134,7 +134,7 @@ const AdminStore = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingProduct ? 'Edit Product' : 'Add New Product'}
           </h3>
@@ -147,7 +147,7 @@ const AdminStore = () => {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   placeholder="Arduino Uno R3"
                 />
@@ -158,7 +158,7 @@ const AdminStore = () => {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                 >
                   <option value="">Select Category</option>
@@ -177,7 +177,7 @@ const AdminStore = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={3}
                 required
                 placeholder="High-quality product description..."
@@ -192,7 +192,7 @@ const AdminStore = () => {
                   step="0.01"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   min="0"
                 />
@@ -204,7 +204,7 @@ const AdminStore = () => {
                   type="number"
                   value={formData.stock_quantity}
                   onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) || 0 })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   required
                   min="0"
                 />
@@ -218,17 +218,17 @@ const AdminStore = () => {
                   type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/product-image.jpg"
                   disabled={!!selectedFile}
                 />
-                <p className="text-xs text-white/50 mt-1">Or upload a file below</p>
+                <p className="text-xs text-slate-400 mt-1">Or upload a file below</p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-2">Upload Product Image</label>
                 <div className="flex items-center gap-2">
-                  <label className="flex-1 bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
+                  <label className="flex-1 bg-white border border-slate/30 rounded-lg px-3 py-2 cursor-pointer hover:border-primary transition-colors flex items-center">
                     <UploadIcon size={16} className="mr-2" />
                     <span className="text-sm">{selectedFile ? selectedFile.name : 'Choose file...'}</span>
                     <input
@@ -254,7 +254,7 @@ const AdminStore = () => {
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-white/50 mt-1">JPG, PNG, GIF (max 10MB)</p>
+                <p className="text-xs text-slate-400 mt-1">JPG, PNG, GIF (max 10MB)</p>
               </div>
             </div>
 
@@ -262,7 +262,7 @@ const AdminStore = () => {
               <button 
                 type="submit"
                 disabled={uploading}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploading ? 'Uploading...' : (editingProduct ? 'Update Product' : 'Add Product')}
               </button>
@@ -273,7 +273,7 @@ const AdminStore = () => {
                   setEditingProduct(null);
                   resetForm();
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -284,7 +284,7 @@ const AdminStore = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => (
-          <div key={product.id} className="bg-dark border border-neutral/30 rounded-lg p-4">
+          <div key={product.id} className="bg-white border border-slate/30 rounded-lg p-4">
             <div className="flex justify-between items-start mb-3">
               <h3 className="text-lg font-bold line-clamp-1">{product.name}</h3>
               <div className="flex space-x-2">
@@ -303,14 +303,14 @@ const AdminStore = () => {
               </div>
             </div>
             
-            <p className="text-white/70 text-sm mb-3 line-clamp-2">{product.description}</p>
+            <p className="text-slate-500 text-sm mb-3 line-clamp-2">{product.description}</p>
             
             <div className="flex justify-between items-center mb-2">
               <div className="flex items-center text-primary font-bold">
                 <DollarSignIcon size={16} className="mr-1" />
                 ${product.price.toFixed(2)}
               </div>
-              <div className="flex items-center text-white/60 text-sm">
+              <div className="flex items-center text-slate-500 text-sm">
                 <PackageIcon size={14} className="mr-1" />
                 {product.stock_quantity} in stock
               </div>
@@ -333,7 +333,7 @@ const AdminStore = () => {
       </div>
 
       {products.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           No products found. Add your first product!
         </div>
       )}

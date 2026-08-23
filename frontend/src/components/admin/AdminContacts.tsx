@@ -120,7 +120,7 @@ const AdminContacts = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold">Contact Messages</h2>
-          <p className="text-white/60">
+          <p className="text-slate-500">
             {unreadCount} unread of {messages.length} total messages
           </p>
         </div>
@@ -199,20 +199,20 @@ const AdminContacts = () => {
                     {!message.is_read && (
                       <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                     )}
-                    <span className="text-xs text-white/60">
+                    <span className="text-xs text-slate-500">
                       {new Date(message.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
-                <p className="text-sm text-white/70 mb-1">{message.email}</p>
-                <p className="font-medium text-white/90 mb-2 line-clamp-1">{message.subject}</p>
-                <p className="text-sm text-white/70 line-clamp-2">{message.message}</p>
+                <p className="text-sm text-slate-500 mb-1">{message.email}</p>
+                <p className="font-medium text-slate-700 mb-2 line-clamp-1">{message.subject}</p>
+                <p className="text-sm text-slate-500 line-clamp-2">{message.message}</p>
               </div>
             ))}
           </div>
           
           {getFilteredMessages().length === 0 && (
-            <div className="text-center py-8 text-white/60">
+            <div className="text-center py-8 text-slate-500">
               No messages found for the selected filter.
             </div>
           )}
@@ -221,18 +221,18 @@ const AdminContacts = () => {
         {/* Message details */}
         <div className="space-y-4">
           {selectedMessage ? (
-            <div className="bg-dark-lighter rounded-lg border border-neutral/20 p-6">
+            <div className="bg-white rounded-lg border border-slate/20 p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-bold">{selectedMessage.subject}</h3>
-                  <div className="flex items-center mt-2 space-x-4 text-sm text-white/60">
+                  <div className="flex items-center mt-2 space-x-4 text-sm text-slate-500">
                     <span>From: {selectedMessage.name}</span>
                     <span>({selectedMessage.email})</span>
                     {selectedMessage.phone && (
                       <span>Phone: {selectedMessage.phone}</span>
                     )}
                   </div>
-                  <div className="text-xs text-white/50 mt-1">
+                  <div className="text-xs text-slate-400 mt-1">
                     {new Date(selectedMessage.created_at).toLocaleString()}
                   </div>
                 </div>
@@ -256,19 +256,19 @@ const AdminContacts = () => {
                 </div>
               </div>
               
-              <div className="border-t border-neutral/20 pt-4">
+              <div className="border-t border-slate/20 pt-4">
                 <h4 className="font-medium mb-2">Message:</h4>
-                <div className="whitespace-pre-wrap text-white/80">
+                <div className="whitespace-pre-wrap text-slate-600">
                   {selectedMessage.message}
                 </div>
               </div>
               
-              <div className="mt-6 pt-4 border-t border-neutral/20">
+              <div className="mt-6 pt-4 border-t border-slate/20">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center text-sm">
-                      <ClockIcon size={14} className="mr-1 text-white/60" />
-                      <span className="text-white/60">
+                      <ClockIcon size={14} className="mr-1 text-slate-500" />
+                      <span className="text-slate-500">
                         {new Date(selectedMessage.created_at).toLocaleDateString()}
                       </span>
                     </div>
@@ -296,7 +296,7 @@ const AdminContacts = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-dark-lighter rounded-lg border border-neutral/20 p-6 text-center text-white/60">
+            <div className="bg-white rounded-lg border border-slate/20 p-6 text-center text-slate-500">
               <MailIcon size={48} className="mx-auto mb-4 text-white/30" />
               <p>Select a message to view details</p>
             </div>

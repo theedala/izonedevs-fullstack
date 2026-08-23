@@ -125,7 +125,7 @@ const AdminGallery = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">Add New Gallery Image</h3>
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,7 +135,7 @@ const AdminGallery = () => {
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 required
                 placeholder="Image title"
               />
@@ -146,7 +146,7 @@ const AdminGallery = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={3}
                 placeholder="Image description"
               />
@@ -157,7 +157,7 @@ const AdminGallery = () => {
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
               >
                 <option value="">Select Category</option>
                 <option value="facility">Facility</option>
@@ -177,17 +177,17 @@ const AdminGallery = () => {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    className="block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary/90"
+                    className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary/90"
                   />
                 </div>
                 {selectedFile && (
-                  <p className="text-sm text-white/60 mt-2">
+                  <p className="text-sm text-slate-500 mt-2">
                     Selected: {selectedFile.name} ({UploadService.formatFileSize(selectedFile.size)})
                   </p>
                 )}
               </div>
 
-              <div className="text-center text-white/50">OR</div>
+              <div className="text-center text-slate-400">OR</div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">Image URL</label>
@@ -195,7 +195,7 @@ const AdminGallery = () => {
                   type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                   placeholder="https://example.com/image.jpg"
                   disabled={!!selectedFile}
                 />
@@ -206,7 +206,7 @@ const AdminGallery = () => {
               <button 
                 type="submit" 
                 disabled={uploading}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 flex items-center"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300 disabled:opacity-50 flex items-center"
               >
                 {uploading ? (
                   <>
@@ -223,7 +223,7 @@ const AdminGallery = () => {
                   setShowForm(false);
                   resetForm();
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -234,7 +234,7 @@ const AdminGallery = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-dark border border-neutral/30 rounded-lg overflow-hidden group">
+          <div key={item.id} className="bg-white border border-slate/30 rounded-lg overflow-hidden group">
             <div className="aspect-video relative overflow-hidden">
               <img 
                 src={item.image_url.startsWith('data:') || item.image_url.startsWith('http') ? item.image_url : `${window.location.origin}${item.image_url}`} 
@@ -257,7 +257,7 @@ const AdminGallery = () => {
             <div className="p-4">
               <h3 className="font-bold mb-1 line-clamp-1">{item.title}</h3>
               {item.description && (
-                <p className="text-white/70 text-sm mb-2 line-clamp-2">{item.description}</p>
+                <p className="text-slate-500 text-sm mb-2 line-clamp-2">{item.description}</p>
               )}
               <div className="flex justify-between items-center">
                 {item.category && (
@@ -265,7 +265,7 @@ const AdminGallery = () => {
                     {item.category}
                   </span>
                 )}
-                <span className="text-xs text-white/50">
+                <span className="text-xs text-slate-400">
                   {new Date(item.created_at).toLocaleDateString()}
                 </span>
               </div>
@@ -275,7 +275,7 @@ const AdminGallery = () => {
       </div>
 
       {items.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
           No gallery images found. Upload your first image!
         </div>

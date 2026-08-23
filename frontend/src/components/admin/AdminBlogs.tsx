@@ -156,7 +156,7 @@ const AdminBlogs = () => {
       </div>
 
       {showForm && (
-        <div className="bg-dark border border-neutral/30 rounded-lg p-6 mb-6">
+        <div className="bg-white border border-slate/30 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold mb-4">
             {editingPost ? 'Edit Blog Post' : 'Create New Blog Post'}
           </h3>
@@ -168,7 +168,7 @@ const AdminBlogs = () => {
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 required
                 placeholder="Your blog post title"
               />
@@ -180,7 +180,7 @@ const AdminBlogs = () => {
                 type="text"
                 value={formData.author}
                 onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 required
                 placeholder="Author name"
               />
@@ -191,7 +191,7 @@ const AdminBlogs = () => {
               <textarea
                 value={formData.excerpt}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={2}
                 placeholder="Brief description or excerpt"
               />
@@ -202,7 +202,7 @@ const AdminBlogs = () => {
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 rows={10}
                 required
                 placeholder="Write your blog post content here..."
@@ -219,16 +219,16 @@ const AdminBlogs = () => {
                       type="file"
                       accept="image/*"
                       onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                      className="block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary/90"
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary/90"
                     />
                     {selectedFile && (
-                      <p className="text-sm text-white/60 mt-2">
+                      <p className="text-sm text-slate-500 mt-2">
                         Selected: {selectedFile.name} ({UploadService.formatFileSize(selectedFile.size)})
                       </p>
                     )}
                   </div>
                   
-                  <div className="text-center text-white/50">OR</div>
+                  <div className="text-center text-slate-400">OR</div>
                   
                   <div>
                     <label className="block text-sm font-medium mb-2">Image URL</label>
@@ -236,7 +236,7 @@ const AdminBlogs = () => {
                       type="url"
                       value={formData.image_url}
                       onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                      className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                       placeholder="https://example.com/image.jpg"
                       disabled={!!selectedFile}
                     />
@@ -249,7 +249,7 @@ const AdminBlogs = () => {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full bg-dark-lighter border border-neutral/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate/30 rounded-lg px-3 py-2 focus:outline-none focus:border-primary"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -262,7 +262,7 @@ const AdminBlogs = () => {
               <button 
                 type="submit" 
                 disabled={uploading}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-neon transition-all duration-300 disabled:opacity-50 flex items-center"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-card-orange transition-all duration-300 disabled:opacity-50 flex items-center"
               >
                 {uploading ? (
                   <>
@@ -280,7 +280,7 @@ const AdminBlogs = () => {
                   setEditingPost(null);
                   resetForm();
                 }}
-                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300"
+                className="px-6 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-slate-900 transition-all duration-300"
               >
                 Cancel
               </button>
@@ -291,15 +291,15 @@ const AdminBlogs = () => {
 
       <div className="grid grid-cols-1 gap-4">
         {posts.map((post) => (
-          <div key={post.id} className="bg-dark border border-neutral/30 rounded-lg p-4">
+          <div key={post.id} className="bg-white border border-slate/30 rounded-lg p-4">
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h3 className="text-lg font-bold mb-2">{post.title}</h3>
                 {post.excerpt && (
-                  <p className="text-white/70 mb-3">{post.excerpt}</p>
+                  <p className="text-slate-500 mb-3">{post.excerpt}</p>
                 )}
                 
-                <div className="flex flex-wrap gap-4 text-sm text-white/60">
+                <div className="flex flex-wrap gap-4 text-sm text-slate-500">
                   <div className="flex items-center">
                     <FileTextIcon size={16} className="mr-1" />
                     {post.content.length} characters
@@ -344,7 +344,7 @@ const AdminBlogs = () => {
       </div>
 
       {posts.length === 0 && (
-        <div className="text-center py-8 text-white/70">
+        <div className="text-center py-8 text-slate-500">
           No blog posts found. Create your first post!
         </div>
       )}
