@@ -1,4 +1,4 @@
-﻿from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Float, Table
+﻿from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Float, Table, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
@@ -339,6 +339,17 @@ class TeamMember(Base):
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
+
+    # Keep existing local SQLite databases compatible with model additions.
+    # create_all() does not alter already-created tables, so add missing columns
+    # that are required by the current ORM models.
+    if engine.dialect.name == 'sqlite':
+        inspector = inspect(engine)
+        if 'blog_posts' in inspector.get_table_names():
+            columns = {column['name'] for column in inspector.get_columns('blog_posts')}
+            if 'author' not in columns:
+                with engine.begin() as connection:
+                    connection.execute(text("ALTER TABLE blog_posts ADD COLUMN author VARCHAR(255) NOT NULL DEFAULT 'iZonehub Team'"))
 
 
 def get_db():
