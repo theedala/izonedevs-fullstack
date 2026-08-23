@@ -29,6 +29,15 @@ class Settings(BaseSettings):
     # File uploads
     max_file_size: int = 10485760  # 10MB
     upload_dir: str = "uploads"
+
+    # S3-compatible object storage (MinIO locally, S3-compatible provider in production)
+    s3_endpoint_url: str = ""
+    s3_public_url: str = ""
+    s3_bucket: str = "izonedevs"
+    s3_access_key: str = ""
+    s3_secret_key: str = ""
+    s3_region: str = "us-east-1"
+    s3_secure: bool = False
     
     # Email (Gmail SMTP)
     smtp_host: str = "smtp.gmail.com"

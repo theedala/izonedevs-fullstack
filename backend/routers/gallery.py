@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 from typing import List, Optional
-import os
 import uuid
-from PIL import Image
+
 
 from database import get_db, GalleryItem, User
 from schemas import (
@@ -12,8 +11,9 @@ from schemas import (
     APIResponse,
     PaginatedResponse
 )
-from auth import get_current_active_user, require_admin
-from config import settings
+from auth import require_admin
+from storage import object_storage
+from upload import resize_image_bytes
 
 router = APIRouter()
 
@@ -70,73 +70,35 @@ async def create_gallery_item(
     return db_item
 
 
-@router.post("/upload", response_model=APIResponse)
+@router.post('/upload', response_model=APIResponse)
 async def upload_gallery_image(
     file: UploadFile = File(...),
-    title: str = "",
-    description: str = "",
-    category: str = "",
+    title: str = Form(''),
+    description: str = Form(''),
+    category: str = Form('general'),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(require_admin),
 ):
-    """Upload a new gallery image (admin only) - stores as base64"""
-    import base64
-    from PIL import Image
-    from io import BytesIO
-    
-    # Validate file type
-    if not file.content_type.startswith('image/'):
-        raise HTTPException(status_code=400, detail="File must be an image")
-    
+    """Upload a resized gallery image to MinIO or the configured local fallback."""
+    if not file.content_type or not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail='File must be an image')
     try:
-        # Read file content
-        content = await file.read()
-        
-        # Open image with PIL
-        img = Image.open(BytesIO(content))
-        
-        # Convert RGBA to RGB if necessary
-        if img.mode == 'RGBA':
-            background = Image.new('RGB', img.size, (255, 255, 255))
-            background.paste(img, mask=img.split()[3])
-            img = background
-        
-        # Resize if too large (max 1200x1200)
-        max_size = (1200, 1200)
-        img.thumbnail(max_size, Image.Resampling.LANCZOS)
-        
-        # Convert to base64
-        buffered = BytesIO()
-        img_format = 'JPEG' if img.mode == 'RGB' else 'PNG'
-        img.save(buffered, format=img_format, quality=85, optimize=True)
-        img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
-        
-        # Create data URL
-        mime_type = f"image/{img_format.lower()}"
-        image_url = f"data:{mime_type};base64,{img_base64}"
-        
-        # Create gallery item
+        content, content_type = resize_image_bytes(await file.read())
+        image_url = object_storage.put_bytes(content, f'gallery/{uuid.uuid4()}.jpg', content_type)
         db_item = GalleryItem(
-            title=title or file.filename,
+            title=title or file.filename or 'Gallery image',
             description=description,
             image_url=image_url,
-            category=category or "general"
+            category=category or 'general',
         )
-        
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
-        
-        return APIResponse(
-            success=True,
-            message="Image uploaded successfully",
-            data={
-                "id": db_item.id,
-                "image_url": image_url
-            }
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process image: {str(e)}")
+        return APIResponse(success=True, message='Image uploaded successfully', data={'id': db_item.id, 'image_url': image_url})
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f'Failed to process image: {error}')
 
 
 @router.delete("/{item_id}", response_model=APIResponse)
@@ -150,11 +112,7 @@ async def delete_gallery_item(
     if not item:
         raise HTTPException(status_code=404, detail="Gallery item not found")
     
-    # Delete file if exists
-    if item.image_url.startswith('/uploads/'):
-        file_path = os.path.join(settings.upload_dir, item.image_url[9:])  # Remove '/uploads/'
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    object_storage.delete_url(item.image_url)
     
     db.delete(item)
     db.commit()

@@ -1,11 +1,95 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
-from sqlalchemy.orm import Session
+from io import BytesIO
 import os
 import uuid
-from PIL import Image
-from typing import Optional
 
-from database import get_db, User
-from schemas import APIResponse
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from PIL import Image
+from sqlalchemy.orm import Session
+
 from auth import get_current_active_user
-from config import settings\n\nrouter = APIRouter()\n\n\nALLOWED_IMAGE_EXTENSIONS = {\".jpg\", \".jpeg\", \".png\", \".gif\", \".webp\"}\nALLOWED_FILE_EXTENSIONS = {\".pdf\", \".doc\", \".docx\", \".txt\", \".zip\"}\n\n\ndef validate_file_size(file: UploadFile):\n    \"\"\"Validate file size\"\"\"\n    if hasattr(file, 'size') and file.size > settings.max_file_size:\n        raise HTTPException(\n            status_code=413,\n            detail=f\"File too large. Maximum size is {settings.max_file_size} bytes\"\n        )\n\n\ndef validate_file_type(filename: str, allowed_extensions: set):\n    \"\"\"Validate file extension\"\"\"\n    file_extension = os.path.splitext(filename)[1].lower()\n    if file_extension not in allowed_extensions:\n        raise HTTPException(\n            status_code=400,\n            detail=f\"File type not allowed. Allowed types: {', '.join(allowed_extensions)}\"\n        )\n    return file_extension\n\n\ndef resize_image(image_path: str, max_size: tuple = (1200, 1200)):\n    \"\"\"Resize image if it's too large\"\"\"\n    try:\n        with Image.open(image_path) as img:\n            if img.size[0] > max_size[0] or img.size[1] > max_size[1]:\n                img.thumbnail(max_size, Image.Resampling.LANCZOS)\n                img.save(image_path, optimize=True, quality=85)\n    except Exception as e:\n        print(f\"Error resizing image {image_path}: {e}\")\n\n\n@router.post(\"/image\", response_model=APIResponse)\nasync def upload_image(\n    file: UploadFile = File(...),\n    category: str = Form(\"general\"),\n    resize: bool = Form(True),\n    current_user: User = Depends(get_current_active_user)\n):\n    \"\"\"Upload an image file\"\"\"\n    validate_file_size(file)\n    file_extension = validate_file_type(file.filename, ALLOWED_IMAGE_EXTENSIONS)\n    \n    # Generate unique filename\n    filename = f\"{uuid.uuid4()}{file_extension}\"\n    \n    # Create category directory\n    upload_path = os.path.join(settings.upload_dir, \"images\", category)\n    os.makedirs(upload_path, exist_ok=True)\n    \n    file_path = os.path.join(upload_path, filename)\n    \n    # Save file\n    try:\n        with open(file_path, \"wb\") as buffer:\n            content = await file.read()\n            buffer.write(content)\n        \n        # Resize image if requested\n        if resize:\n            resize_image(file_path)\n        \n        image_url = f\"/uploads/images/{category}/{filename}\"\n        \n        return APIResponse(\n            success=True,\n            message=\"Image uploaded successfully\",\n            data={\n                \"filename\": filename,\n                \"url\": image_url,\n                \"category\": category\n            }\n        )\n    \n    except Exception as e:\n        # Clean up file if something went wrong\n        if os.path.exists(file_path):\n            os.remove(file_path)\n        raise HTTPException(status_code=500, detail=f\"Failed to upload image: {str(e)}\")\n\n\n@router.post(\"/avatar\", response_model=APIResponse)\nasync def upload_avatar(\n    file: UploadFile = File(...),\n    db: Session = Depends(get_db),\n    current_user: User = Depends(get_current_active_user)\n):\n    \"\"\"Upload user avatar\"\"\"\n    validate_file_size(file)\n    file_extension = validate_file_type(file.filename, ALLOWED_IMAGE_EXTENSIONS)\n    \n    # Generate unique filename with user ID\n    filename = f\"avatar_{current_user.id}_{uuid.uuid4()}{file_extension}\"\n    \n    # Create avatars directory\n    upload_path = os.path.join(settings.upload_dir, \"avatars\")\n    os.makedirs(upload_path, exist_ok=True)\n    \n    file_path = os.path.join(upload_path, filename)\n    \n    try:\n        # Remove old avatar if exists\n        if current_user.avatar_url and current_user.avatar_url.startswith('/uploads/'):\n            old_file_path = os.path.join(settings.upload_dir, current_user.avatar_url[9:])\n            if os.path.exists(old_file_path):\n                os.remove(old_file_path)\n        \n        # Save new avatar\n        with open(file_path, \"wb\") as buffer:\n            content = await file.read()\n            buffer.write(content)\n        \n        # Resize to avatar size (square)\n        resize_image(file_path, max_size=(400, 400))\n        \n        avatar_url = f\"/uploads/avatars/{filename}\"\n        \n        # Update user avatar URL\n        current_user.avatar_url = avatar_url\n        db.commit()\n        \n        return APIResponse(\n            success=True,\n            message=\"Avatar uploaded successfully\",\n            data={\n                \"avatar_url\": avatar_url\n            }\n        )\n    \n    except Exception as e:\n        # Clean up file if something went wrong\n        if os.path.exists(file_path):\n            os.remove(file_path)\n        raise HTTPException(status_code=500, detail=f\"Failed to upload avatar: {str(e)}\")\n\n\n@router.post(\"/file\", response_model=APIResponse)\nasync def upload_file(\n    file: UploadFile = File(...),\n    category: str = Form(\"documents\"),\n    current_user: User = Depends(get_current_active_user)\n):\n    \"\"\"Upload a general file\"\"\"\n    validate_file_size(file)\n    file_extension = validate_file_type(file.filename, ALLOWED_FILE_EXTENSIONS)\n    \n    # Generate unique filename\n    filename = f\"{uuid.uuid4()}{file_extension}\"\n    \n    # Create category directory\n    upload_path = os.path.join(settings.upload_dir, \"files\", category)\n    os.makedirs(upload_path, exist_ok=True)\n    \n    file_path = os.path.join(upload_path, filename)\n    \n    try:\n        with open(file_path, \"wb\") as buffer:\n            content = await file.read()\n            buffer.write(content)\n        \n        file_url = f\"/uploads/files/{category}/{filename}\"\n        \n        return APIResponse(\n            success=True,\n            message=\"File uploaded successfully\",\n            data={\n                \"filename\": filename,\n                \"url\": file_url,\n                \"category\": category,\n                \"original_name\": file.filename\n            }\n        )\n    \n    except Exception as e:\n        # Clean up file if something went wrong\n        if os.path.exists(file_path):\n            os.remove(file_path)\n        raise HTTPException(status_code=500, detail=f\"Failed to upload file: {str(e)}\")
+from config import settings
+from database import User, get_db
+from schemas import APIResponse
+from storage import object_storage
+
+router = APIRouter()
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+ALLOWED_FILE_EXTENSIONS = {'.pdf', '.doc', '.docx', '.txt', '.zip'}
+
+
+def validate_file_size(file: UploadFile) -> None:
+    if file.size is not None and file.size > settings.max_file_size:
+        raise HTTPException(status_code=413, detail=f'File too large. Maximum size is {settings.max_file_size} bytes')
+
+
+def validate_file_type(filename: str, allowed_extensions: set[str]) -> str:
+    extension = os.path.splitext(filename)[1].lower()
+    if extension not in allowed_extensions:
+        raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed types: {', '.join(sorted(allowed_extensions))}")
+    return extension
+
+
+def resize_image_bytes(content: bytes, max_size: tuple[int, int] = (1200, 1200)) -> tuple[bytes, str]:
+    with Image.open(BytesIO(content)) as image:
+        image.load()
+        if image.mode in ('RGBA', 'LA', 'P'):
+            background = Image.new('RGB', image.convert('RGBA').size, (255, 255, 255))
+            background.paste(image.convert('RGBA'), mask=image.convert('RGBA').getchannel('A'))
+            image = background
+        image.thumbnail(max_size, Image.Resampling.LANCZOS)
+        output = BytesIO()
+        image.save(output, format='JPEG', optimize=True, quality=85)
+        return output.getvalue(), 'image/jpeg'
+
+
+@router.post('/image', response_model=APIResponse)
+async def upload_image(file: UploadFile = File(...), category: str = Form('general'), resize: bool = Form(True), current_user: User = Depends(get_current_active_user)):
+    validate_file_size(file)
+    filename = file.filename or 'upload.bin'
+    extension = validate_file_type(filename, ALLOWED_IMAGE_EXTENSIONS)
+    content = await file.read()
+    content_type = file.content_type or 'application/octet-stream'
+    if resize:
+        try:
+            content, content_type = resize_image_bytes(content)
+            extension = '.jpg'
+        except Exception as error:
+            raise HTTPException(status_code=400, detail=f'Invalid image: {error}')
+    object_name = f'images/{category}/{uuid.uuid4()}{extension}'
+    try:
+        image_url = object_storage.put_bytes(content, object_name, content_type)
+        return APIResponse(success=True, message='Image uploaded successfully', data={'filename': os.path.basename(object_name), 'url': image_url, 'category': category})
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f'Failed to upload image: {error}')
+
+
+@router.post('/avatar', response_model=APIResponse)
+async def upload_avatar(file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    validate_file_size(file)
+    filename = file.filename or 'avatar.jpg'
+    extension = validate_file_type(filename, ALLOWED_IMAGE_EXTENSIONS)
+    content = await file.read()
+    try:
+        content, content_type = resize_image_bytes(content, (400, 400))
+        object_name = f'avatars/avatar_{current_user.id}_{uuid.uuid4()}.jpg'
+        object_storage.delete_url(current_user.avatar_url)
+        avatar_url = object_storage.put_bytes(content, object_name, content_type)
+        current_user.avatar_url = avatar_url
+        db.commit()
+        return APIResponse(success=True, message='Avatar uploaded successfully', data={'avatar_url': avatar_url})
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f'Failed to upload avatar: {error}')
+
+
+@router.post('/file', response_model=APIResponse)
+async def upload_file(file: UploadFile = File(...), category: str = Form('documents'), current_user: User = Depends(get_current_active_user)):
+    validate_file_size(file)
+    filename = file.filename or 'upload.bin'
+    extension = validate_file_type(filename, ALLOWED_FILE_EXTENSIONS)
+    content = await file.read()
+    object_name = f'files/{category}/{uuid.uuid4()}{extension}'
+    try:
+        file_url = object_storage.put_bytes(content, object_name, file.content_type)
+        return APIResponse(success=True, message='File uploaded successfully', data={'filename': os.path.basename(object_name), 'url': file_url, 'category': category, 'original_name': filename})
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=f'Failed to upload file: {error}')
