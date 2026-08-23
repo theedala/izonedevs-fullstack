@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { X, Calendar, MapPin, Clock, DollarSign, CheckCircle } from '../ui/icons';
 import Button from '../ui/Button';
+import { apiClient } from '../../services/api';
 
 interface Event {
   id: number;
@@ -92,18 +93,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
     setErrors({});
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/events/${event.id}/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Registration failed');
-      }
+      await apiClient.post(`/events/${event.id}/register`, formData);
 
       setStep(3); // Success step
       setTimeout(() => {

@@ -84,6 +84,7 @@ export {
   CloseSquare as XIcon,
   Flash as ZapIcon,
   Add as PlusIcon,
+  PlayCircle as PlayCircleIcon,
   DocumentUpload as UploadIcon,
   Link as GithubIcon,
   Link as LinkedinIcon,
