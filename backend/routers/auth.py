@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 
 from database import get_db, User
-from schemas import UserCreate, User as UserSchema, Token, LoginRequest, APIResponse
+from schemas import UserCreate, User as UserSchema, Token, LoginRequest, RefreshTokenRequest, APIResponse
 from auth import (
     authenticate_user, 
     create_access_token, 
@@ -68,7 +68,8 @@ async def admin_create_user(user_data: UserCreate, db: Session = Depends(get_db)
         email=user_data.email,
         username=user_data.username,
         full_name=user_data.full_name,
-        hashed_password=hashed_password
+        hashed_password=hashed_password,
+        role="user",
     )
     db.add(db_user)
     db.commit()
@@ -130,7 +131,7 @@ async def login_json(login_data: LoginRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/refresh", response_model=Token)
-async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
+async def refresh_token(refresh_data: RefreshTokenRequest, db: Session = Depends(get_db)):
     """Refresh access token using refresh token"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -138,12 +139,9 @@ async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     
-    try:
-        username = verify_token(refresh_token, credentials_exception)
-        user = db.query(User).filter(User.username == username).first()
-        if user is None:
-            raise credentials_exception
-    except:
+    username = verify_token(refresh_data.refresh_token, credentials_exception, expected_type="refresh")
+    user = db.query(User).filter(User.username == username, User.is_active == True).first()
+    if user is None:
         raise credentials_exception
     
     # Create new tokens
@@ -157,70 +155,4 @@ async def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
         access_token=access_token,
         refresh_token=new_refresh_token,
         token_type="bearer"
-    )
-
-
-@router.post("/bootstrap-admin", response_model=APIResponse)
-async def bootstrap_admin(db: Session = Depends(get_db)):
-    """One-time endpoint to upgrade first user to admin. Remove after use."""
-    # Check if any admin exists
-    admin_exists = db.query(User).filter(User.role == "admin").first()
-    if admin_exists:
-        raise HTTPException(
-            status_code=400,
-            detail="Admin user already exists. This endpoint is disabled."
-        )
-    
-    # Get first user (ID 1)
-    first_user = db.query(User).filter(User.id == 1).first()
-    if not first_user:
-        raise HTTPException(status_code=404, detail="No users found")
-    
-    # Upgrade to admin
-    first_user.role = "admin"
-    db.commit()
-    db.refresh(first_user)
-    
-    return APIResponse(
-        success=True,
-        message=f"User '{first_user.username}' upgraded to admin successfully",
-        data={"user_id": first_user.id, "role": first_user.role}
-    )
-
-@router.post("/reset-admin-password", response_model=APIResponse)
-async def reset_admin_password(db: Session = Depends(get_db)):
-    """One-time endpoint to reset admin password. Remove after use."""
-    # Get user with username 'admin'
-    admin_user = db.query(User).filter(User.username == "admin").first()
-    if not admin_user:
-        # Create admin user if doesn't exist
-        from auth import get_password_hash
-        admin_user = User(
-            username="admin",
-            email="admin@izonedevs.co.zw",
-            full_name="Administrator",
-            hashed_password=get_password_hash("Admin@iZone2025!"),
-            role="admin",
-            is_active=True
-        )
-        db.add(admin_user)
-        db.commit()
-        db.refresh(admin_user)
-        return APIResponse(
-            success=True,
-            message="Admin user created successfully",
-            data={"username": "admin", "password": "Admin@iZone2025!"}
-        )
-    
-    # Reset password
-    from auth import get_password_hash
-    admin_user.hashed_password = get_password_hash("Admin@iZone2025!")
-    admin_user.role = "admin"
-    admin_user.is_active = True
-    db.commit()
-    
-    return APIResponse(
-        success=True,
-        message="Admin password reset successfully",
-        data={"username": "admin", "password": "Admin@iZone2025!"}
     )

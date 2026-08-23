@@ -1,9 +1,20 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import os
 import json
 
 from database import SessionLocal, User, Community, Project, Event, BlogPost, Product, GalleryItem, Tag
 from auth import get_password_hash
+from config import settings
+
+
+def get_seed_admin_password() -> str:
+    password = os.getenv('ADMIN_PASSWORD')
+    if password:
+        return password
+    if settings.environment.lower() in {'production', 'prod'}:
+        raise RuntimeError('ADMIN_PASSWORD must be set before seeding in production')
+    return 'admin123'
 
 
 def create_sample_data():
@@ -16,7 +27,7 @@ def create_sample_data():
             email="admin@izonedevs.com",
             username="admin",
             full_name="iZone Administrator",
-            hashed_password=get_password_hash("admin123"),
+            hashed_password=get_password_hash(get_seed_admin_password()),
             role="admin",
             bio="System administrator for iZonehub Makerspace",
             skills=json.dumps(["Python", "React", "System Administration"]),
@@ -357,7 +368,7 @@ def create_sample_data():
         
         print("\nDefault admin credentials:")
         print("Email: admin@izonedevs.com")
-        print("Password: admin123")
+        print("Password: use ADMIN_PASSWORD (development fallback: admin123)")
         
     except Exception as e:
         print(f"Error creating sample data: {e}")

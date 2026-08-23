@@ -27,7 +27,8 @@ const CartPage = () => {
   const getImageUrl = (url?: string) => {
     if (!url) return fallbackImage;
     if (url.startsWith('data:') || url.startsWith('http')) return url;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${url}`;
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+    return `${apiBaseUrl.replace(/\/api\/?$/, '')}${url}`;
   };
 
   const whatsappMessage = encodeURIComponent([

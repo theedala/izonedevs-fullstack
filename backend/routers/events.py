@@ -1,17 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
+from html import escape
 
-from database import get_db, Event, User, event_attendees
+from database import get_db, Event, User
 from schemas import (
-    Event as EventSchema, 
-    EventCreate, 
-    EventUpdate, 
+    Event as EventSchema,
+    EventCreate,
+    EventUpdate,
+    EventRegistrationCreate,
     APIResponse,
     PaginatedResponse
 )
-from auth import get_current_active_user, require_admin
+from auth import require_admin
 
 router = APIRouter()
 
@@ -163,36 +165,30 @@ async def delete_event(
     )
 
 
-    return APIResponse(
-        success=True,
-        message="Event featured status updated successfully"
-    )
-
 # Compatibility route for frontend - redirects to event_registrations
 @router.post("/{event_id}/register")
 async def register_for_event_compat(
     event_id: int,
-    registration_data: dict,
+    registration_data: EventRegistrationCreate,
     db: Session = Depends(get_db)
 ):
     """Register for an event (compatibility endpoint)"""
-    from schemas import EventRegistrationCreate
-    from database import EventRegistration, Event
+    from database import EventRegistration
     
     # Check if event exists
     event = db.query(Event).filter(Event.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     
-    if event.status in ["cancelled", "completed"]:
+    if event.status in ["cancelled", "completed"] or event.end_date <= datetime.utcnow():
         raise HTTPException(status_code=400, detail="Event is not available for registration")
-    
+
     # Check if user already registered
     existing_registration = db.query(EventRegistration).filter(
         EventRegistration.event_id == event_id,
-        EventRegistration.email == registration_data.get("email")
+        EventRegistration.email == registration_data.email
     ).first()
-    
+
     if existing_registration:
         raise HTTPException(status_code=400, detail="You are already registered for this event")
     
@@ -209,14 +205,14 @@ async def register_for_event_compat(
     # Create registration
     new_registration = EventRegistration(
         event_id=event_id,
-        name=registration_data.get("name"),
-        email=registration_data.get("email"),
-        phone=registration_data.get("phone"),
-        organization=registration_data.get("organization"),
-        experience_level=registration_data.get("experience_level"),
-        interests=registration_data.get("interests"),
-        dietary_restrictions=registration_data.get("dietary_restrictions"),
-        special_requirements=registration_data.get("special_requirements"),
+        name=registration_data.name,
+        email=registration_data.email,
+        phone=registration_data.phone,
+        organization=registration_data.organization,
+        experience_level=registration_data.experience_level,
+        interests=registration_data.interests,
+        dietary_restrictions=registration_data.dietary_restrictions,
+        special_requirements=registration_data.special_requirements,
         registration_status="confirmed"
     )
     
@@ -229,18 +225,20 @@ async def register_for_event_compat(
         from services.email_service import EmailService
         
         # Format event details
-        start_date = event.start_date.strftime("%B %d, %Y at %I:%M %p")
-        location = event.location or "To be announced"
+        start_date = escape(event.start_date.strftime("%B %d, %Y at %I:%M %p"))
+        event_title = escape(event.title)
+        attendee_name = escape(new_registration.name)
+        location = escape(event.location or "To be announced")
         
         # Create email body
         email_body = f"""
         <h2>Registration Confirmed!</h2>
-        <p>Hi {new_registration.name},</p>
-        <p>Thank you for registering for <strong>{event.title}</strong>!</p>
+        <p>Hi {attendee_name},</p>
+        <p>Thank you for registering for <strong>{event_title}</strong>!</p>
         
         <h3>Event Details:</h3>
         <ul>
-            <li><strong>Event:</strong> {event.title}</li>
+            <li><strong>Event:</strong> {event_title}</li>
             <li><strong>Date:</strong> {start_date}</li>
             <li><strong>Location:</strong> {location}</li>
         </ul>

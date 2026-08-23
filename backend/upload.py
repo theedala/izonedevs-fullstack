@@ -1,5 +1,6 @@
 from io import BytesIO
 import os
+import re
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -20,6 +21,18 @@ ALLOWED_FILE_EXTENSIONS = {'.pdf', '.doc', '.docx', '.txt', '.zip'}
 def validate_file_size(file: UploadFile) -> None:
     if file.size is not None and file.size > settings.max_file_size:
         raise HTTPException(status_code=413, detail=f'File too large. Maximum size is {settings.max_file_size} bytes')
+
+
+def safe_path_segment(value: str, fallback: str) -> str:
+    cleaned = re.sub(r'[^a-zA-Z0-9_-]+', '-', (value or '').strip()).strip('-_')
+    return cleaned[:80] or fallback
+
+
+async def read_upload(file: UploadFile) -> bytes:
+    content = await file.read(settings.max_file_size + 1)
+    if len(content) > settings.max_file_size:
+        raise HTTPException(status_code=413, detail=f'File too large. Maximum size is {settings.max_file_size} bytes')
+    return content
 
 
 def validate_file_type(filename: str, allowed_extensions: set[str]) -> str:
@@ -47,15 +60,18 @@ async def upload_image(file: UploadFile = File(...), category: str = Form('gener
     validate_file_size(file)
     filename = file.filename or 'upload.bin'
     extension = validate_file_type(filename, ALLOWED_IMAGE_EXTENSIONS)
-    content = await file.read()
+    content = await read_upload(file)
     content_type = file.content_type or 'application/octet-stream'
-    if resize:
-        try:
+    try:
+        if resize:
             content, content_type = resize_image_bytes(content)
             extension = '.jpg'
-        except Exception as error:
-            raise HTTPException(status_code=400, detail=f'Invalid image: {error}')
-    object_name = f'images/{category}/{uuid.uuid4()}{extension}'
+        else:
+            with Image.open(BytesIO(content)) as image:
+                image.verify()
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=f'Invalid image: {error}')
+    object_name = f'images/{safe_path_segment(category, "general")}/{uuid.uuid4()}{extension}'
     try:
         image_url = object_storage.put_bytes(content, object_name, content_type)
         return APIResponse(success=True, message='Image uploaded successfully', data={'filename': os.path.basename(object_name), 'url': image_url, 'category': category})
@@ -68,7 +84,7 @@ async def upload_avatar(file: UploadFile = File(...), db: Session = Depends(get_
     validate_file_size(file)
     filename = file.filename or 'avatar.jpg'
     extension = validate_file_type(filename, ALLOWED_IMAGE_EXTENSIONS)
-    content = await file.read()
+    content = await read_upload(file)
     try:
         content, content_type = resize_image_bytes(content, (400, 400))
         object_name = f'avatars/avatar_{current_user.id}_{uuid.uuid4()}.jpg'
@@ -86,8 +102,8 @@ async def upload_file(file: UploadFile = File(...), category: str = Form('docume
     validate_file_size(file)
     filename = file.filename or 'upload.bin'
     extension = validate_file_type(filename, ALLOWED_FILE_EXTENSIONS)
-    content = await file.read()
-    object_name = f'files/{category}/{uuid.uuid4()}{extension}'
+    content = await read_upload(file)
+    object_name = f'files/{safe_path_segment(category, "documents")}/{uuid.uuid4()}{extension}'
     try:
         file_url = object_storage.put_bytes(content, object_name, file.content_type)
         return APIResponse(success=True, message='File uploaded successfully', data={'filename': os.path.basename(object_name), 'url': file_url, 'category': category, 'original_name': filename})

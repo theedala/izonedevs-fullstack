@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import mimetypes
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -46,6 +46,8 @@ class ObjectStorage:
 
     def put_bytes(self, content: bytes, object_name: str, content_type: Optional[str] = None) -> str:
         object_name = object_name.lstrip('/')
+        if not object_name or '..' in PurePosixPath(object_name).parts:
+            raise ValueError('Invalid object name')
         content_type = content_type or mimetypes.guess_type(object_name)[0] or 'application/octet-stream'
         if self.enabled:
             self.ensure_bucket()
@@ -69,8 +71,9 @@ class ObjectStorage:
                     pass
             return
         if stored_url.startswith('/uploads/'):
-            local_path = Path(settings.upload_dir) / stored_url.removeprefix('/uploads/')
-            if local_path.exists():
+            upload_root = Path(settings.upload_dir).resolve()
+            local_path = (upload_root / stored_url.removeprefix('/uploads/')).resolve()
+            if upload_root in local_path.parents and local_path.is_file():
                 local_path.unlink()
 
     def url_for(self, object_name: str) -> str:
@@ -85,7 +88,10 @@ class ObjectStorage:
         parsed = urlparse(stored_url)
         path = parsed.path.lstrip('/')
         prefix = f"{self.bucket}/"
-        return path.removeprefix(prefix) if path.startswith(prefix) else path or None
+        if not path.startswith(prefix):
+            return None
+        key = path.removeprefix(prefix)
+        return key if key and '..' not in PurePosixPath(key).parts else None
 
 
 object_storage = ObjectStorage()

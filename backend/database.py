@@ -1,4 +1,4 @@
-﻿from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Float, Table, inspect, text
+﻿from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Float, Table, UniqueConstraint, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
@@ -58,7 +58,7 @@ class User(Base):
     avatar_url = Column(String(500), nullable=True)
     bio = Column(Text, nullable=True)
     skills = Column(Text, nullable=True)  # JSON string
-    role = Column(String(50), default="admin")  # admin, moderator, member
+    role = Column(String(50), default="user", nullable=False)  # admin, moderator, member
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -287,6 +287,9 @@ class ContactMessage(Base):
 
 class EventRegistration(Base):
     __tablename__ = "event_registrations"
+    __table_args__ = (
+        UniqueConstraint('event_id', 'email', name='uq_event_registration_event_email'),
+    )
     
     id = Column(Integer, primary_key=True, index=True)
     event_id = Column(Integer, ForeignKey('events.id'), nullable=False)
@@ -350,6 +353,13 @@ def create_tables():
             if 'author' not in columns:
                 with engine.begin() as connection:
                     connection.execute(text("ALTER TABLE blog_posts ADD COLUMN author VARCHAR(255) NOT NULL DEFAULT 'iZonehub Team'"))
+
+        if 'event_registrations' in inspector.get_table_names():
+            with engine.begin() as connection:
+                connection.execute(text(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS uq_event_registration_event_email "
+                    "ON event_registrations (event_id, email)"
+                ))
 
 
 def get_db():

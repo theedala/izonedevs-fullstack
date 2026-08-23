@@ -5,10 +5,21 @@ Run this script to populate the database with initial data
 
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import os
 import json
 
 from database import SessionLocal, User, Community, Project, Event, BlogPost, Product, GalleryItem, Tag
 from auth import get_password_hash
+from config import settings
+
+
+def get_seed_admin_password() -> str:
+    password = os.getenv('ADMIN_PASSWORD')
+    if password:
+        return password
+    if settings.environment.lower() in {'production', 'prod'}:
+        raise RuntimeError('ADMIN_PASSWORD must be set before seeding in production')
+    return 'admin123'
 
 def create_admin_user(db: Session):
     """Create an admin user"""
@@ -18,7 +29,7 @@ def create_admin_user(db: Session):
             email="admin@izonedevs.com",
             username="admin",
             full_name="Admin User",
-            hashed_password=get_password_hash("admin123"),
+            hashed_password=get_password_hash(get_seed_admin_password()),
             role="admin",
             bio="System administrator for iZonehub Makerspace",
             skills='["Python", "JavaScript", "System Administration", "Project Management"]',
@@ -387,9 +398,9 @@ def main():
         print(f"   Blog Posts: {len(blog_posts)}")
         print(f"   Products: {len(products)}")
         print(f"   Gallery Items: {len(gallery_items)}")
-        print("\n🔑 Admin Login:")
+        print("🔑 Admin Login:")
         print("   Username: admin")
-        print("   Password: admin123")
+        print("   Password: use ADMIN_PASSWORD (development fallback: admin123)")
         
     except Exception as e:
         print(f"❌ Error during seeding: {e}")

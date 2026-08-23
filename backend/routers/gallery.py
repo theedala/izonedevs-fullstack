@@ -13,7 +13,7 @@ from schemas import (
 )
 from auth import require_admin
 from storage import object_storage
-from upload import resize_image_bytes
+from upload import read_upload, resize_image_bytes, safe_path_segment
 
 router = APIRouter()
 
@@ -83,8 +83,9 @@ async def upload_gallery_image(
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail='File must be an image')
     try:
-        content, content_type = resize_image_bytes(await file.read())
-        image_url = object_storage.put_bytes(content, f'gallery/{uuid.uuid4()}.jpg', content_type)
+        content, content_type = resize_image_bytes(await read_upload(file))
+        safe_category = safe_path_segment(category, 'general')
+        image_url = object_storage.put_bytes(content, f'gallery/{safe_category}/{uuid.uuid4()}.jpg', content_type)
         db_item = GalleryItem(
             title=title or file.filename or 'Gallery image',
             description=description,

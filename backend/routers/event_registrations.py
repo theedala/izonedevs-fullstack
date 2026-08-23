@@ -35,7 +35,7 @@ async def register_for_event(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     
-    if event.status in ["cancelled", "completed"]:
+    if event.status in ["cancelled", "completed"] or event.end_date <= datetime.utcnow():
         raise HTTPException(status_code=400, detail="Event is not available for registration")
     
     # Check if user already registered

@@ -34,7 +34,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
     
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type": "access"})
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
 
@@ -43,17 +43,18 @@ def create_refresh_token(data: dict):
     """Create a JWT refresh token"""
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type": "refresh"})
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
 
 
-def verify_token(token: str, credentials_exception):
+def verify_token(token: str, credentials_exception, expected_type: Optional[str] = None):
     """Verify and decode a JWT token"""
     try:
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         username: str = payload.get("sub")
-        if username is None:
+        token_type = payload.get("type")
+        if username is None or (expected_type and token_type != expected_type):
             raise credentials_exception
         return username
     except JWTError:
@@ -67,7 +68,7 @@ def authenticate_user(db: Session, username: str, password: str):
         (User.username == username) | (User.email == username)
     ).first()
     
-    if not user:
+    if not user or not user.is_active:
         return False
     if not verify_password(password, user.hashed_password):
         return False
@@ -86,7 +87,7 @@ async def get_current_user(
     )
     
     token = credentials.credentials
-    username = verify_token(token, credentials_exception)
+    username = verify_token(token, credentials_exception, expected_type="access")
     
     user = db.query(User).filter(User.username == username).first()
     if user is None:

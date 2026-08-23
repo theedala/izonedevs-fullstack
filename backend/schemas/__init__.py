@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 from typing import Optional, List, Generic, TypeVar
 from datetime import datetime
 import json
@@ -16,7 +16,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(min_length=8, max_length=128)
 
 
 class UserUpdate(BaseModel):
@@ -87,7 +87,7 @@ class ProjectBase(BaseModel):
     image_url: Optional[str] = None
     github_url: Optional[str] = None
     demo_url: Optional[str] = None
-    technologies: Optional[List[str]] = []
+    technologies: List[str] = Field(default_factory=list)
     category: Optional[str] = None
     difficulty: Optional[str] = None
 
@@ -146,8 +146,14 @@ class EventBase(BaseModel):
     location: Optional[str] = None
     is_online: bool = False
     meeting_url: Optional[str] = None
-    max_attendees: Optional[int] = None
-    registration_fee: float = 0.0
+    max_attendees: Optional[int] = Field(default=None, gt=0)
+    registration_fee: float = Field(default=0.0, ge=0)
+
+    @model_validator(mode='after')
+    def validate_dates(self):
+        if self.end_date <= self.start_date:
+            raise ValueError('end_date must be later than start_date')
+        return self
 
 
 class EventCreate(EventBase):
@@ -164,9 +170,15 @@ class EventUpdate(BaseModel):
     location: Optional[str] = None
     is_online: Optional[bool] = None
     meeting_url: Optional[str] = None
-    max_attendees: Optional[int] = None
-    registration_fee: Optional[float] = None
+    max_attendees: Optional[int] = Field(default=None, gt=0)
+    registration_fee: Optional[float] = Field(default=None, ge=0)
     status: Optional[str] = None
+
+    @model_validator(mode='after')
+    def validate_dates(self):
+        if self.start_date is not None and self.end_date is not None and self.end_date <= self.start_date:
+            raise ValueError('end_date must be later than start_date')
+        return self
 
 
 class Event(EventBase):
@@ -184,6 +196,11 @@ class Event(EventBase):
 class EventRegistrationBase(BaseModel):
     name: str
     email: EmailStr
+
+    @field_validator('email')
+    @classmethod
+    def normalize_email(cls, value: EmailStr) -> str:
+        return str(value).strip().lower()
     phone: Optional[str] = None
     organization: Optional[str] = None
     experience_level: Optional[str] = None
@@ -257,10 +274,10 @@ class BlogPost(BlogPostBase):
 class ProductBase(BaseModel):
     name: str
     description: str
-    price: float
+    price: float = Field(ge=0)
     image_url: Optional[str] = None
     category: str
-    stock_quantity: int = 0
+    stock_quantity: int = Field(default=0, ge=0)
 
 
 class ProductCreate(ProductBase):
@@ -270,10 +287,10 @@ class ProductCreate(ProductBase):
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    price: Optional[float] = None
+    price: Optional[float] = Field(default=None, ge=0)
     image_url: Optional[str] = None
     category: Optional[str] = None
-    stock_quantity: Optional[int] = None
+    stock_quantity: Optional[int] = Field(default=None, ge=0)
     is_available: Optional[bool] = None
 
 
@@ -424,6 +441,10 @@ class TokenData(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
 
 
 # API Response schemas

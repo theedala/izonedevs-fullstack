@@ -3,15 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
+import logging
 import os
+from pathlib import Path
 
 from config import settings
 from database import engine, create_tables
-from routers import auth, users, communities, projects, events, blog, store, gallery, contact, upload, event_registrations, partners, team_members, admin_dashboard
+from upload import router as upload_router
+from routers import auth, users, communities, projects, events, blog, store, gallery, contact, event_registrations, partners, team_members, admin_dashboard
+
+logger = logging.getLogger(__name__)
 
 # Create upload directory if it doesn't exist (must happen before app initialization)
-if not os.path.exists(settings.upload_dir):
-    os.makedirs(settings.upload_dir)
+os.makedirs(settings.upload_dir, exist_ok=True)
 
 
 
@@ -34,14 +38,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173", 
-        "https://izonedevs.co.zw",
-        "https://www.izonedevs.co.zw",
-        "https://coral-app-ycosl.ondigitalocean.app",
-        "*"  # Allow all origins as fallback
-    ],
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -59,7 +56,7 @@ app.include_router(events.router, prefix="/api/events", tags=["Events"])
 app.include_router(blog.router, prefix="/api/blog", tags=["Blog"])
 app.include_router(store.router, prefix="/api/store", tags=["Store"])
 app.include_router(gallery.router, prefix="/api/gallery", tags=["Gallery"])
-app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
+app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
 app.include_router(partners.router, prefix="/api/partners", tags=["Partners"])
 app.include_router(team_members.router, prefix="/api/team-members", tags=["Team Members"])
@@ -80,27 +77,17 @@ async def health_check():
 # Serve frontend application static files
 # Determine the correct path to frontend dist
 backend_dir = os.path.dirname(__file__)
-project_root = os.path.abspath(os.path.join(backend_dir, ".."))
 frontend_dist = os.path.join(backend_dir, "dist")
 
-print(f"[STARTUP] Backend directory: {backend_dir}")
-print(f"[STARTUP] Project root: {project_root}")
-print(f"[STARTUP] Looking for frontend at: {frontend_dist}")
-print(f"[STARTUP] Frontend exists: {os.path.exists(frontend_dist)}")
+frontend_dist_path = Path(frontend_dist).resolve()
 
-if os.path.exists(frontend_dist):
-    print(f"[STARTUP] Frontend contents: {os.listdir(frontend_dist)}")
-    # Mount assets directory
-    assets_dir = os.path.join(frontend_dist, "assets")
-    if os.path.exists(assets_dir):
-        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
-        print(f"[STARTUP] Mounted /assets from: {assets_dir}")
-        print(f"[STARTUP] Assets contents: {os.listdir(assets_dir)}")
+if frontend_dist_path.exists():
+    assets_dir = frontend_dist_path / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+    logger.info("Serving frontend from %s", frontend_dist_path)
 else:
-    print(f"[WARNING] Frontend dist not found")
-    print(f"[WARNING] Parent directory contents: {os.listdir(project_root)}")
-    if os.path.exists(os.path.join(project_root, "frontend")):
-        print(f"[WARNING] Frontend folder contents: {os.listdir(os.path.join(project_root, 'frontend'))}")
+    logger.warning("Frontend dist not found at %s", frontend_dist_path)
 
 
 # SPA catchall - must be LAST, serves index.html for non-API routes
@@ -116,10 +103,12 @@ async def serve_spa(full_path: str):
     if not os.path.exists(frontend_dist):
         return {"error": "Frontend not deployed", "path": full_path}
     
-    # Try to serve a specific file if it exists
-    file_path = os.path.join(frontend_dist, full_path)
-    if os.path.isfile(file_path):
-        return FileResponse(file_path)
+    # Resolve the requested path and reject traversal outside the built SPA.
+    file_path = (frontend_dist_path / full_path).resolve()
+    if frontend_dist_path not in file_path.parents and file_path != frontend_dist_path:
+        raise HTTPException(status_code=404, detail="Not Found")
+    if file_path.is_file():
+        return FileResponse(str(file_path))
     
     # Otherwise serve index.html for SPA routing
     index_path = os.path.join(frontend_dist, "index.html")

@@ -1,14 +1,29 @@
-import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from typing import Optional
+from html import escape
 import asyncio
 import os
+import smtplib
 from config import settings
 
 
 class EmailService:
+    @staticmethod
+    def _html_text(value, fallback: str = "Not provided") -> str:
+        """Render untrusted values safely inside HTML email content."""
+        if value is None or not str(value).strip():
+            value = fallback
+        return escape(str(value))
+
+    @staticmethod
+    def _header_text(value, fallback: str = "No Subject") -> str:
+        """Keep user-controlled text safe for email headers."""
+        if value is None or not str(value).strip():
+            value = fallback
+        return str(value).replace("\r", " ").replace("\n", " ")
+
     @staticmethod
     def create_email_template(content: str, title: str = "iZonehub Makerspace") -> str:
         """Create a simple, beautiful email template"""
@@ -18,7 +33,7 @@ class EmailService:
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title}</title>
+    <title>{EmailService._html_text(title, 'iZonehub Makerspace')}</title>
 </head>
 <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
     <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -65,7 +80,7 @@ class EmailService:
         """Send email notification"""
         try:
             # Use SMTP if configured, otherwise log to console
-            if settings.smtp_host and settings.smtp_user:
+            if settings.smtp_host and settings.smtp_user and settings.smtp_password:
                 return await EmailService._send_smtp_email(to_email, subject, body, from_name, is_html)
             else:
                 # Fallback to console logging
@@ -143,7 +158,7 @@ class EmailService:
         """Send email with attachment"""
         try:
             # Use SMTP if configured
-            if settings.smtp_host and settings.smtp_user:
+            if settings.smtp_host and settings.smtp_user and settings.smtp_password:
                 return await EmailService._send_smtp_email_with_attachment(
                     to_email, subject, body, attachment_path, attachment_name, from_name, is_html
                 )
@@ -225,7 +240,13 @@ class EmailService:
     @staticmethod
     async def send_contact_notification(contact_data: dict) -> bool:
         """Send notification for new contact message"""
-        subject = f"New Contact Message: {contact_data.get('subject', 'No Subject')}"
+        contact_subject = EmailService._header_text(contact_data.get('subject'), 'No Subject')
+        subject = f"New Contact Message: {contact_subject}"
+        contact_name = EmailService._html_text(contact_data.get('name'))
+        contact_email = EmailService._html_text(contact_data.get('email'))
+        contact_phone = EmailService._html_text(contact_data.get('phone'))
+        contact_message_subject = EmailService._html_text(contact_data.get('subject'))
+        contact_message = EmailService._html_text(contact_data.get('message'), 'No message provided')
         
         content = f"""
 <h2 style="color: #2c378b;">New Contact Message 📬</h2>
@@ -233,18 +254,18 @@ class EmailService:
 <p>A new contact message has been received from the iZonehub website:</p>
 
 <div style="background-color: #f8f9ff; border-left: 4px solid #2c378b; padding: 20px; margin: 20px 0; border-radius: 5px;">
-    <p><strong>Name:</strong> {contact_data.get('name', 'Not provided')}</p>
-    <p><strong>Email:</strong> {contact_data.get('email', 'Not provided')}</p>
-    <p><strong>Phone:</strong> {contact_data.get('phone', 'Not provided')}</p>
-    <p><strong>Subject:</strong> {contact_data.get('subject', 'Not provided')}</p>
+    <p><strong>Name:</strong> {contact_name}</p>
+    <p><strong>Email:</strong> {contact_email}</p>
+    <p><strong>Phone:</strong> {contact_phone}</p>
+    <p><strong>Subject:</strong> {contact_message_subject}</p>
 </div>
 
 <div style="background-color: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 5px;">
     <h3 style="margin-top: 0;">Message:</h3>
-    <p>{contact_data.get('message', 'No message provided')}</p>
+    <p>{contact_message}</p>
 </div>
 
-<p>Please respond to the sender at: <strong>{contact_data.get('email', 'Not provided')}</strong></p>
+<p>Please respond to the sender at: <strong>{contact_email}</strong></p>
         """
         
         html_body = EmailService.create_email_template(content, "New Contact Message")
@@ -259,7 +280,14 @@ class EmailService:
     @staticmethod
     async def send_join_application_notification(join_data: dict) -> bool:
         """Send notification for new community join application"""
-        subject = f"New Community Join Application - {join_data.get('community', 'Unknown')}"
+        community = EmailService._header_text(join_data.get('community'), 'Unknown')
+        subject = f"New Community Join Application - {community}"
+        join_name = EmailService._html_text(join_data.get('name'))
+        join_email = EmailService._html_text(join_data.get('email'))
+        join_phone = EmailService._html_text(join_data.get('phone'))
+        join_community = EmailService._html_text(join_data.get('community'))
+        join_experience = EmailService._html_text(join_data.get('experience'))
+        join_interests = EmailService._html_text(join_data.get('interests'), 'No details provided')
         
         content = f"""
 <h2 style="color: #f56e00;">New Community Application 🚀</h2>
@@ -267,19 +295,19 @@ class EmailService:
 <p>A new community join application has been received:</p>
 
 <div style="background-color: #fff8f0; border-left: 4px solid #f56e00; padding: 20px; margin: 20px 0; border-radius: 5px;">
-    <p><strong>Name:</strong> {join_data.get('name', 'Not provided')}</p>
-    <p><strong>Email:</strong> {join_data.get('email', 'Not provided')}</p>
-    <p><strong>Phone:</strong> {join_data.get('phone', 'Not provided')}</p>
-    <p><strong>Preferred Community:</strong> {join_data.get('community', 'Not provided')}</p>
-    <p><strong>Experience Level:</strong> {join_data.get('experience', 'Not provided')}</p>
+    <p><strong>Name:</strong> {join_name}</p>
+    <p><strong>Email:</strong> {join_email}</p>
+    <p><strong>Phone:</strong> {join_phone}</p>
+    <p><strong>Preferred Community:</strong> {join_community}</p>
+    <p><strong>Experience Level:</strong> {join_experience}</p>
 </div>
 
 <div style="background-color: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 5px;">
     <h3 style="margin-top: 0;">Interests and Goals:</h3>
-    <p>{join_data.get('interests', 'No details provided')}</p>
+    <p>{join_interests}</p>
 </div>
 
-<p>Please review this application and contact the applicant at: <strong>{join_data.get('email', 'Not provided')}</strong></p>
+<p>Please review this application and contact the applicant at: <strong>{join_email}</strong></p>
         """
         
         html_body = EmailService.create_email_template(content, "New Community Application")
@@ -300,32 +328,40 @@ class EmailService:
         qr_code_path: str
     ) -> bool:
         """Send event registration confirmation with QR code"""
-        subject = f"Registration Confirmed: {event.title}"
-        
-        # Format date and time
-        start_date = event.start_date.strftime("%B %d, %Y at %I:%M %p")
-        end_date = event.end_date.strftime("%I:%M %p") if event.start_date.date() == event.end_date.date() else event.end_date.strftime("%B %d, %Y at %I:%M %p")
+        event_title_header = EmailService._header_text(event.title, 'iZonehub Event')
+        subject = f"Registration Confirmed: {event_title_header}"
+        safe_event_title = EmailService._html_text(event.title, 'iZonehub Event')
+        safe_name = EmailService._html_text(name)
+        safe_start_date = EmailService._html_text(event.start_date.strftime("%B %d, %Y at %I:%M %p"))
+        safe_end_date = EmailService._html_text(
+            event.end_date.strftime("%I:%M %p")
+            if event.start_date.date() == event.end_date.date()
+            else event.end_date.strftime("%B %d, %Y at %I:%M %p")
+        )
+        fee = float(event.registration_fee or 0)
         
         # Build location info
         if event.is_online:
-            location_info = f"<strong>Online Event</strong><br>Meeting Link: {event.meeting_url or 'Will be provided before the event'}"
+            safe_meeting_url = EmailService._html_text(event.meeting_url, 'Will be provided before the event')
+            location_info = f"<strong>Online Event</strong><br>Meeting Link: {safe_meeting_url}"
         else:
-            location_info = f"<strong>Location:</strong> {event.location or 'iZonehub Makerspace'}"
+            safe_location = EmailService._html_text(event.location, 'iZonehub Makerspace')
+            location_info = f"<strong>Location:</strong> {safe_location}"
         
         # Create simple email content
         content = f"""
 <h2 style="color: #2c378b; margin-bottom: 20px;">Registration Confirmed! 🎉</h2>
 
-<p>Dear <strong>{name}</strong>,</p>
+        <p>Dear <strong>{safe_name}</strong>,</p>
 
 <p>Thank you for registering for our event! Your registration has been confirmed and we're excited to see you there.</p>
 
 <div style="background-color: #f8f9ff; border-left: 4px solid #2c378b; padding: 20px; margin: 20px 0; border-radius: 5px;">
     <h3 style="color: #2c378b; margin: 0 0 15px 0;">📅 Event Details</h3>
-    <p style="margin: 5px 0;"><strong>Event:</strong> {event.title}</p>
-    <p style="margin: 5px 0;"><strong>Date & Time:</strong> {start_date} - {end_date}</p>
+    <p style="margin: 5px 0;"><strong>Event:</strong> {safe_event_title}</p>
+    <p style="margin: 5px 0;"><strong>Date & Time:</strong> {safe_start_date} - {safe_end_date}</p>
     <p style="margin: 5px 0;">{location_info}</p>
-    <p style="margin: 5px 0;"><strong>Registration Fee:</strong> ${event.registration_fee:.2f}</p>
+    <p style="margin: 5px 0;"><strong>Registration Fee:</strong> ${fee:.2f}</p>
 </div>
 
 <div style="background-color: #fff8f0; border-left: 4px solid #f56e00; padding: 20px; margin: 20px 0; border-radius: 5px;">
@@ -360,7 +396,7 @@ class EmailService:
         """
         
         # Create HTML email
-        html_body = EmailService.create_email_template(content, f"Registration Confirmed - {event.title}")
+        html_body = EmailService.create_email_template(content, f"Registration Confirmed - {event_title_header}")
         
         # Send email with QR code attachment
         return await EmailService._send_email_with_attachment(

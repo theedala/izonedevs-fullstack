@@ -34,7 +34,8 @@ const ProductPage = () => {
   const getImageUrl = (url?: string) => {
     if (!url) return fallbackImage;
     if (url.startsWith('data:') || url.startsWith('http')) return url;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${url}`;
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+    return `${apiBaseUrl.replace(/\/api\/?$/, '')}${url}`;
   };
 
   if (loading) return <div className="min-h-[70vh] bg-white flex items-center justify-center"><div className="flex items-center gap-3 text-slate-500"><LoaderIcon className="animate-spin text-secondary" size={22} /><span className="text-sm font-medium">Loading product…</span></div></div>;
