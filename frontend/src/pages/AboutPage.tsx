@@ -3,6 +3,7 @@ import { ArrowUpRightIcon, CheckCircle2Icon } from '../components/ui/icons';
 import CodeBlock from '../components/ui/CodeBlock';
 import TeamMember from '../components/about/TeamMember';
 import { TeamMembersService } from '../services';
+import { getMediaUrl } from '../utils/media';
 
 interface TeamMemberData { name: string; role: string; bio: string; image: string; social: { github?: string; linkedin?: string; twitter?: string }; }
 
@@ -43,7 +44,7 @@ const AboutPage = () => {
     const fetchTeamMembers = async () => {
       try {
         const response = await TeamMembersService.getTeamMembers({ page: 1, size: 50, is_active: true });
-        const formatted = response.items.map(member => ({ name: member.name, role: member.role, bio: member.bio || '', image: member.image_url || fallbackTeamMembers[0].image, social: { github: member.github_url || undefined, linkedin: member.linkedin_url || undefined, twitter: member.twitter_url || undefined } }));
+        const formatted = response.items.map(member => ({ name: member.name, role: member.role, bio: member.bio || '', image: getMediaUrl(member.image_url) || fallbackTeamMembers[0].image, social: { github: member.github_url || undefined, linkedin: member.linkedin_url || undefined, twitter: member.twitter_url || undefined } }));
         setTeamMembers(formatted.length ? formatted : fallbackTeamMembers);
       } catch (error) { console.error('Error fetching team members:', error); setTeamMembers(fallbackTeamMembers); }
       finally { setLoadingTeam(false); }

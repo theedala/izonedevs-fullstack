@@ -11,6 +11,8 @@ interface TeamMemberProps {
   };
   className?: string;
 }
+const fallbackTeamImage = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=85';
+
 const TeamMember: React.FC<TeamMemberProps> = ({
   name,
   role,
@@ -21,7 +23,7 @@ const TeamMember: React.FC<TeamMemberProps> = ({
 }) => {
   return <div className={`card overflow-hidden ${className}`}>
       <div className="aspect-square overflow-hidden">
-        <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+        <img src={image} alt={name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" onError={event => { event.currentTarget.src = fallbackTeamImage; }} />
       </div>
       <div className="p-6">
         <h3 className="text-xl font-bold mb-1">{name}</h3>

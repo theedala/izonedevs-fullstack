@@ -2,6 +2,7 @@ import Button from '../ui/Button';
 import { ArrowUpRightIcon, CheckCircle2Icon, ShoppingCartIcon } from '../ui/icons';
 import { useCart } from '../../context/CartContext';
 import { Product } from '../../services/api';
+import { getMediaUrl } from '../../utils/media';
 
 interface ProductCardProps {
   id: string;
@@ -13,7 +14,16 @@ interface ProductCardProps {
   className?: string;
 }
 
+const fallbackImages: Record<string, string> = {
+  electronics: 'https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=900&q=85',
+  '3d-printing': 'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?auto=format&fit=crop&w=900&q=85',
+  components: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=85',
+  merchandise: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85',
+};
+
 const ProductCard = ({ id, name, price, image, category, inStock, className = '' }: ProductCardProps) => {
+  const fallbackImage = fallbackImages[category] || fallbackImages.electronics;
+  const resolvedImage = getMediaUrl(image) || fallbackImage;
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
@@ -35,7 +45,7 @@ const ProductCard = ({ id, name, price, image, category, inStock, className = ''
   return (
     <article className={`group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-card-hover ${className}`}>
       <div className="relative h-52 overflow-hidden bg-slate-100">
-        <img src={image} alt={name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" onError={event => { event.currentTarget.src = 'https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=900&q=85'; }} />
+        <img src={resolvedImage} alt={name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" onError={event => { event.currentTarget.src = fallbackImage; }} />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent" />
         <span className="absolute left-4 top-4 rounded-full border border-white/60 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600 backdrop-blur">{category}</span>
         {!inStock && <div className="absolute inset-0 flex items-center justify-center bg-slate-950/65 backdrop-blur-sm"><span className="rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-700">Out of stock</span></div>}
