@@ -1,184 +1,80 @@
-# 🚀 Digital Ocean Deployment Guide
+# iZonehub Deployment Guide
 
-## Step-by-Step Instructions
+This document describes the deployment contract for the iZonehub FastAPI and React application. The recommended process is to validate the application locally, deploy to a staging environment, run the verification checklist, and only then switch production traffic.
 
-### 1. Create GitHub Repository
+## Security notice
 
-1. Go to https://github.com/new
-2. Repository name: `izonedevs-fullstack`
-3. Make it **Public** (or Private with DO access)
-4. **Don't** initialize with README (we already have files)
-5. Click "Create repository"
+The previous version of this document contained a plaintext SMTP app password in the repository. It has been removed. If that credential was ever active, revoke it and issue a new credential before sending production email. Never commit SMTP passwords, API keys, JWT secrets, database passwords, or private Google Sheet links.
 
-### 2. Push Code to GitHub
+## Required production configuration
 
-```powershell
-cd C:\Users\netwk\Downloads\izonedevs-fullstack
+Set these values through the hosting provider’s secret and environment configuration. Do not commit them to Git.
 
-# Initialize git (already done)
-git add .
-git commit -m "Initial commit - Full stack deployment ready"
+| Variable | Requirement |
+|---|---|
+| `ENVIRONMENT` | Set to `production`. |
+| `SECRET_KEY` | A random, unique secret of at least 32 characters; never use the development default. |
+| `DEBUG` | Set to `false`. |
+| `DATABASE_URL` | A persistent production database URL. SQLite is acceptable for a small single-instance deployment only when its volume is durable and backed up. |
+| `ALLOWED_ORIGINS` | A comma-separated allowlist containing only the real frontend origins. |
+| `S3_ENDPOINT_URL` | The internal or private MinIO/S3 endpoint used by the backend. |
+| `S3_PUBLIC_URL` | The public media origin reachable by browsers. |
+| `S3_BUCKET` | The production bucket name. |
+| `S3_ACCESS_KEY` / `S3_SECRET_KEY` | Non-default object-storage credentials. |
+| `S3_REGION` / `S3_SECURE` | Match the object-storage deployment and HTTPS configuration. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Optional, but required if production email notifications are enabled. Use an SMTP app password or provider credential rather than a personal account password. |
+| `VITE_API_URL` | The frontend-visible backend API base, including `/api`, for example `https://api.example.com/api`. |
 
-# Add your GitHub repository
-git remote add origin https://github.com/YOUR_USERNAME/izonedevs-fullstack.git
+## Docker Compose deployment
 
-# Push to GitHub
-git push -u origin main
+From the repository root, create a private environment file or inject variables through the hosting platform, then start the stack:
+
+```bash
+docker compose up --build -d
 ```
 
-### 3. Deploy on Digital Ocean
+Compose starts MinIO, initializes the configured bucket, starts the backend, and then starts the frontend. The default local ports are `4173` for the frontend, `8000` for the API, `9000` for the MinIO API, and `9001` for the MinIO console.
 
-1. **Go to Digital Ocean Apps**
-   - Visit: https://cloud.digitalocean.com/apps
+Before using the stack for real data, replace the default MinIO credentials and confirm that both named volumes are backed up. Do not expose the MinIO console or administrative API publicly unless access is protected by a separate network and authentication layer.
 
-2. **Create New App**
-   - Click "Create App"
-   - Select "GitHub"
-   - Authorize Digital Ocean (if first time)
+## Media storage requirements
 
-3. **Select Repository**
-   - Choose: `YOUR_USERNAME/izonedevs-fullstack`
-   - Branch: `main`
-   - Click "Next"
+The backend storage adapter supports MinIO and other S3-compatible storage. Production media should use a durable bucket with a documented retention and backup policy. Confirm that the public media URL serves an uploaded test image from the browser, not only from inside the backend container.
 
-4. **Configure Resources**
+The release test should upload one image through an authenticated admin route, confirm the returned object URL, load it from the public gallery or team view, delete it, and confirm that the object and database record are removed as expected. Repeat this after restarting the backend to verify persistence.
 
-   Digital Ocean should auto-detect both components from `.do/app.yaml`:
+## Database and backup requirements
 
-   **Backend Component:**
-   - Name: `backend`
-   - Type: Web Service
-   - Build Command: `pip install -r requirements.txt`
-   - Run Command: `uvicorn main:app --host 0.0.0.0 --port 8080`
-   - HTTP Port: `8080`
-   - Route: `/api`
-   - Instance Size: **Basic ($5/month)**
+The application database remains the source of truth. Backups should be created independently of the Google Sheets operational export. A minimum deployment policy should include a daily database backup, retention of multiple backup generations, and a periodically tested restore into an isolated environment.
 
-   **Frontend Component:**
-   - Name: `frontend`  
-   - Type: Static Site
-   - Build Command: `npm install && npm run build`
-   - Output Directory: `dist`
-   - Route: `/`
-   - Instance Size: **Free**
+The Google Sheets export is a one-way operational mirror. It is useful for follow-up, reporting, and human-readable tracking, but it must not be treated as the only disaster-recovery copy.
 
-5. **Set Environment Variables**
+## Google Sheets operations export
 
-   Click on **backend** component → Environment Variables:
+The reusable export job is located at `scripts/daily_sheets_export.py`. The configured schedule runs the full export once per day. Before changing the account or workbook, create the new destination, update the scheduler’s connector and spreadsheet identifier, run one manual export, and verify the Export Log.
 
-   ```
-   SECRET_KEY=YOUR_SUPER_SECRET_KEY_CHANGE_THIS_TO_RANDOM_STRING
-   DATABASE_URL=sqlite:///./izonedevs.db
-   DEBUG=false
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_USER=izonemakers@gmail.com
-   SMTP_PASSWORD=kmub uxpm bhsw qnkd
-   ```
+Keep the workbook restricted to authorized administrators. The export deliberately excludes passwords, password hashes, access tokens, refresh tokens, and other authentication secrets. Review the exported columns before adding any new sensitive fields to the job.
 
-   Click on **frontend** component → Environment Variables:
+## Release verification checklist
 
-   ```
-   VITE_API_URL=${APP_URL}/api
-   ```
+| Check | Expected result |
+|---|---|
+| Frontend production build | `npm run build` completes successfully. |
+| Backend startup | The API starts without migration or configuration errors. |
+| Health endpoint | The health endpoint returns a successful response. |
+| Authentication | Access tokens work, refresh tokens are rejected on access-token routes, and admin routes enforce roles. |
+| Registration | Invalid payloads return validation errors, ended events reject registration, and duplicate emails cannot register twice for one event. |
+| Upload | An authenticated upload stores an object and returns a browser-reachable URL. |
+| Public rendering | Gallery, team, event, project, blog, product, and cart media render or fall back safely. |
+| Email | SMTP notifications work when configured, and failures do not expose credentials or unsafe HTML. |
+| Sheets export | The export completes without secrets, clears stale rows, and writes an Export Log entry. |
+| Restore | A database and object-storage backup can be restored into an isolated environment. |
+| HTTPS and CORS | Only the intended frontend origin is allowed, and all public traffic uses HTTPS. |
 
-6. **Review and Launch**
-   - Review all settings
-   - Click "Create Resources"
-   - Wait 5-10 minutes for deployment
+## Rollback
 
-### 4. Access Your App
+Keep the previous application image or release available until the new release has passed the post-deployment checks. If a release must be rolled back, preserve the database and object-storage state, record the failed release and error symptoms, and avoid destructive migrations without a tested reverse or restore procedure.
 
-Once deployed, you'll get a URL like:
-```
-https://izonedevs-xxxx.ondigitalocean.app
-```
+## Known non-blocking improvements
 
-Test these endpoints:
-- **Homepage**: https://izonedevs-xxxx.ondigitalocean.app/
-- **About**: https://izonedevs-xxxx.ondigitalocean.app/about
-- **Events**: https://izonedevs-xxxx.ondigitalocean.app/events
-- **Admin**: https://izonedevs-xxxx.ondigitalocean.app/admin
-- **API Docs**: https://izonedevs-xxxx.ondigitalocean.app/api/docs
-
-### 5. Test Everything
-
-Login to admin panel:
-- Email: `admin@izonedevs.com`
-- Password: `admin123` (you should have this user in your database)
-
-## 💰 Pricing
-
-- Backend: **$5/month** (Basic instance)
-- Frontend: **$0** (Static site - FREE!)
-- **Total: $5/month**
-
-## 🔄 Automatic Deployments
-
-Every time you push to the `main` branch, Digital Ocean will automatically:
-1. Pull latest code
-2. Build both frontend and backend
-3. Deploy updates
-4. Zero downtime!
-
-## 🌐 Custom Domain (Optional)
-
-1. Go to App Settings → Domains
-2. Click "Add Domain"
-3. Enter your domain (e.g., `izonedevs.com`)
-4. Update your DNS records:
-   - Type: `CNAME`
-   - Name: `@` or `www`
-   - Value: (provided by Digital Ocean)
-5. Wait for SSL certificate (automatic, ~5 minutes)
-
-## 🔧 Troubleshooting
-
-### Build Fails
-
-**Check logs** in Digital Ocean console:
-- Click on failed deployment
-- View build logs
-- Look for error messages
-
-**Common issues:**
-- Missing dependencies in `requirements.txt`
-- Wrong Python version
-- Environment variables not set
-
-### App Not Loading
-
-1. Check both components are running
-2. Verify environment variables
-3. Check CORS settings in backend
-4. View runtime logs
-
-### Database Issues
-
-- SQLite file is created automatically
-- Data persists across deployments
-- For backups, use Digital Ocean Spaces
-
-## 📝 Post-Deployment Checklist
-
-- [ ] App deployed successfully
-- [ ] Frontend loads correctly
-- [ ] Backend API accessible at `/api/docs`
-- [ ] Can login to admin panel
-- [ ] Events page shows data
-- [ ] Blog page works
-- [ ] File uploads working
-- [ ] Email notifications working
-
-## 🎯 Next Steps
-
-1. **Add custom domain** (optional)
-2. **Set up database backups**
-3. **Monitor usage** in DO dashboard
-4. **Scale up** if needed (easy!)
-
----
-
-**🎉 Congratulations! Your app is live on Digital Ocean!**
-
-Cost: Just **$5/month** for full-stack hosting! 🚀
+The frontend production bundle still produces a Vite chunk-size warning. Route-level lazy loading is recommended. The admin workspace contains several large components that should be split gradually. These are quality and performance improvements, not prerequisites for the current local release scope.
